@@ -3,7 +3,6 @@ language: java
 script: mvnw test
 jdk:
   - oraclejdk8
-  - oraclejdk7
 
 sudo: false
 
