@@ -25,6 +25,9 @@
 
 	<modules>
 		<module>core</module>
+		<module>elasticsearch</module>
+		<module>jpa</module>
+		<module>permission</module>
 		<module>sample</module>
 	</modules>
 
