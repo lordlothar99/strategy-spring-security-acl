@@ -10,18 +10,18 @@ public class AclFilterProvider {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
   private AclStrategyProvider aclStrategyProvider;
-  private FilterBuilderFeature filterBuilderFeature;
+  private ElasticSearchFeature elasticSearchFeature;
 
   public AclFilterProvider(AclStrategyProvider aclStrategyProvider,
-      FilterBuilderFeature filterBuilderFeature) {
+      ElasticSearchFeature elasticSearchFeature) {
     super();
     this.aclStrategyProvider = aclStrategyProvider;
-    this.filterBuilderFeature = filterBuilderFeature;
+    this.elasticSearchFeature = elasticSearchFeature;
   }
 
   public FilterBuilder filterFor(Class<?> domainType) {
     AclStrategy strategy = aclStrategyProvider.strategyFor(domainType);
-    FilterBuilder filterBuilder = strategy.featureFor(filterBuilderFeature);
+    FilterBuilder filterBuilder = strategy.featureFor(elasticSearchFeature);
     logger.debug("Using ACL ElasticSearch filter builder on {} : {}", domainType.getSimpleName(),
         strategy);
     return filterBuilder;

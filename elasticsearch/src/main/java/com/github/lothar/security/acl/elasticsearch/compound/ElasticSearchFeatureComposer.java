@@ -10,7 +10,7 @@ import org.elasticsearch.index.query.FilterBuilder;
 import com.github.lothar.security.acl.compound.AclFeatureComposer;
 import com.github.lothar.security.acl.compound.CompositionType;
 
-public class FilterBuilderFeatureComposer implements AclFeatureComposer<FilterBuilder> {
+public class ElasticSearchFeatureComposer implements AclFeatureComposer<FilterBuilder> {
 
   @Override
   public FilterBuilder compose(CompositionType compositionType, FilterBuilder lhs,

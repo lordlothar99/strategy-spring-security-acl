@@ -19,6 +19,9 @@ package com.github.lothar.security.acl.sample.domain;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
+import com.github.lothar.security.acl.Acl;
+
+@Acl("customerStrategy")
 @Document(indexName = "customer", type = "customer", shards = 1, replicas = 0, refreshInterval = "-1")
 public class Customer {
 

@@ -10,34 +10,34 @@ import com.github.lothar.security.acl.AclStrategyProvider;
 import com.github.lothar.security.acl.compound.AclFeatureComposersRegistry;
 import com.github.lothar.security.acl.config.AclConfiguration;
 import com.github.lothar.security.acl.elasticsearch.AclFilterProvider;
-import com.github.lothar.security.acl.elasticsearch.FilterBuilderFeature;
-import com.github.lothar.security.acl.elasticsearch.compound.FilterBuilderFeatureComposer;
+import com.github.lothar.security.acl.elasticsearch.ElasticSearchFeature;
+import com.github.lothar.security.acl.elasticsearch.compound.ElasticSearchFeatureComposer;
 import com.github.lothar.security.acl.elasticsearch.repository.AclElasticsearchRepositoryFactoryBean;
 
 @Configuration
 @AutoConfigureAfter(AclConfiguration.class)
 @EnableElasticsearchRepositories(
     repositoryFactoryBeanClass = AclElasticsearchRepositoryFactoryBean.class)
-public class FilterBuilderFeatureConfiguration {
+public class ElasticSearchFeatureConfiguration {
 
-  private FilterBuilderFeature filterBuilderFeature = new FilterBuilderFeature();
+  private ElasticSearchFeature elasticSearchFeature = new ElasticSearchFeature();
 
   @Bean
-  public FilterBuilderFeature filterBuilderFeature() {
-    return filterBuilderFeature;
+  public ElasticSearchFeature elasticSearchFeature() {
+    return elasticSearchFeature;
   }
 
   @Bean
-  @ConditionalOnMissingBean(FilterBuilderFeatureComposer.class)
-  public FilterBuilderFeatureComposer filterBuilderFeatureComposer(
+  @ConditionalOnMissingBean(ElasticSearchFeatureComposer.class)
+  public ElasticSearchFeatureComposer elasticSearchFeatureComposer(
       AclFeatureComposersRegistry registry) {
-    FilterBuilderFeatureComposer composer = new FilterBuilderFeatureComposer();
-    registry.register(filterBuilderFeature, composer);
+    ElasticSearchFeatureComposer composer = new ElasticSearchFeatureComposer();
+    registry.register(elasticSearchFeature, composer);
     return composer;
   }
 
   @Bean
   public AclFilterProvider aclFilterProvider(AclStrategyProvider aclStrategyProvider) {
-    return new AclFilterProvider(aclStrategyProvider, filterBuilderFeature);
+    return new AclFilterProvider(aclStrategyProvider, elasticSearchFeature);
   }
 }
