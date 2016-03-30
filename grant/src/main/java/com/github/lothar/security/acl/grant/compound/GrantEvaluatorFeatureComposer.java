@@ -1,4 +1,4 @@
-package com.github.lothar.security.acl.grant;
+package com.github.lothar.security.acl.grant.compound;
 
 import static com.github.lothar.security.acl.compound.CompositionType.AND;
 import static com.github.lothar.security.acl.compound.CompositionType.OR;
@@ -10,6 +10,7 @@ import org.springframework.util.Assert;
 
 import com.github.lothar.security.acl.compound.AclFeatureComposer;
 import com.github.lothar.security.acl.compound.CompositionType;
+import com.github.lothar.security.acl.grant.GrantEvaluator;
 
 public class GrantEvaluatorFeatureComposer implements AclFeatureComposer<GrantEvaluator> {
 

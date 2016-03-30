@@ -9,8 +9,8 @@ import com.github.lothar.security.acl.AclStrategyProvider;
 import com.github.lothar.security.acl.compound.AclFeatureComposersRegistry;
 import com.github.lothar.security.acl.config.AclConfiguration;
 import com.github.lothar.security.acl.grant.GrantEvaluatorFeature;
-import com.github.lothar.security.acl.grant.GrantEvaluatorFeatureComposer;
 import com.github.lothar.security.acl.grant.PermissionEvaluatorImpl;
+import com.github.lothar.security.acl.grant.compound.GrantEvaluatorFeatureComposer;
 
 @Configuration
 @AutoConfigureAfter(AclConfiguration.class)
