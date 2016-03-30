@@ -15,17 +15,14 @@
 		<dependency>
 			<groupId>com.github.lothar.security.acl</groupId>
 			<artifactId>spring-security-acl-features-elasticsearch</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.lothar.security.acl</groupId>
 			<artifactId>spring-security-acl-features-jpa</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.lothar.security.acl</groupId>
 			<artifactId>spring-security-acl-features-permission</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
