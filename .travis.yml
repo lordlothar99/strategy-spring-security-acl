@@ -1,6 +1,6 @@
 ---
 language: java
-script: mvnw test
+script: mvn test
 jdk:
   - oraclejdk8
 
