@@ -19,13 +19,13 @@ import org.springframework.data.repository.core.RepositoryMetadata;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
 
 import com.github.lothar.security.acl.Acl;
-import com.github.lothar.security.acl.jpa.AclJpaSpecProvider;
+import com.github.lothar.security.acl.jpa.JpaSpecProvider;
 
 public class AclJpaRepositoryFactoryBean<T extends Repository<S, ID>, S, ID extends Serializable>
     extends JpaRepositoryFactoryBean<T, S, ID> {
 
   @Resource
-  private AclJpaSpecProvider aclJpaSpecProvider;
+  private JpaSpecProvider jpaSpecProvider;
 
   protected RepositoryFactorySupport createRepositoryFactory(EntityManager entityManager) {
     return new AclJpaRepositoryFactory(entityManager);
@@ -56,7 +56,7 @@ public class AclJpaRepositoryFactoryBean<T extends Repository<S, ID>, S, ID exte
       JpaEntityInformation<?, Serializable> entityInformation = getEntityInformation(domainType);
 
       Supplier<Specification<?>> aclJpaSpecSupplier =
-          () -> aclJpaSpecProvider.aclJpaSpecificationFor(domainType);
+          () -> jpaSpecProvider.aclJpaSpecificationFor(domainType);
 
       // invokes
       // com.trackaflat.repository.AclJpaRepository.AclJpaRepository(JpaEntityInformation<T, ?>,
