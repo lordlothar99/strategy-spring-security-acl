@@ -18,11 +18,11 @@
 		</dependency>
 		<dependency>
 			<groupId>com.github.lothar.security.acl</groupId>
-			<artifactId>spring-security-acl-features-jpa</artifactId>
+			<artifactId>spring-security-acl-features-grant</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.github.lothar.security.acl</groupId>
-			<artifactId>spring-security-acl-features-permission</artifactId>
+			<artifactId>spring-security-acl-features-jpa</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
@@ -38,6 +38,6 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
 
 </project>

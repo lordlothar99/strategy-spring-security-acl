@@ -26,8 +26,8 @@
 	<modules>
 		<module>core</module>
 		<module>elasticsearch</module>
+		<module>grant</module>
 		<module>jpa</module>
-		<module>permission</module>
 		<module>sample</module>
 	</modules>
 
@@ -45,12 +45,12 @@
 			</dependency>
 			<dependency>
 				<groupId>com.github.lothar.security.acl</groupId>
-				<artifactId>spring-security-acl-features-jpa</artifactId>
+				<artifactId>spring-security-acl-features-grant</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.github.lothar.security.acl</groupId>
-				<artifactId>spring-security-acl-features-permission</artifactId>
+				<artifactId>spring-security-acl-features-jpa</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 		</dependencies>
