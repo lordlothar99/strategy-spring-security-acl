@@ -72,7 +72,7 @@ public class AclElasticsearchRepositoryFactoryBean<T extends Repository<S, ID>, 
       // ID>, ElasticsearchOperations, Supplier<FilterBuilder>)
       ElasticsearchRepository<?, ?> repository = getTargetRepositoryViaReflection(metadata,
           entityInformation, elasticsearchOperations, filterSupplier);
-      logger.debug("Created AclNumberKeyedRepository {}", repository);
+      logger.debug("Created {}", repository);
 
       return repository;
     }
