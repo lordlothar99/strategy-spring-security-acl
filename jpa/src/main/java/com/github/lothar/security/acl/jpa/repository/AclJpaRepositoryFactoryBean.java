@@ -54,8 +54,8 @@ public class AclJpaRepositoryFactoryBean<T extends Repository<S, ID>, S, ID exte
       JpaEntityInformation<?, Serializable> entityInformation = getEntityInformation(domainType);
 
       // invokes
-      // com.trackaflat.repository.AclJpaRepository.AclJpaRepository(JpaEntityInformation<T, ?>,
-      // EntityManager, JpaSpecProvider)
+      // com.github.lothar.security.acl.jpa.repository.AclJpaRepository.AclJpaRepository(JpaEntityInformation<T,
+      // ?>, EntityManager, JpaSpecProvider<T>)
       SimpleJpaRepository<?, ?> repository = getTargetRepositoryViaReflection(information,
           entityInformation, entityManager, jpaSpecProvider);
       logger.debug("Created {}", repository);
