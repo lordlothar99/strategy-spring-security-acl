@@ -1,7 +1,6 @@
 package com.github.lothar.security.acl.elasticsearch.repository;
 
 import java.util.Collections;
-import java.util.function.Supplier;
 
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -21,22 +20,25 @@ import org.springframework.data.elasticsearch.repository.support.ElasticsearchEn
 import org.springframework.data.elasticsearch.repository.support.NumberKeyedRepository;
 import org.springframework.util.Assert;
 
+import com.github.lothar.security.acl.elasticsearch.AclFilterProvider;
+
 public class AclNumberKeyedRepository<T, ID extends Number> extends NumberKeyedRepository<T, ID> {
 
-  private Supplier<FilterBuilder> filterSupplier;
+  private AclFilterProvider filterProvider;
   private Logger logger = LoggerFactory.getLogger(getClass());
 
   // reflection invocation by
-  // com.trackaflat.config.acl.AclElasticsearchRepositoryFactoryBean.Factory.getTargetRepository(RepositoryInformation)
+  // com.github.lothar.security.acl.elasticsearch.repository.AclElasticsearchRepositoryFactoryBean.Factory.getTargetRepository(RepositoryInformation)
   public AclNumberKeyedRepository(ElasticsearchEntityInformation<T, ID> metadata,
-      ElasticsearchOperations elasticsearchOperations, Supplier<FilterBuilder> filterSupplier) {
+      ElasticsearchOperations elasticsearchOperations, AclFilterProvider filterProvider) {
     super(metadata, elasticsearchOperations);
-    this.filterSupplier = filterSupplier;
+    this.filterProvider = filterProvider;
   }
 
-  public AclNumberKeyedRepository(ElasticsearchOperations elasticsearchOperations, Supplier<FilterBuilder> filterSupplier) {
+  public AclNumberKeyedRepository(ElasticsearchOperations elasticsearchOperations,
+      AclFilterProvider filterProvider) {
     super(elasticsearchOperations);
-    this.filterSupplier = filterSupplier;
+    this.filterProvider = filterProvider;
   }
 
   @Override
@@ -77,36 +79,36 @@ public class AclNumberKeyedRepository<T, ID extends Number> extends NumberKeyedR
 
   @Override
   public Iterable<T> search(QueryBuilder query) {
-      SearchQuery searchQuery = new NativeSearchQueryBuilder() //
-          .withFilter(filter()) //
-          .withQuery(query) //
-          .build();
-      int count = (int) elasticsearchOperations.count(searchQuery, getEntityClass());
-      if (count == 0) {
-          return new PageImpl<T>(Collections.<T>emptyList());
-      }
-      searchQuery.setPageable(new PageRequest(0, count));
-      return elasticsearchOperations.queryForPage(searchQuery, getEntityClass());
+    SearchQuery searchQuery = new NativeSearchQueryBuilder() //
+        .withFilter(filter()) //
+        .withQuery(query) //
+        .build();
+    int count = (int) elasticsearchOperations.count(searchQuery, getEntityClass());
+    if (count == 0) {
+      return new PageImpl<T>(Collections.<T>emptyList());
+    }
+    searchQuery.setPageable(new PageRequest(0, count));
+    return elasticsearchOperations.queryForPage(searchQuery, getEntityClass());
   }
 
   @Override
   public FacetedPage<T> search(QueryBuilder query, Pageable pageable) {
-      SearchQuery searchQuery = new NativeSearchQueryBuilder() //
-          .withFilter(filter()) //
-          .withQuery(query) //
-          .withPageable(pageable) //
-          .build();
-      return elasticsearchOperations.queryForPage(searchQuery, getEntityClass());
+    SearchQuery searchQuery = new NativeSearchQueryBuilder() //
+        .withFilter(filter()) //
+        .withQuery(query) //
+        .withPageable(pageable) //
+        .build();
+    return elasticsearchOperations.queryForPage(searchQuery, getEntityClass());
   }
 
   @Override
   public FacetedPage<T> search(SearchQuery query) {
     // TODO apply filter
-//      SearchQuery searchQuery = new NativeSearchQueryBuilder() //
-//        .withFilter(filter()) //
-//        .withQuery(query) //
-//        .build();
-      return elasticsearchOperations.queryForPage(query, getEntityClass());
+    // SearchQuery searchQuery = new NativeSearchQueryBuilder() //
+    // .withFilter(filter()) //
+    // .withQuery(query) //
+    // .build();
+    return elasticsearchOperations.queryForPage(query, getEntityClass());
   }
 
   @Override
@@ -118,7 +120,7 @@ public class AclNumberKeyedRepository<T, ID extends Number> extends NumberKeyedR
     query.setId(stringIdRepresentation(extractIdFromBean(entity)));
     query.setPageable(pageable);
     if (fields != null) {
-        query.addFields(fields);
+      query.addFields(fields);
     }
     return elasticsearchOperations.moreLikeThis(query, getEntityClass());
   }
@@ -130,9 +132,9 @@ public class AclNumberKeyedRepository<T, ID extends Number> extends NumberKeyedR
   }
 
   private FilterBuilder filter() {
-    FilterBuilder filterBuilder = filterSupplier.get();
-    logger.debug("Using filter builder {} for objects {}", filterBuilder,
-        getEntityClass().getSimpleName());
+    FilterBuilder filterBuilder = filterProvider.filterFor(entityClass);
+    logger.debug("Using ACL filter for objects {}: {}", getEntityClass().getSimpleName(),
+        filterBuilder);
     return filterBuilder;
   }
 

@@ -1,11 +1,9 @@
 package com.github.lothar.security.acl.elasticsearch.repository;
 
 import java.io.Serializable;
-import java.util.function.Supplier;
 
 import javax.annotation.Resource;
 
-import org.elasticsearch.index.query.FilterBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
@@ -65,14 +63,11 @@ public class AclElasticsearchRepositoryFactoryBean<T extends Repository<S, ID>, 
             elasticsearchOperations);
       }
 
-      Supplier<FilterBuilder> filterSupplier = () -> filterProvider.filterFor(domainType);
-      // TODO inject filterProvider if possible
-
       // invokes
-      // com.trackaflat.config.acl.AclNumberKeyedRepository.AclNumberKeyedRepository(ElasticsearchEntityInformation<T,
-      // ID>, ElasticsearchOperations, Supplier<FilterBuilder>)
+      // com.github.lothar.security.acl.elasticsearch.repository.AclNumberKeyedRepository.AclNumberKeyedRepository(ElasticsearchEntityInformation<T,
+      // ID>, ElasticsearchOperations, AclFilterProvider)
       ElasticsearchRepository<?, ?> repository = getTargetRepositoryViaReflection(metadata,
-          entityInformation, elasticsearchOperations, filterSupplier);
+          entityInformation, elasticsearchOperations, filterProvider);
       logger.debug("Created {}", repository);
 
       return repository;
