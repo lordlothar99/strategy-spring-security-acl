@@ -1,41 +1,32 @@
 package com.github.lothar.security.acl.grant.compound;
 
-import static com.github.lothar.security.acl.compound.CompositionType.AND;
-import static com.github.lothar.security.acl.compound.CompositionType.OR;
-
 import java.io.Serializable;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.util.Assert;
 
 import com.github.lothar.security.acl.compound.AclComposer;
-import com.github.lothar.security.acl.compound.CompositionType;
 import com.github.lothar.security.acl.grant.GrantEvaluator;
 
 public class GrantEvaluatorComposer implements AclComposer<GrantEvaluator> {
 
   @Override
-  public GrantEvaluator compose(CompositionType compositionType, GrantEvaluator lhs,
-      GrantEvaluator rhs) {
-
-    if (AND.equals(compositionType)) {
-      return new ComposedGrantEvaluator(lhs, rhs, CompositionOperator.AND);
-
-    } else if (OR.equals(compositionType)) {
-      return new ComposedGrantEvaluator(lhs, rhs, CompositionOperator.OR);
-
-    } else {
-      throw new IllegalArgumentException("Illegal composition : " + compositionType);
-    }
+  public GrantEvaluator and(GrantEvaluator lhs, GrantEvaluator rhs) {
+    return new CompoundGrantEvaluator(lhs, rhs, CompositionOperator.AND);
   }
 
-  private static class ComposedGrantEvaluator implements GrantEvaluator {
+  @Override
+  public GrantEvaluator or(GrantEvaluator lhs, GrantEvaluator rhs) {
+    return new CompoundGrantEvaluator(lhs, rhs, CompositionOperator.OR);
+  }
+
+  private static class CompoundGrantEvaluator implements GrantEvaluator {
 
     private final GrantEvaluator lhs;
     private final GrantEvaluator rhs;
     private final CompositionOperator compositionOperator;
 
-    private ComposedGrantEvaluator(GrantEvaluator lhs, GrantEvaluator rhs,
+    private CompoundGrantEvaluator(GrantEvaluator lhs, GrantEvaluator rhs,
         CompositionOperator compositionOperator) {
 
       Assert.notNull(compositionOperator, "compositionOperator must not be null!");

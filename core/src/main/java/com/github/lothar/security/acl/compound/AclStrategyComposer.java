@@ -15,37 +15,52 @@ public class AclStrategyComposer {
   }
 
   public CompoundAclStrategy and(AclStrategy lhs, AclStrategy rhs) {
-    return new CompoundAclStrategy(lhs, rhs, CompositionType.AND);
+    return new CompoundAclStrategy(lhs, rhs, CompositionOperator.AND);
   }
 
   public CompoundAclStrategy or(AclStrategy lhs, AclStrategy rhs) {
-    return new CompoundAclStrategy(lhs, rhs, CompositionType.OR);
+    return new CompoundAclStrategy(lhs, rhs, CompositionOperator.OR);
   }
 
   private class CompoundAclStrategy implements AclStrategy {
 
     private final AclStrategy lhs;
     private final AclStrategy rhs;
-    private final CompositionType compositionType;
+    private final CompositionOperator compositionOperator;
 
     private CompoundAclStrategy(AclStrategy lhs, AclStrategy rhs,
-        CompositionType compositionType) {
+        CompositionOperator compositionOperator) {
 
-      Assert.notNull(compositionType, "CompositionType must not be null!");
+      Assert.notNull(compositionOperator, "CompositionType must not be null!");
 
       this.lhs = lhs;
       this.rhs = rhs;
-      this.compositionType = compositionType;
+      this.compositionOperator = compositionOperator;
     }
 
     @Override
     public <Filter> Filter filterFor(AclFeature<Filter> feature) {
       AclComposer<Filter> composer = composersRegistry.composerFor(feature);
-      return composer.compose(//
-          compositionType, //
-          lhs.filterFor(feature), //
-          rhs.filterFor(feature)//
-      );
+      return compositionOperator.apply(composer, lhs.filterFor(feature), rhs.filterFor(feature));
     }
+  }
+
+  private static enum CompositionOperator {
+
+    AND {
+      @Override
+      <Filter> Filter apply(AclComposer<Filter> composer, Filter lhs, Filter rhs) {
+        return composer.and(lhs, rhs);
+      }
+    },
+
+    OR {
+      @Override
+      <Filter> Filter apply(AclComposer<Filter> composer, Filter lhs, Filter rhs) {
+        return composer.or(lhs, rhs);
+      }
+    };
+
+    abstract <Filter> Filter apply(AclComposer<Filter> composer, Filter lhs, Filter rhs);
   }
 }
