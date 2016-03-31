@@ -26,17 +26,18 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
       Object permission) {
 
     if (targetDomainObject == null) {
-      throw new IllegalArgumentException("No domain object specified for permission " + permission);
+      throw new IllegalArgumentException("No domain object specified; permission=" + permission
+          + "; authentication=" + authentication);
     }
     AclStrategy strategy = strategyProvider.strategyFor(targetDomainObject.getClass());
     GrantEvaluator grantEvaluator = strategy.featureFor(grantEvaluatorFeature);
 
+    // TODO implement default grantEvaluator
+
     boolean grant = grantEvaluator.isGranted(permission, authentication, targetDomainObject);
     String granted = grant ? "granted" : "not granted";
-    if (logger.isDebugEnabled()) {
-      logger.debug("Permission {} {} for {} on object {} using strategy {}", permission, granted,
-          authentication, targetDomainObject, strategy);
-    }
+    logger.debug("Permission {} {} for {} on object {} using strategy {}", permission, granted,
+        authentication, targetDomainObject, strategy);
     return grant;
   }
 
@@ -48,16 +49,16 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
     AclStrategy strategy = strategyProvider.strategyFor(entityClass);
     GrantEvaluator grantEvaluator = strategy.featureFor(grantEvaluatorFeature);
 
+    // TODO implement default grantEvaluator
+
     boolean grant = grantEvaluator.isGranted(permission, authentication, targetId, targetType);
     String granted = grant ? "granted" : "not granted";
-    if (logger.isDebugEnabled()) {
-      logger.debug("Permission {} {} for {} on object {}#{} using strategy {}", permission, granted,
-          authentication, targetType, targetId, strategy);
-    }
+    logger.debug("Permission {} {} for {} on object {}#{} using strategy {}", permission, granted,
+        authentication, targetType, targetId, strategy);
     return grant;
   }
 
-  private Class<?> asClass(String className) {
+  private static Class<?> asClass(String className) {
     try {
       Class<?> entityClass = Class.forName(className);
       return entityClass;
