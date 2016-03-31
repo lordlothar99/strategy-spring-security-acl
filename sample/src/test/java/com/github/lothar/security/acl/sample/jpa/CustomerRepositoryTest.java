@@ -54,7 +54,6 @@ public class CustomerRepositoryTest {
     assertThat(repository.count()).isEqualTo(2);
   }
 
-  @Ignore("Once installed, that's it !")
   @Test
   public void should_find_all_customers_only_when_strategy_not_applied() {
     doWithoutCustomerSpec(new Runnable() {

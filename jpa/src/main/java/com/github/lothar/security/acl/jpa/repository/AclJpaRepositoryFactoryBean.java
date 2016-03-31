@@ -1,14 +1,11 @@
 package com.github.lothar.security.acl.jpa.repository;
 
 import java.io.Serializable;
-import java.util.function.Supplier;
-
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean;
@@ -47,7 +44,6 @@ public class AclJpaRepositoryFactoryBean<T extends Repository<S, ID>, S, ID exte
           : AclJpaRepository.class;
     }
 
-    @SuppressWarnings("unchecked")
     protected SimpleJpaRepository<?, ?> getTargetRepository(RepositoryInformation information,
         EntityManager entityManager) {
       Class<?> domainType = information.getDomainType();
@@ -57,15 +53,11 @@ public class AclJpaRepositoryFactoryBean<T extends Repository<S, ID>, S, ID exte
 
       JpaEntityInformation<?, Serializable> entityInformation = getEntityInformation(domainType);
 
-      Supplier<Specification<?>> aclJpaSpecSupplier =
-          () -> jpaSpecProvider.aclJpaSpecificationFor(domainType);
-      // TODO inject jpaSpecProvider if possible
-
       // invokes
       // com.trackaflat.repository.AclJpaRepository.AclJpaRepository(JpaEntityInformation<T, ?>,
-      // EntityManager, Specification<T>)
+      // EntityManager, JpaSpecProvider)
       SimpleJpaRepository<?, ?> repository = getTargetRepositoryViaReflection(information,
-          entityInformation, entityManager, aclJpaSpecSupplier);
+          entityInformation, entityManager, jpaSpecProvider);
       logger.debug("Created {}", repository);
 
       return repository;

@@ -10,18 +10,18 @@ import com.github.lothar.security.acl.AclStrategyProvider;
 public class JpaSpecProvider<T> {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
-  private AclStrategyProvider aclStrategyProvider;
+  private AclStrategyProvider strategyProvider;
   private JpaSpecFeature<T> jpaSpecFeature;
 
   public JpaSpecProvider(AclStrategyProvider aclStrategyProvider,
       JpaSpecFeature<T> jpaSpecFeature) {
     super();
-    this.aclStrategyProvider = aclStrategyProvider;
+    this.strategyProvider = aclStrategyProvider;
     this.jpaSpecFeature = jpaSpecFeature;
   }
 
-  public Specification<T> aclJpaSpecificationFor(Class<T> domainType) {
-    AclStrategy strategy = aclStrategyProvider.strategyFor(domainType);
+  public Specification<T> jpaSpecFor(Class<T> domainType) {
+    AclStrategy strategy = strategyProvider.strategyFor(domainType);
     Specification<T> aclJpaSpec = strategy.filterFor(jpaSpecFeature);
 
     // TODO implement default aclJpaSpec

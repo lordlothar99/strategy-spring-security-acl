@@ -5,8 +5,6 @@ import static org.springframework.data.jpa.domain.Specifications.where;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.function.Supplier;
-
 import javax.persistence.EntityManager;
 
 import org.slf4j.Logger;
@@ -19,25 +17,26 @@ import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
+import com.github.lothar.security.acl.jpa.JpaSpecProvider;
+
 public class AclJpaRepository<T, ID extends Serializable> extends SimpleJpaRepository<T, ID> {
 
-  private Specifications<T> aclJpaSpec;
-  private Supplier<Specification<T>> aclJpaSpecSupplier;
   private Logger logger = LoggerFactory.getLogger(getClass());
+  private JpaSpecProvider<T> jpaSpecProvider;
 
   public AclJpaRepository(Class<T> domainClass, EntityManager em,
-      Supplier<Specification<T>> aclJpaSpecSupplier) {
+      JpaSpecProvider<T> jpaSpecProvider) {
     super(domainClass, em);
-    this.aclJpaSpecSupplier = aclJpaSpecSupplier;
+    this.jpaSpecProvider = jpaSpecProvider;
   }
 
   // reflection invocation by
   // com.trackaflat.config.repository.AclJpaRepositoryFactoryBean.Factory.getTargetRepository(RepositoryInformation,
   // EntityManager)
   public AclJpaRepository(JpaEntityInformation<T, ?> entityInformation, EntityManager entityManager,
-      Supplier<Specification<T>> aclJpaSpecSupplier) {
+      JpaSpecProvider<T> jpaSpecProvider) {
     super(entityInformation, entityManager);
-    this.aclJpaSpecSupplier = aclJpaSpecSupplier;
+    this.jpaSpecProvider = jpaSpecProvider;
   }
 
   @Override
@@ -86,13 +85,9 @@ public class AclJpaRepository<T, ID extends Serializable> extends SimpleJpaRepos
   }
 
   private Specifications<T> aclJpaSpec() {
-    if (aclJpaSpec == null) {
-      Specification<T> spec = aclJpaSpecSupplier.get();
-      logger.debug("Using ACL JPA specification for objects {}: {}",
-          getDomainClass().getSimpleName(), spec);
-      aclJpaSpec = where(spec);
-    }
-    return aclJpaSpec;
+    Specification<T> spec = jpaSpecProvider.jpaSpecFor(getDomainClass());
+    logger.debug("Using ACL JPA specification: {}", spec);
+    return where(spec);
   }
 
   @Override
