@@ -29,14 +29,14 @@ public class AclJpaRepositoryFactoryBean<T extends Repository<S, ID>, S, ID exte
   private JpaSpecProvider jpaSpecProvider;
 
   protected RepositoryFactorySupport createRepositoryFactory(EntityManager entityManager) {
-    return new AclJpaRepositoryFactory(entityManager);
+    return new Factory(entityManager);
   }
 
-  private class AclJpaRepositoryFactory extends JpaRepositoryFactory {
+  private class Factory extends JpaRepositoryFactory {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    public AclJpaRepositoryFactory(EntityManager entityManager) {
+    public Factory(EntityManager entityManager) {
       super(entityManager);
     }
 
