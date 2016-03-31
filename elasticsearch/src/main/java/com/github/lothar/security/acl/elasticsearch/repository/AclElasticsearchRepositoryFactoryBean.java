@@ -66,6 +66,7 @@ public class AclElasticsearchRepositoryFactoryBean<T extends Repository<S, ID>, 
       }
 
       Supplier<FilterBuilder> filterSupplier = () -> filterProvider.filterFor(domainType);
+      // TODO inject filterProvider if possible
 
       // invokes
       // com.trackaflat.config.acl.AclNumberKeyedRepository.AclNumberKeyedRepository(ElasticsearchEntityInformation<T,

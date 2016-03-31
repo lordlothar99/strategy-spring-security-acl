@@ -9,11 +9,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import com.github.lothar.security.acl.AclStrategyProvider;
-import com.github.lothar.security.acl.compound.AclFeatureComposersRegistry;
+import com.github.lothar.security.acl.compound.AclComposersRegistry;
 import com.github.lothar.security.acl.config.AclConfiguration;
 import com.github.lothar.security.acl.grant.GrantEvaluatorFeature;
 import com.github.lothar.security.acl.grant.PermissionEvaluatorImpl;
-import com.github.lothar.security.acl.grant.compound.GrantEvaluatorFeatureComposer;
+import com.github.lothar.security.acl.grant.compound.GrantEvaluatorComposer;
 
 @Configuration
 @Import(AclConfiguration.class)
@@ -25,15 +25,15 @@ public class GrantEvaluatorFeatureConfiguration {
 
   @Bean
   public GrantEvaluatorFeature grantEvaluatorFeature() {
-    logger.info("Installed feature : {}", grantEvaluatorFeature.getClass().getName());
+    logger.info("Installed feature : {}", grantEvaluatorFeature);
     return grantEvaluatorFeature;
   }
 
   @Bean
-  @ConditionalOnMissingBean(GrantEvaluatorFeatureComposer.class)
-  public GrantEvaluatorFeatureComposer grantEvaluatorFeatureComposer(
-      AclFeatureComposersRegistry registry) {
-    GrantEvaluatorFeatureComposer composer = new GrantEvaluatorFeatureComposer();
+  @ConditionalOnMissingBean(GrantEvaluatorComposer.class)
+  public GrantEvaluatorComposer grantEvaluatorComposer(
+      AclComposersRegistry registry) {
+    GrantEvaluatorComposer composer = new GrantEvaluatorComposer();
     registry.register(grantEvaluatorFeature, composer);
     return composer;
   }

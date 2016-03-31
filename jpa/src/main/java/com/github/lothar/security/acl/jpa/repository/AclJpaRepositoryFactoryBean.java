@@ -59,6 +59,7 @@ public class AclJpaRepositoryFactoryBean<T extends Repository<S, ID>, S, ID exte
 
       Supplier<Specification<?>> aclJpaSpecSupplier =
           () -> jpaSpecProvider.aclJpaSpecificationFor(domainType);
+      // TODO inject jpaSpecProvider if possible
 
       // invokes
       // com.trackaflat.repository.AclJpaRepository.AclJpaRepository(JpaEntityInformation<T, ?>,

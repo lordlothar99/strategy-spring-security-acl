@@ -8,11 +8,11 @@ import java.io.Serializable;
 import org.springframework.security.core.Authentication;
 import org.springframework.util.Assert;
 
-import com.github.lothar.security.acl.compound.AclFeatureComposer;
+import com.github.lothar.security.acl.compound.AclComposer;
 import com.github.lothar.security.acl.compound.CompositionType;
 import com.github.lothar.security.acl.grant.GrantEvaluator;
 
-public class GrantEvaluatorFeatureComposer implements AclFeatureComposer<GrantEvaluator> {
+public class GrantEvaluatorComposer implements AclComposer<GrantEvaluator> {
 
   @Override
   public GrantEvaluator compose(CompositionType compositionType, GrantEvaluator lhs,

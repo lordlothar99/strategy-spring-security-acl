@@ -22,8 +22,11 @@ public class JpaSpecProvider<T> {
 
   public Specification<T> aclJpaSpecificationFor(Class<T> domainType) {
     AclStrategy strategy = aclStrategyProvider.strategyFor(domainType);
-    Specification<T> aclJpaSpec = strategy.featureFor(jpaSpecFeature);
-    logger.debug("Using ACL JPA specification for {} strategy ({}): {}",
+    Specification<T> aclJpaSpec = strategy.filterFor(jpaSpecFeature);
+
+    // TODO implement default aclJpaSpec
+
+    logger.debug("Using ACL JPA specification for {} using strategy {}: {}",
         domainType.getSimpleName(), strategy, aclJpaSpec);
     return aclJpaSpec;
   }

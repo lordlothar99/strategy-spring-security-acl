@@ -9,19 +9,19 @@ import org.springframework.beans.factory.BeanNameAware;
 @SuppressWarnings("unchecked")
 public class SimpleAclStrategy implements AclStrategy, BeanNameAware {
 
-  private Map<AclFeatureType<?>, Object> features = new HashMap<>();
+  private Map<AclFeature<?>, Object> filtersByFeature = new HashMap<>();
   private String name;
 
-  public <Feature> void register(AclFeatureType<Feature> featureType, Feature feature) {
-    features.put(featureType, feature);
+  public <Filter> void register(AclFeature<Filter> feature, Filter filter) {
+    filtersByFeature.put(feature, filter);
   }
 
-  public <Feature> Feature unregister(AclFeatureType<Feature> featureType) {
-    return (Feature) features.remove(featureType);
+  public <Filter> Filter unregister(AclFeature<Filter> feature) {
+    return (Filter) filtersByFeature.remove(feature);
   }
 
-  public <Feature> Feature featureFor(AclFeatureType<Feature> featureType) {
-    return (Feature) features.get(featureType);
+  public <Filter> Filter filterFor(AclFeature<Filter> feature) {
+    return (Filter) filtersByFeature.get(feature);
   }
 
   @Override
@@ -35,6 +35,6 @@ public class SimpleAclStrategy implements AclStrategy, BeanNameAware {
 
   @Override
   public String toString() {
-    return Objects.toString(name, getClass().getName()) + ":" + Objects.toString(features);
+    return Objects.toString(name, getClass().getName()) + ":" + Objects.toString(filtersByFeature);
   }
 }

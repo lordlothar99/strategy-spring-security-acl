@@ -1,8 +1,8 @@
 package com.github.lothar.security.acl.grant;
 
-import com.github.lothar.security.acl.AclFeatureType;
+import com.github.lothar.security.acl.AclFeature;
 
-public final class GrantEvaluatorFeature implements AclFeatureType<GrantEvaluator> {
+public final class GrantEvaluatorFeature implements AclFeature<GrantEvaluator> {
 
   @Override
   public String toString() {

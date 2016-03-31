@@ -6,10 +6,10 @@ import static org.springframework.data.jpa.domain.Specifications.where;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.github.lothar.security.acl.compound.AclFeatureComposer;
+import com.github.lothar.security.acl.compound.AclComposer;
 import com.github.lothar.security.acl.compound.CompositionType;
 
-public class JpaSpecFeatureComposer<T> implements AclFeatureComposer<Specification<T>> {
+public class JpaSpecComposer<T> implements AclComposer<Specification<T>> {
 
   @Override
   public Specification<T> compose(CompositionType compositionType, Specification<T> lhs,

@@ -10,11 +10,11 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import com.github.lothar.security.acl.AclStrategyProvider;
-import com.github.lothar.security.acl.compound.AclFeatureComposersRegistry;
+import com.github.lothar.security.acl.compound.AclComposersRegistry;
 import com.github.lothar.security.acl.config.AclConfiguration;
 import com.github.lothar.security.acl.jpa.JpaSpecProvider;
 import com.github.lothar.security.acl.jpa.JpaSpecFeature;
-import com.github.lothar.security.acl.jpa.compound.JpaSpecFeatureComposer;
+import com.github.lothar.security.acl.jpa.compound.JpaSpecComposer;
 import com.github.lothar.security.acl.jpa.repository.AclJpaRepositoryFactoryBean;
 
 @Configuration
@@ -28,20 +28,20 @@ public class JpaSpecFeatureConfiguration<T> {
 
   @Bean
   public JpaSpecFeature<T> jpaSpecFeature() {
-    logger.info("Installed feature : {}", jpaSpecFeature.getClass().getName());
+    logger.info("Installed feature : {}", jpaSpecFeature);
     return jpaSpecFeature;
   }
 
   @Bean
-  @ConditionalOnMissingBean(JpaSpecFeatureComposer.class)
-  public JpaSpecFeatureComposer<T> jpaSpecFeatureComposer(AclFeatureComposersRegistry registry) {
-    JpaSpecFeatureComposer<T> composer = new JpaSpecFeatureComposer<>();
+  @ConditionalOnMissingBean(JpaSpecComposer.class)
+  public JpaSpecComposer<T> jpaSpecComposer(AclComposersRegistry registry) {
+    JpaSpecComposer<T> composer = new JpaSpecComposer<>();
     registry.register(jpaSpecFeature, composer);
     return composer;
   }
 
   @Bean
-  public JpaSpecProvider<T> jpaSpecProvider(AclStrategyProvider aclStrategyProvider) {
-    return new JpaSpecProvider<>(aclStrategyProvider, jpaSpecFeature);
+  public JpaSpecProvider<T> jpaSpecProvider(AclStrategyProvider strategyProvider) {
+    return new JpaSpecProvider<>(strategyProvider, jpaSpecFeature);
   }
 }

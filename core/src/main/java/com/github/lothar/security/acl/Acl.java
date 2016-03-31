@@ -13,6 +13,9 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Acl {
 
+  /**
+   * {@link AclStrategy} bean name
+   */
   String value() default "allowAllStrategy";
 
 }

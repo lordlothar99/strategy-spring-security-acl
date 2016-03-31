@@ -2,14 +2,14 @@ package com.github.lothar.security.acl.compound;
 
 import org.springframework.util.Assert;
 
-import com.github.lothar.security.acl.AclFeatureType;
+import com.github.lothar.security.acl.AclFeature;
 import com.github.lothar.security.acl.AclStrategy;
 
 public class AclStrategyComposer {
 
-  private AclFeatureComposersRegistry composersRegistry;
+  private AclComposersRegistry composersRegistry;
 
-  public AclStrategyComposer(AclFeatureComposersRegistry composersRegistry) {
+  public AclStrategyComposer(AclComposersRegistry composersRegistry) {
     super();
     this.composersRegistry = composersRegistry;
   }
@@ -39,12 +39,12 @@ public class AclStrategyComposer {
     }
 
     @Override
-    public <Feature> Feature featureFor(AclFeatureType<Feature> featureType) {
-      AclFeatureComposer<Feature> featureComposer = composersRegistry.composerFor(featureType);
-      return featureComposer.compose(//
+    public <Filter> Filter filterFor(AclFeature<Filter> feature) {
+      AclComposer<Filter> composer = composersRegistry.composerFor(feature);
+      return composer.compose(//
           compositionType, //
-          lhs.featureFor(featureType), //
-          rhs.featureFor(featureType)//
+          lhs.filterFor(feature), //
+          rhs.filterFor(feature)//
       );
     }
   }

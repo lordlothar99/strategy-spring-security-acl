@@ -21,9 +21,12 @@ public class AclFilterProvider {
 
   public FilterBuilder filterFor(Class<?> domainType) {
     AclStrategy strategy = aclStrategyProvider.strategyFor(domainType);
-    FilterBuilder filterBuilder = strategy.featureFor(elasticSearchFeature);
-    logger.debug("Using ACL ElasticSearch filter builder on {} : {}", domainType.getSimpleName(),
-        strategy);
+    FilterBuilder filterBuilder = strategy.filterFor(elasticSearchFeature);
+
+    // TODO implement default filterBuilder
+
+    logger.debug("Using ACL ElasticSearch filter builder for {} using strategy {}: {}",
+        domainType.getSimpleName(), strategy, filterBuilder);
     return filterBuilder;
   }
 

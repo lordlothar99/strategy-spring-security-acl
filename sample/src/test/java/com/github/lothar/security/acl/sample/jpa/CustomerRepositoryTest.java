@@ -38,12 +38,12 @@ public class CustomerRepositoryTest {
     repository.save(new Customer("Alice", "Smith"));
     repository.save(new Customer("Bob", "Smith"));
     repository.save(new Customer("John", "Doe"));
-    logger.info("Installed feature : {}", customerStrategy.featureFor(jpaSpecFeature));
+    logger.info("Installed feature : {}", customerStrategy.filterFor(jpaSpecFeature));
   }
 
   @Test
   public void should_customer_spec_be_registered_in_customer_strategy() {
-    Specification<Customer> customerSpec = customerStrategy.featureFor(jpaSpecFeature);
+    Specification<Customer> customerSpec = customerStrategy.filterFor(jpaSpecFeature);
     assertThat(customerSpec) //
         .as("Customer ACL JPA specification not registered") //
         .isNotNull();

@@ -26,7 +26,7 @@ public class AclStrategyProvider implements BeanFactoryAware {
     Acl acl = entityClass.getAnnotation(Acl.class);
     if (acl != null) {
       String strategyBean = acl.value();
-      aclStrategy = (AclStrategy) beanFactory.getBean(strategyBean);
+      aclStrategy = beanFactory.getBean(strategyBean, AclStrategy.class);
       logger.debug("{} annotation found on {} -> using strategy {}", Acl.class.getName(),
           entityClass.getSimpleName(), aclStrategy);
     }

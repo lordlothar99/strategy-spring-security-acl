@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.github.lothar.security.acl.AclStrategyProvider;
-import com.github.lothar.security.acl.compound.AclFeatureComposersRegistry;
+import com.github.lothar.security.acl.compound.AclComposersRegistry;
 import com.github.lothar.security.acl.compound.AclStrategyComposer;
 
 @Configuration
@@ -13,14 +13,14 @@ public class AclConfiguration {
 
   @Bean
   @ConditionalOnMissingBean(AclStrategyComposer.class)
-  public AclStrategyComposer strategyComposer(AclFeatureComposersRegistry aclFeatureComposersRegistry) {
-    return new AclStrategyComposer(aclFeatureComposersRegistry);
+  public AclStrategyComposer strategyComposer(AclComposersRegistry aclComposersRegistry) {
+    return new AclStrategyComposer(aclComposersRegistry);
   }
 
   @Bean
-  @ConditionalOnMissingBean(AclFeatureComposersRegistry.class)
-  public AclFeatureComposersRegistry aclFeatureComposersRegistry() {
-    return new AclFeatureComposersRegistry();
+  @ConditionalOnMissingBean(AclComposersRegistry.class)
+  public AclComposersRegistry aclComposersRegistry() {
+    return new AclComposersRegistry();
   }
 
   @Bean
