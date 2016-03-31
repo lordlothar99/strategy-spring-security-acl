@@ -33,7 +33,8 @@ public class AclStrategyProvider implements BeanFactoryAware {
 
     if (aclStrategy == null) {
       aclStrategy = defaultStrategy;
-      logger.debug("Using default acl strategy {} on {}", aclStrategy, entityClass.getSimpleName());
+      logger.debug("Using default acl strategy on {} : {}", entityClass.getSimpleName(),
+          aclStrategy);
     }
     return aclStrategy;
   }
