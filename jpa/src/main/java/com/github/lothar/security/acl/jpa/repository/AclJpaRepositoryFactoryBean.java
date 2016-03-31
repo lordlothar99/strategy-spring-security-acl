@@ -65,7 +65,7 @@ public class AclJpaRepositoryFactoryBean<T extends Repository<S, ID>, S, ID exte
       // EntityManager, Specification<T>)
       SimpleJpaRepository<?, ?> repository = getTargetRepositoryViaReflection(information,
           entityInformation, entityManager, aclJpaSpecSupplier);
-      logger.debug("Created AclJpaRepository {}", repository);
+      logger.debug("Created {}", repository);
 
       return repository;
     }
