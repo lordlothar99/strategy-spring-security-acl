@@ -65,11 +65,11 @@ public class CustomerRepositoryTest {
   }
 
   private void doWithoutCustomerSpec(Runnable runnable) {
-    Specification<Customer> customerSpec = customerStrategy.unregister(jpaSpecFeature);
+    Specification<Customer> customerSpec = customerStrategy.uninstall(jpaSpecFeature);
     try {
       runnable.run();
     } finally {
-      customerStrategy.register(jpaSpecFeature, customerSpec);
+      customerStrategy.install(jpaSpecFeature, customerSpec);
     }
   }
 

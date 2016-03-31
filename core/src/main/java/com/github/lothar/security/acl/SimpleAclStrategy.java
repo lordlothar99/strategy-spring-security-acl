@@ -12,7 +12,7 @@ public class SimpleAclStrategy implements AclStrategy, BeanNameAware {
   private Map<AclFeature<?>, Object> filtersByFeature = new HashMap<>();
   private String name;
 
-  public <Filter> void register(AclFeature<Filter> feature, Filter filter) {
+  public <Filter> void install(AclFeature<Filter> feature, Filter filter) {
     if (filter == null) {
       throw new IllegalArgumentException("Filter to register can't be null ; please use unregister("
           + AclFeature.class.getSimpleName() + ")");
@@ -20,7 +20,7 @@ public class SimpleAclStrategy implements AclStrategy, BeanNameAware {
     filtersByFeature.put(feature, filter);
   }
 
-  public <Filter> Filter unregister(AclFeature<Filter> feature) {
+  public <Filter> Filter uninstall(AclFeature<Filter> feature) {
     return (Filter) filtersByFeature.remove(feature);
   }
 

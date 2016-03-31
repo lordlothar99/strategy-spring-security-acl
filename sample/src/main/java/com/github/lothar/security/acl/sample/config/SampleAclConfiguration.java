@@ -29,8 +29,8 @@ public class SampleAclConfiguration {
   @Bean
   public AclStrategy customerStrategy() {
     SimpleAclStrategy customerStrategy = new SimpleAclStrategy();
-    customerStrategy.register(elasticSearchFeature, smithFamilyFilter());
-    customerStrategy.register(jpaSpecFeature, smithFamilySpec());
+    customerStrategy.install(elasticSearchFeature, smithFamilyFilter());
+    customerStrategy.install(jpaSpecFeature, smithFamilySpec());
     return customerStrategy;
   }
 
