@@ -31,7 +31,7 @@ public class AclJpaRepository<T, ID extends Serializable> extends SimpleJpaRepos
   }
 
   // reflection invocation by
-  // com.trackaflat.config.repository.AclJpaRepositoryFactoryBean.Factory.getTargetRepository(RepositoryInformation,
+  // com.github.lothar.security.acl.jpa.repository.AclJpaRepositoryFactoryBean.Factory.getTargetRepository(RepositoryInformation,
   // EntityManager)
   public AclJpaRepository(JpaEntityInformation<T, ?> entityInformation, EntityManager entityManager,
       JpaSpecProvider<T> jpaSpecProvider) {
