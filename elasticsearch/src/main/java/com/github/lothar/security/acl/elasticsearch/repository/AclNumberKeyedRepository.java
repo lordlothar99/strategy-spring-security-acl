@@ -41,31 +41,37 @@ public class AclNumberKeyedRepository<T, ID extends Number> extends NumberKeyedR
 
   @Override
   public T findOne(ID id) {
+    // TODO apply filter
     return super.findOne(id);
   }
 
   @Override
   public Iterable<T> findAll() {
+    // TODO apply filter
     return super.findAll();
   }
 
   @Override
   public Page<T> findAll(Pageable pageable) {
+    // TODO apply filter
     return super.findAll(pageable);
   }
 
   @Override
   public Iterable<T> findAll(Sort sort) {
+    // TODO apply filter
     return super.findAll(sort);
   }
 
   @Override
   public Iterable<T> findAll(Iterable<ID> ids) {
+    // TODO apply filter
     return super.findAll(ids);
   }
 
   @Override
   public boolean exists(ID id) {
+    // TODO apply filter
     return super.exists(id);
   }
 
@@ -95,8 +101,9 @@ public class AclNumberKeyedRepository<T, ID extends Number> extends NumberKeyedR
 
   @Override
   public FacetedPage<T> search(SearchQuery query) {
+    // TODO apply filter
 //      SearchQuery searchQuery = new NativeSearchQueryBuilder() //
-//        .withFilter(filterSupplier.get()) //
+//        .withFilter(filter()) //
 //        .withQuery(query) //
 //        .build();
       return elasticsearchOperations.queryForPage(query, getEntityClass());
@@ -104,6 +111,7 @@ public class AclNumberKeyedRepository<T, ID extends Number> extends NumberKeyedR
 
   @Override
   public Page<T> searchSimilar(T entity, String[] fields, Pageable pageable) {
+    // TODO apply filter
     Assert.notNull(entity, "Cannot search similar records for 'null'.");
     Assert.notNull(pageable, "'pageable' cannot be 'null'");
     MoreLikeThisQuery query = new MoreLikeThisQuery();
@@ -115,9 +123,16 @@ public class AclNumberKeyedRepository<T, ID extends Number> extends NumberKeyedR
     return elasticsearchOperations.moreLikeThis(query, getEntityClass());
   }
 
+  @Override
+  public long count() {
+    // TODO apply filter
+    return super.count();
+  }
+
   private FilterBuilder filter() {
     FilterBuilder filterBuilder = filterSupplier.get();
-    logger.debug("Using filter builder {} for objects {}", filterBuilder, getEntityClass().getSimpleName());
+    logger.debug("Using filter builder {} for objects {}", filterBuilder,
+        getEntityClass().getSimpleName());
     return filterBuilder;
   }
 
