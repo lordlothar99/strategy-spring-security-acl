@@ -7,23 +7,22 @@ import org.springframework.data.jpa.domain.Specification;
 import com.github.lothar.security.acl.AclStrategy;
 import com.github.lothar.security.acl.AclStrategyProvider;
 
-public class JpaSpecProvider {
+public class JpaSpecProvider<T> {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
   private AclStrategyProvider aclStrategyProvider;
-  private JpaSpecFeature jpaSpecFeature;
+  private JpaSpecFeature<T> jpaSpecFeature;
 
   public JpaSpecProvider(AclStrategyProvider aclStrategyProvider,
-      JpaSpecFeature jpaSpecFeature) {
+      JpaSpecFeature<T> jpaSpecFeature) {
     super();
     this.aclStrategyProvider = aclStrategyProvider;
     this.jpaSpecFeature = jpaSpecFeature;
   }
 
-  @SuppressWarnings("unchecked")
-  public <T> Specification<T> aclJpaSpecificationFor(Class<T> domainType) {
+  public Specification<T> aclJpaSpecificationFor(Class<T> domainType) {
     AclStrategy strategy = aclStrategyProvider.strategyFor(domainType);
-    Specification<T> aclJpaSpec = (Specification<T>) strategy.featureFor(jpaSpecFeature);
+    Specification<T> aclJpaSpec = strategy.featureFor(jpaSpecFeature);
     logger.debug("Using ACL JPA specification on {} : {}", domainType.getSimpleName(), strategy);
     return aclJpaSpec;
   }

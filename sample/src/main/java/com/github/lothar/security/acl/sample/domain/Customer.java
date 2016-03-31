@@ -16,16 +16,28 @@
 
 package com.github.lothar.security.acl.sample.domain;
 
-import org.springframework.data.annotation.Id;
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import com.github.lothar.security.acl.Acl;
 
+@Entity
+@Table(name = "customer")
 @Acl("customerStrategy")
 @Document(indexName = "customer", type = "customer", shards = 1, replicas = 0, refreshInterval = "-1")
-public class Customer {
+public class Customer implements Serializable {
 
-	@Id
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
 	private String id;
 
 	private String firstName;

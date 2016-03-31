@@ -4,6 +4,6 @@ import org.springframework.data.jpa.domain.Specification;
 
 import com.github.lothar.security.acl.AclFeatureType;
 
-public class JpaSpecFeature implements AclFeatureType<Specification<Object>> {
+public final class JpaSpecFeature<T> implements AclFeatureType<Specification<T>> {
 
 }

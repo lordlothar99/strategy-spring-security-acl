@@ -24,6 +24,7 @@ import com.github.lothar.security.acl.jpa.JpaSpecProvider;
 public class AclJpaRepositoryFactoryBean<T extends Repository<S, ID>, S, ID extends Serializable>
     extends JpaRepositoryFactoryBean<T, S, ID> {
 
+  @SuppressWarnings("rawtypes")
   @Resource
   private JpaSpecProvider jpaSpecProvider;
 
@@ -46,6 +47,7 @@ public class AclJpaRepositoryFactoryBean<T extends Repository<S, ID>, S, ID exte
           : AclJpaRepository.class;
     }
 
+    @SuppressWarnings("unchecked")
     protected SimpleJpaRepository<?, ?> getTargetRepository(RepositoryInformation information,
         EntityManager entityManager) {
       Class<?> domainType = information.getDomainType();

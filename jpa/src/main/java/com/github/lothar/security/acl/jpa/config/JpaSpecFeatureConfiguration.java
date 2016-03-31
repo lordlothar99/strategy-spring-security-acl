@@ -21,27 +21,27 @@ import com.github.lothar.security.acl.jpa.repository.AclJpaRepositoryFactoryBean
 @Import(AclConfiguration.class)
 @AutoConfigureAfter(AclConfiguration.class)
 @EnableJpaRepositories(repositoryFactoryBeanClass = AclJpaRepositoryFactoryBean.class)
-public class JpaSpecFeatureConfiguration {
+public class JpaSpecFeatureConfiguration<T> {
 
-  private JpaSpecFeature jpaSpecFeature = new JpaSpecFeature();
+  private JpaSpecFeature<T> jpaSpecFeature = new JpaSpecFeature<>();
   private Logger logger = LoggerFactory.getLogger(JpaSpecFeatureConfiguration.class);
 
   @Bean
-  public JpaSpecFeature jpaSpecFeature() {
+  public JpaSpecFeature<T> jpaSpecFeature() {
     logger.info("Installed feature : {}", jpaSpecFeature.getClass().getName());
     return jpaSpecFeature;
   }
 
   @Bean
   @ConditionalOnMissingBean(JpaSpecFeatureComposer.class)
-  public JpaSpecFeatureComposer jpaSpecFeatureComposer(AclFeatureComposersRegistry registry) {
-    JpaSpecFeatureComposer composer = new JpaSpecFeatureComposer();
+  public JpaSpecFeatureComposer<T> jpaSpecFeatureComposer(AclFeatureComposersRegistry registry) {
+    JpaSpecFeatureComposer<T> composer = new JpaSpecFeatureComposer<>();
     registry.register(jpaSpecFeature, composer);
     return composer;
   }
 
   @Bean
-  public JpaSpecProvider jpaSpecProvider(AclStrategyProvider aclStrategyProvider) {
-    return new JpaSpecProvider(aclStrategyProvider, jpaSpecFeature);
+  public JpaSpecProvider<T> jpaSpecProvider(AclStrategyProvider aclStrategyProvider) {
+    return new JpaSpecProvider<>(aclStrategyProvider, jpaSpecFeature);
   }
 }

@@ -1,4 +1,7 @@
 spring:
+    jpa:
+        hibernate:
+            ddl-auto: create
     data:
         elasticsearch:
             cluster-name:
@@ -7,3 +10,7 @@ spring:
                 path:
                     logs: target/elasticsearch/log
                     data: target/elasticsearch/data
+logging:
+    level:
+        org.hibernate.SQL: debug
+        com.github.lothar.security.acl: debug

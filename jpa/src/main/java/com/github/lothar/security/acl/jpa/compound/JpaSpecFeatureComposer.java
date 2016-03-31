@@ -9,11 +9,11 @@ import org.springframework.data.jpa.domain.Specification;
 import com.github.lothar.security.acl.compound.AclFeatureComposer;
 import com.github.lothar.security.acl.compound.CompositionType;
 
-public class JpaSpecFeatureComposer implements AclFeatureComposer<Specification<Object>> {
+public class JpaSpecFeatureComposer<T> implements AclFeatureComposer<Specification<T>> {
 
   @Override
-  public Specification<Object> compose(CompositionType compositionType, Specification<Object> lhs,
-      Specification<Object> rhs) {
+  public Specification<T> compose(CompositionType compositionType, Specification<T> lhs,
+      Specification<T> rhs) {
 
     if (AND.equals(compositionType)) {
       return where(lhs).and(rhs);

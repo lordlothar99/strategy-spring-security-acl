@@ -1,4 +1,4 @@
-package com.github.lothar.security.acl;
+package com.github.lothar.security.acl.sample;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

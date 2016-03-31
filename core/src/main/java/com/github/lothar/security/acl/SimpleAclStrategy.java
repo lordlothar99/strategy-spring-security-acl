@@ -8,7 +8,7 @@ public class SimpleAclStrategy implements AclStrategy {
 
   private Map<AclFeatureType<?>, Object> features = new HashMap<>();
 
-  public <Feature, F extends Feature> void register(AclFeatureType<Feature> featureType, F feature) {
+  public <Feature> void register(AclFeatureType<Feature> featureType, Feature feature) {
     features.put(featureType, feature);
   }
 
