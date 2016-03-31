@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 
 public class AclStrategyProvider implements BeanFactoryAware {
 
@@ -21,22 +22,32 @@ public class AclStrategyProvider implements BeanFactoryAware {
   }
 
   public AclStrategy strategyFor(Class<?> entityClass) {
-    AclStrategy aclStrategy = null;
+    AclStrategy strategy = loadStrategy(entityClass);
+
+    if (strategy == null) {
+      strategy = defaultStrategy;
+      logger.debug("Using default acl strategy on '{}' : '{}'", entityClass.getSimpleName(),
+          strategy);
+    }
+    return strategy;
+  }
+
+  private AclStrategy loadStrategy(Class<?> entityClass) {
+    AclStrategy strategy = null;
 
     Acl acl = entityClass.getAnnotation(Acl.class);
     if (acl != null) {
-      String strategyBean = acl.value();
-      aclStrategy = beanFactory.getBean(strategyBean, AclStrategy.class);
-      logger.debug("{} annotation found on {} -> using strategy {}", Acl.class.getName(),
-          entityClass.getSimpleName(), aclStrategy);
+      String strategyBeanName = acl.value();
+      try {
+        strategy = beanFactory.getBean(strategyBeanName, AclStrategy.class);
+        logger.debug("{} annotation found on '{}' -> using strategy '{}'", Acl.class.getName(),
+            entityClass.getSimpleName(), strategy);
+      } catch (NoSuchBeanDefinitionException e) {
+        throw new IllegalArgumentException("Unable to find " + AclStrategy.class.getSimpleName()
+            + " bean with name '" + strategyBeanName + "'", e);
+      }
     }
-
-    if (aclStrategy == null) {
-      aclStrategy = defaultStrategy;
-      logger.debug("Using default acl strategy on {} : {}", entityClass.getSimpleName(),
-          aclStrategy);
-    }
-    return aclStrategy;
+    return strategy;
   }
 
 }
