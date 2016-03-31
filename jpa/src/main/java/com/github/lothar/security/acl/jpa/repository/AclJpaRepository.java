@@ -32,7 +32,7 @@ public class AclJpaRepository<T, ID extends Serializable> extends SimpleJpaRepos
   }
 
   // reflection invocation by
-  // com.trackaflat.config.repository.AclJpaRepositoryFactoryBean.AclJpaRepositoryFactory.getTargetRepository(RepositoryInformation,
+  // com.trackaflat.config.repository.AclJpaRepositoryFactoryBean.Factory.getTargetRepository(RepositoryInformation,
   // EntityManager)
   public AclJpaRepository(JpaEntityInformation<T, ?> entityInformation, EntityManager entityManager,
       Supplier<Specification<T>> aclJpaSpecSupplier) {
@@ -88,8 +88,8 @@ public class AclJpaRepository<T, ID extends Serializable> extends SimpleJpaRepos
   private Specifications<T> aclJpaSpec() {
     if (aclJpaSpec == null) {
       Specification<T> spec = aclJpaSpecSupplier.get();
-      logger.debug("Using ACL JPA specification {} for objects {}", spec,
-          getDomainClass().getSimpleName());
+      logger.debug("Using ACL JPA specification for objects {}: {}",
+          getDomainClass().getSimpleName(), spec);
       aclJpaSpec = where(spec);
     }
     return aclJpaSpec;
