@@ -1,0 +1,9 @@
+spring:
+    data:
+        elasticsearch:
+            cluster-name:
+            cluster-nodes:
+            properties:
+                path:
+                    logs: target/elasticsearch/log
+                    data: target/elasticsearch/data
