@@ -2,6 +2,7 @@ package com.github.lothar.security.acl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @SuppressWarnings("unchecked")
 public class SimpleAclStrategy implements AclStrategy {
@@ -20,4 +21,8 @@ public class SimpleAclStrategy implements AclStrategy {
     return (Feature) features.get(featureType);
   }
 
+  @Override
+  public String toString() {
+    return Objects.toString(features);
+  }
 }
