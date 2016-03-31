@@ -24,8 +24,8 @@ import com.github.lothar.security.acl.sample.domain.Customer;
 
 public interface CustomerSearchRepository extends ElasticsearchRepository<Customer, String> {
 
-	public Customer findByFirstName(String firstName);
+	Customer findByFirstName(String firstName);
 
-	public List<Customer> findByLastName(String lastName);
+	List<Customer> findByLastName(String lastName);
 
 }
