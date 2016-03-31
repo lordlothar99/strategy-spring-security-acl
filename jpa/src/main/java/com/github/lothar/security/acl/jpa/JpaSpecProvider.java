@@ -26,7 +26,7 @@ public class JpaSpecProvider<T> {
 
     // TODO implement default aclJpaSpec
 
-    logger.debug("Using ACL JPA specification for {} using strategy {}: {}",
+    logger.debug("Using ACL JPA specification for '{}' using strategy '{}': {}",
         domainType.getSimpleName(), strategy, aclJpaSpec);
     return aclJpaSpec;
   }
