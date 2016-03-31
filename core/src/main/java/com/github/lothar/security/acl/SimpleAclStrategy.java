@@ -13,6 +13,10 @@ public class SimpleAclStrategy implements AclStrategy, BeanNameAware {
   private String name;
 
   public <Filter> void register(AclFeature<Filter> feature, Filter filter) {
+    if (filter == null) {
+      throw new IllegalArgumentException("Filter to register can't be null ; please use unregister("
+          + AclFeature.class.getSimpleName() + ")");
+    }
     filtersByFeature.put(feature, filter);
   }
 
@@ -22,6 +26,10 @@ public class SimpleAclStrategy implements AclStrategy, BeanNameAware {
 
   public <Filter> Filter filterFor(AclFeature<Filter> feature) {
     return (Filter) filtersByFeature.get(feature);
+  }
+
+  public <Filter> boolean hasFilter(AclFeature<Filter> feature) {
+    return filtersByFeature.containsKey(feature);
   }
 
   @Override
