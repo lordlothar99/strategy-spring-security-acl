@@ -2,6 +2,7 @@ package com.github.lothar.security.acl.compound;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import com.github.lothar.security.acl.AclFeatureType;
 
@@ -21,5 +22,10 @@ public class AclFeatureComposersRegistry {
 
   public <Feature> AclFeatureComposer<Feature> composerFor(AclFeatureType<Feature> featureType) {
     return (AclFeatureComposer<Feature>) featureComposers.get(featureType);
+  }
+
+  @Override
+  public String toString() {
+    return Objects.toString(featureComposers);
   }
 }
