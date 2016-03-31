@@ -86,7 +86,8 @@ public class AclJpaRepository<T, ID extends Serializable> extends SimpleJpaRepos
 
   private Specifications<T> aclJpaSpec() {
     Specification<T> spec = jpaSpecProvider.jpaSpecFor(getDomainClass());
-    logger.debug("Using ACL JPA specification: {}", spec);
+    logger.debug("Using ACL JPA specification for objects '{}': {}",
+        getDomainClass().getSimpleName(), spec);
     return where(spec);
   }
 
