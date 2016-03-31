@@ -39,8 +39,8 @@ public class AclStrategyComposer {
     }
 
     @Override
-    public <Behavior> Behavior featureFor(AclFeatureType featureType) {
-      AclFeatureComposer<Behavior> featureComposer = composersRegistry.composerFor(featureType);
+    public <Feature> Feature featureFor(AclFeatureType<Feature> featureType) {
+      AclFeatureComposer<Feature> featureComposer = composersRegistry.composerFor(featureType);
       return featureComposer.compose(//
           compositionType, //
           lhs.featureFor(featureType), //

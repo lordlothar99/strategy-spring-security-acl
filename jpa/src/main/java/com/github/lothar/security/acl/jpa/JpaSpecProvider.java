@@ -20,9 +20,10 @@ public class JpaSpecProvider {
     this.jpaSpecFeature = jpaSpecFeature;
   }
 
+  @SuppressWarnings("unchecked")
   public <T> Specification<T> aclJpaSpecificationFor(Class<T> domainType) {
     AclStrategy strategy = aclStrategyProvider.strategyFor(domainType);
-    Specification<T> aclJpaSpec = strategy.featureFor(jpaSpecFeature);
+    Specification<T> aclJpaSpec = (Specification<T>) strategy.featureFor(jpaSpecFeature);
     logger.debug("Using ACL JPA specification on {} : {}", domainType.getSimpleName(), strategy);
     return aclJpaSpec;
   }

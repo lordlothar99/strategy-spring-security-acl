@@ -1,4 +1,4 @@
 package com.github.lothar.security.acl;
 
-public interface AclFeatureType {
+public interface AclFeatureType<Feature> {
 }

@@ -7,18 +7,18 @@ import com.github.lothar.security.acl.AclFeatureType;
 
 public class AclFeatureComposersRegistry {
 
-  private Map<AclFeatureType, AclFeatureComposer<?>> featureComposers = new HashMap<>();
+  private Map<AclFeatureType<?>, AclFeatureComposer<?>> featureComposers = new HashMap<>();
 
-  public <Feature> void register(AclFeatureType type, AclFeatureComposer<Feature> composer) {
+  public <Feature> void register(AclFeatureType<Feature> type, AclFeatureComposer<Feature> composer) {
     featureComposers.put(type, composer);
   }
 
-  public void unregister(AclFeatureType type) {
+  public <Feature> void unregister(AclFeatureType<Feature> type) {
     featureComposers.remove(type);
   }
 
   @SuppressWarnings("unchecked")
-  public <Feature> AclFeatureComposer<Feature> composerFor(AclFeatureType featureType) {
+  public <Feature> AclFeatureComposer<Feature> composerFor(AclFeatureType<Feature> featureType) {
     return (AclFeatureComposer<Feature>) featureComposers.get(featureType);
   }
 }
