@@ -38,7 +38,7 @@ public class CustomerRepositoryTest {
     repository.save(new Customer("Alice", "Smith"));
     repository.save(new Customer("Bob", "Smith"));
     repository.save(new Customer("John", "Doe"));
-    logger.info("Installed feature : {}", customerStrategy.filterFor(jpaSpecFeature));
+    logger.info("Customer strategy : {}", customerStrategy);
   }
 
   @Test

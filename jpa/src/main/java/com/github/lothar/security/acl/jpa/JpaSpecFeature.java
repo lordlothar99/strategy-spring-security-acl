@@ -3,11 +3,7 @@ package com.github.lothar.security.acl.jpa;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.github.lothar.security.acl.AclFeature;
+import com.github.lothar.security.acl.bean.NamedBean;
 
-public final class JpaSpecFeature<T> implements AclFeature<Specification<T>> {
-
-  @Override
-  public String toString() {
-    return getClass().getSimpleName();
-  }
+public final class JpaSpecFeature<T> extends NamedBean implements AclFeature<Specification<T>> {
 }

@@ -25,7 +25,7 @@ public class GrantEvaluatorFeatureConfiguration {
 
   @Bean
   public GrantEvaluatorFeature grantEvaluatorFeature() {
-    logger.info("Installed feature : {}", grantEvaluatorFeature);
+    logger.info("Configured feature : {}", grantEvaluatorFeature);
     return grantEvaluatorFeature;
   }
 

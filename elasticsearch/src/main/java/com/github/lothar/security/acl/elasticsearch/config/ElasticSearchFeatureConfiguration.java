@@ -29,7 +29,7 @@ public class ElasticSearchFeatureConfiguration {
 
   @Bean
   public ElasticSearchFeature elasticSearchFeature() {
-    logger.info("Installed feature : {}", elasticSearchFeature);
+    logger.info("Configured feature : {}", elasticSearchFeature);
     return elasticSearchFeature;
   }
 

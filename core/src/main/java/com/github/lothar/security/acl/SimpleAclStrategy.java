@@ -4,13 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import org.springframework.beans.factory.BeanNameAware;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import com.github.lothar.security.acl.bean.NamedBean;
 
 @SuppressWarnings("unchecked")
-public class SimpleAclStrategy implements AclStrategy, BeanNameAware {
+public class SimpleAclStrategy extends NamedBean implements AclStrategy {
 
+  private Logger logger = LoggerFactory.getLogger(getClass());
   private Map<AclFeature<?>, Object> filtersByFeature = new HashMap<>();
-  private String name;
 
   public <Filter> void install(AclFeature<Filter> feature, Filter filter) {
     if (filter == null) {
@@ -18,10 +20,13 @@ public class SimpleAclStrategy implements AclStrategy, BeanNameAware {
           + AclFeature.class.getSimpleName() + ")");
     }
     filtersByFeature.put(feature, filter);
+    logger.debug("Installed feature {} in {} : {}", feature, name(), filter);
   }
 
   public <Filter> Filter uninstall(AclFeature<Filter> feature) {
-    return (Filter) filtersByFeature.remove(feature);
+    Filter filter = (Filter) filtersByFeature.remove(feature);
+    logger.debug("Uninstalled feature {} from {}", feature, name());
+    return filter;
   }
 
   public <Filter> Filter filterFor(AclFeature<Filter> feature) {
@@ -33,16 +38,7 @@ public class SimpleAclStrategy implements AclStrategy, BeanNameAware {
   }
 
   @Override
-  public void setBeanName(String name) {
-    this.name = name;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  @Override
   public String toString() {
-    return Objects.toString(name, getClass().getName()) + ":" + Objects.toString(filtersByFeature);
+    return name() + ":" + Objects.toString(filtersByFeature);
   }
 }

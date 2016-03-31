@@ -7,15 +7,12 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.data.jpa.domain.Specification;
 
-public class AllowAllSpecification<T> implements Specification<T> {
+import com.github.lothar.security.acl.bean.NamedBean;
+
+public class AllowAllSpecification<T> extends NamedBean implements Specification<T> {
 
   @Override
   public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
     return cb.conjunction();
-  }
-
-  @Override
-  public String toString() {
-    return getClass().getSimpleName();
   }
 }
