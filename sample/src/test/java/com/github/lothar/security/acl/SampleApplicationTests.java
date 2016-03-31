@@ -9,7 +9,7 @@ import com.github.lothar.security.acl.sample.SampleApplication;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = SampleApplication.class)
-public class SpringSecurityAclFeaturesApplicationTests {
+public class SampleApplicationTests {
 
 	@Test
 	public void contextLoads() {
