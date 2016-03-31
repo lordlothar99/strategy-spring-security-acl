@@ -27,7 +27,7 @@ public class AclNumberKeyedRepository<T, ID extends Number> extends NumberKeyedR
   private Logger logger = LoggerFactory.getLogger(getClass());
 
   // reflection invocation by
-  // com.trackaflat.config.acl.AclElasticsearchRepositoryFactoryBean.AclElasticsearchRepositoryFactory.getTargetRepository(RepositoryInformation)
+  // com.trackaflat.config.acl.AclElasticsearchRepositoryFactoryBean.Factory.getTargetRepository(RepositoryInformation)
   public AclNumberKeyedRepository(ElasticsearchEntityInformation<T, ID> metadata,
       ElasticsearchOperations elasticsearchOperations, Supplier<FilterBuilder> filterSupplier) {
     super(metadata, elasticsearchOperations);
