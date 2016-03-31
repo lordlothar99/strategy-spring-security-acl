@@ -14,21 +14,21 @@ public class AclStrategyComposer {
     this.composersRegistry = composersRegistry;
   }
 
-  public CompositeAclStrategy and(AclStrategy lhs, AclStrategy rhs) {
-    return new CompositeAclStrategy(lhs, rhs, CompositionType.AND);
+  public CompoundAclStrategy and(AclStrategy lhs, AclStrategy rhs) {
+    return new CompoundAclStrategy(lhs, rhs, CompositionType.AND);
   }
 
-  public CompositeAclStrategy or(AclStrategy lhs, AclStrategy rhs) {
-    return new CompositeAclStrategy(lhs, rhs, CompositionType.OR);
+  public CompoundAclStrategy or(AclStrategy lhs, AclStrategy rhs) {
+    return new CompoundAclStrategy(lhs, rhs, CompositionType.OR);
   }
 
-  private class CompositeAclStrategy implements AclStrategy {
+  private class CompoundAclStrategy implements AclStrategy {
 
     private final AclStrategy lhs;
     private final AclStrategy rhs;
     private final CompositionType compositionType;
 
-    private CompositeAclStrategy(AclStrategy lhs, AclStrategy rhs,
+    private CompoundAclStrategy(AclStrategy lhs, AclStrategy rhs,
         CompositionType compositionType) {
 
       Assert.notNull(compositionType, "CompositionType must not be null!");
