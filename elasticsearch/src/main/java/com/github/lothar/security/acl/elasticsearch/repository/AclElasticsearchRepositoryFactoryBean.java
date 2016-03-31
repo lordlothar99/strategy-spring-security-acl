@@ -35,15 +35,15 @@ public class AclElasticsearchRepositoryFactoryBean<T extends Repository<S, ID>, 
 
   @Override
   protected RepositoryFactorySupport createRepositoryFactory() {
-    return new AclElasticsearchRepositoryFactory(operations);
+    return new Factory(operations);
   }
 
-  private class AclElasticsearchRepositoryFactory extends ElasticsearchRepositoryFactory {
+  private class Factory extends ElasticsearchRepositoryFactory {
 
     private ElasticsearchOperations elasticsearchOperations;
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    public AclElasticsearchRepositoryFactory(ElasticsearchOperations elasticsearchOperations) {
+    public Factory(ElasticsearchOperations elasticsearchOperations) {
       super(elasticsearchOperations);
       this.elasticsearchOperations = elasticsearchOperations;
     }
