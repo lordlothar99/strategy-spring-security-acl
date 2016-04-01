@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.github.lothar.security.acl</groupId>
-	<artifactId>spring-security-acl-features-parent</artifactId>
+	<artifactId>strategy-spring-security-acl-parent</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
@@ -35,22 +35,22 @@
 		<dependencies>
 			<dependency>
 				<groupId>com.github.lothar.security.acl</groupId>
-				<artifactId>spring-security-acl-features-core</artifactId>
+				<artifactId>strategy-spring-security-acl-core</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.github.lothar.security.acl</groupId>
-				<artifactId>spring-security-acl-features-elasticsearch</artifactId>
+				<artifactId>strategy-spring-security-acl-elasticsearch</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.github.lothar.security.acl</groupId>
-				<artifactId>spring-security-acl-features-grant</artifactId>
+				<artifactId>strategy-spring-security-acl-grant</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.github.lothar.security.acl</groupId>
-				<artifactId>spring-security-acl-features-jpa</artifactId>
+				<artifactId>strategy-spring-security-acl-jpa</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 		</dependencies>
