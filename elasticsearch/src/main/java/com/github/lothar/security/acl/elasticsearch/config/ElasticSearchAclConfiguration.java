@@ -15,6 +15,12 @@
  *******************************************************************************/
 package com.github.lothar.security.acl.elasticsearch.config;
 
+import static org.elasticsearch.index.query.FilterBuilders.matchAllFilter;
+import static org.elasticsearch.index.query.FilterBuilders.notFilter;
+
+import javax.annotation.Resource;
+
+import org.elasticsearch.index.query.FilterBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -25,10 +31,12 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 import com.github.lothar.security.acl.AclStrategyProvider;
+import com.github.lothar.security.acl.SimpleAclStrategy;
 import com.github.lothar.security.acl.compound.AclComposersRegistry;
 import com.github.lothar.security.acl.config.AclConfiguration;
 import com.github.lothar.security.acl.elasticsearch.AclFilterProvider;
 import com.github.lothar.security.acl.elasticsearch.ElasticSearchFeature;
+import com.github.lothar.security.acl.elasticsearch.FilterBuilderBean;
 import com.github.lothar.security.acl.elasticsearch.compound.FilterBuilderComposer;
 import com.github.lothar.security.acl.elasticsearch.repository.AclElasticsearchRepositoryFactoryBean;
 
@@ -41,6 +49,10 @@ public class ElasticSearchAclConfiguration {
 
   private ElasticSearchFeature elasticSearchFeature = new ElasticSearchFeature();
   private Logger logger = LoggerFactory.getLogger(ElasticSearchAclConfiguration.class);
+  @Resource
+  private SimpleAclStrategy allowAllStrategy;
+  @Resource
+  private SimpleAclStrategy denyAllStrategy;
 
   @Bean
   public ElasticSearchFeature elasticSearchFeature() {
@@ -60,5 +72,19 @@ public class ElasticSearchAclConfiguration {
   @Bean
   public AclFilterProvider aclFilterProvider(AclStrategyProvider strategyProvider) {
     return new AclFilterProvider(strategyProvider, elasticSearchFeature);
+  }
+
+  @Bean
+  public FilterBuilder allowAllFilter() {
+    FilterBuilderBean allowAllFilter = new FilterBuilderBean(matchAllFilter());
+    allowAllStrategy.install(elasticSearchFeature, allowAllFilter);
+    return allowAllFilter;
+  }
+
+  @Bean
+  public FilterBuilder denyAllFilter() {
+    FilterBuilderBean denyAllFilter = new FilterBuilderBean(notFilter(matchAllFilter()));
+    allowAllStrategy.install(elasticSearchFeature, denyAllFilter);
+    return denyAllFilter;
   }
 }

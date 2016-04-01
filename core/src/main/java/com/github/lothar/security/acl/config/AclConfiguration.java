@@ -43,7 +43,7 @@ public class AclConfiguration {
 
   @Bean
   @ConditionalOnMissingBean(AclStrategyProvider.class)
-  public AclStrategyProvider aclStrategyProviderImpl() {
+  public AclStrategyProvider aclStrategyProvider() {
     return new AclStrategyProviderImpl();
   }
 
