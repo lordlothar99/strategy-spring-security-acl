@@ -35,12 +35,12 @@ public class SimpleAclStrategy extends NamedBean implements AclStrategy {
           + AclFeature.class.getSimpleName() + ")");
     }
     filtersByFeature.put(feature, filter);
-    logger.debug("Installed feature {} in {} : {}", feature, name(), filter);
+    logger.debug("Installed {} in {} : {}", feature, name(), filter);
   }
 
   public <Filter> Filter uninstall(AclFeature<Filter> feature) {
     Filter filter = (Filter) filtersByFeature.remove(feature);
-    logger.debug("Uninstalled feature {} from {}", feature, name());
+    logger.debug("Uninstalled {} from {}", feature, name());
     return filter;
   }
 
