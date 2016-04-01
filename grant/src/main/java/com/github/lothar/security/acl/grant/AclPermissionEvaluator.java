@@ -23,13 +23,13 @@ import org.springframework.security.core.Authentication;
 import com.github.lothar.security.acl.AclStrategy;
 import com.github.lothar.security.acl.AclStrategyProvider;
 
-public class PermissionEvaluatorImpl implements PermissionEvaluator {
+public class AclPermissionEvaluator implements PermissionEvaluator {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
   private AclStrategyProvider strategyProvider;
   private GrantEvaluatorFeature grantEvaluatorFeature;
 
-  public PermissionEvaluatorImpl(AclStrategyProvider strategyProvider,
+  public AclPermissionEvaluator(AclStrategyProvider strategyProvider,
       GrantEvaluatorFeature grantEvaluatorFeature) {
     super();
     this.strategyProvider = strategyProvider;

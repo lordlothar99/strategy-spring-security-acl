@@ -27,7 +27,7 @@ import com.github.lothar.security.acl.AclStrategyProvider;
 import com.github.lothar.security.acl.compound.AclComposersRegistry;
 import com.github.lothar.security.acl.config.AclConfiguration;
 import com.github.lothar.security.acl.grant.GrantEvaluatorFeature;
-import com.github.lothar.security.acl.grant.PermissionEvaluatorImpl;
+import com.github.lothar.security.acl.grant.AclPermissionEvaluator;
 import com.github.lothar.security.acl.grant.compound.GrantEvaluatorComposer;
 
 @Configuration
@@ -54,7 +54,7 @@ public class GrantEvaluatorAclConfiguration {
   }
 
   @Bean
-  public PermissionEvaluatorImpl aclPermissionEvaluator(AclStrategyProvider strategyProvider) {
-    return new PermissionEvaluatorImpl(strategyProvider, grantEvaluatorFeature);
+  public AclPermissionEvaluator aclPermissionEvaluator(AclStrategyProvider strategyProvider) {
+    return new AclPermissionEvaluator(strategyProvider, grantEvaluatorFeature);
   }
 }

@@ -22,7 +22,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import com.github.lothar.security.acl.elasticsearch.config.ElasticSearchAclConfiguration;
 import com.github.lothar.security.acl.elasticsearch.repository.AclElasticsearchRepositoryFactoryBean;
 import com.github.lothar.security.acl.jpa.config.JpaSpecAclConfiguration;
@@ -36,6 +36,7 @@ import com.github.lothar.security.acl.jpa.repository.AclJpaRepositoryFactoryBean
     repositoryFactoryBeanClass = AclJpaRepositoryFactoryBean.class)
 @EnableElasticsearchRepositories(value = "com.github.lothar.security.acl.sample.elasticsearch",
     repositoryFactoryBeanClass = AclElasticsearchRepositoryFactoryBean.class)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SampleApplication {
 
   public static void main(String[] args) {
