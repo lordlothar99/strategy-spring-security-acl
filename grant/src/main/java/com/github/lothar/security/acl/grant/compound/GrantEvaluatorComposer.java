@@ -68,6 +68,11 @@ public class GrantEvaluatorComposer implements AclComposer<GrantEvaluator> {
           rhs.isGranted(permission, authentication, domainObject) //
       );
     }
+
+    @Override
+    public String toString() {
+      return compositionOperator.toString(lhs, rhs);
+    }
   }
 
   private static enum CompositionOperator {
@@ -77,6 +82,11 @@ public class GrantEvaluatorComposer implements AclComposer<GrantEvaluator> {
       boolean apply(boolean lhs, boolean rhs) {
         return lhs && rhs;
       }
+
+      @Override
+      String toString(GrantEvaluator lhs, GrantEvaluator rhs) {
+        return "(" + lhs + " AND " + rhs + ")";
+      }
     },
 
     OR {
@@ -84,8 +94,15 @@ public class GrantEvaluatorComposer implements AclComposer<GrantEvaluator> {
       boolean apply(boolean lhs, boolean rhs) {
         return lhs || rhs;
       }
+
+      @Override
+      String toString(GrantEvaluator lhs, GrantEvaluator rhs) {
+        return "(" + lhs + " OR " + rhs + ")";
+      }
     };
 
     abstract boolean apply(boolean lhs, boolean rhs);
+
+    abstract String toString(GrantEvaluator lhs, GrantEvaluator rhs);
   }
 }
