@@ -89,20 +89,22 @@ Add required dependencies :
 
 Then you need to tell Spring to load some beans definitions:
 * With Jpa module :
-
+```
 	@Import( com.github.lothar.security.acl.jpa.config.JpaSpecAclConfiguration.class )
 	@EnableJpaRepositories(
 		value = "<your jpa repositories package here>",
 		repositoryFactoryBeanClass = com.github.lothar.security.acl.jpa.repository.AclJpaRepositoryFactoryBean.class
 	)
+```
 
 * With ElasticSearch module :
-
+```
 	@Import( com.github.lothar.security.acl.elasticsearch.config.ElasticSearchAclConfiguration.class )
 	@EnableElasticsearchRepositories(
 		value = "<your elastic search repositories package here>",
 		repositoryFactoryBeanClass = com.github.lothar.security.acl.elasticsearch.repository.AclElasticsearchRepositoryFactoryBean.class
 	)
+```
 
 ### Struggling with integration ?
 
