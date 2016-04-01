@@ -22,10 +22,10 @@ import com.github.lothar.security.acl.elasticsearch.repository.AclElasticsearchR
 @AutoConfigureAfter(AclConfiguration.class)
 @EnableElasticsearchRepositories(
     repositoryFactoryBeanClass = AclElasticsearchRepositoryFactoryBean.class)
-public class ElasticSearchFeatureConfiguration {
+public class ElasticSearchAclConfiguration {
 
   private ElasticSearchFeature elasticSearchFeature = new ElasticSearchFeature();
-  private Logger logger = LoggerFactory.getLogger(ElasticSearchFeatureConfiguration.class);
+  private Logger logger = LoggerFactory.getLogger(ElasticSearchAclConfiguration.class);
 
   @Bean
   public ElasticSearchFeature elasticSearchFeature() {

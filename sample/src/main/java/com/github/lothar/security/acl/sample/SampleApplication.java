@@ -8,15 +8,15 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import com.github.lothar.security.acl.elasticsearch.config.ElasticSearchFeatureConfiguration;
+import com.github.lothar.security.acl.elasticsearch.config.ElasticSearchAclConfiguration;
 import com.github.lothar.security.acl.elasticsearch.repository.AclElasticsearchRepositoryFactoryBean;
-import com.github.lothar.security.acl.jpa.config.JpaSpecFeatureConfiguration;
+import com.github.lothar.security.acl.jpa.config.JpaSpecAclConfiguration;
 import com.github.lothar.security.acl.jpa.repository.AclJpaRepositoryFactoryBean;
 
 @SpringBootApplication
 @ComponentScan
 @EnableAutoConfiguration
-@Import({ JpaSpecFeatureConfiguration.class, ElasticSearchFeatureConfiguration.class })
+@Import({ JpaSpecAclConfiguration.class, ElasticSearchAclConfiguration.class })
 @EnableJpaRepositories(value = "com.github.lothar.security.acl.sample.jpa",
     repositoryFactoryBeanClass = AclJpaRepositoryFactoryBean.class)
 @EnableElasticsearchRepositories(value = "com.github.lothar.security.acl.sample.elasticsearch",

@@ -24,10 +24,10 @@ import com.github.lothar.security.acl.jpa.spec.DenyAllSpecification;
 @Import(AclConfiguration.class)
 @AutoConfigureAfter(AclConfiguration.class)
 @EnableJpaRepositories(repositoryFactoryBeanClass = AclJpaRepositoryFactoryBean.class)
-public class JpaSpecFeatureConfiguration<T> {
+public class JpaSpecAclConfiguration<T> {
 
   private JpaSpecFeature<T> jpaSpecFeature = new JpaSpecFeature<>();
-  private Logger logger = LoggerFactory.getLogger(JpaSpecFeatureConfiguration.class);
+  private Logger logger = LoggerFactory.getLogger(JpaSpecAclConfiguration.class);
 
   @Bean
   public JpaSpecFeature<T> jpaSpecFeature() {

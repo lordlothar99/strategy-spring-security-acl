@@ -18,10 +18,10 @@ import com.github.lothar.security.acl.grant.compound.GrantEvaluatorComposer;
 @Configuration
 @Import(AclConfiguration.class)
 @AutoConfigureAfter(AclConfiguration.class)
-public class GrantEvaluatorFeatureConfiguration {
+public class GrantEvaluatorAclConfiguration {
 
   private GrantEvaluatorFeature grantEvaluatorFeature = new GrantEvaluatorFeature();
-  private Logger logger = LoggerFactory.getLogger(GrantEvaluatorFeatureConfiguration.class);
+  private Logger logger = LoggerFactory.getLogger(GrantEvaluatorAclConfiguration.class);
 
   @Bean
   public GrantEvaluatorFeature grantEvaluatorFeature() {
