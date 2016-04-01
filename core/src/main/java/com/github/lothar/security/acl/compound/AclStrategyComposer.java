@@ -58,6 +58,11 @@ public class AclStrategyComposer {
       AclComposer<Filter> composer = composersRegistry.composerFor(feature);
       return compositionOperator.apply(composer, lhs.filterFor(feature), rhs.filterFor(feature));
     }
+
+    @Override
+    public String toString() {
+      return compositionOperator.toString(lhs, rhs);
+    }
   }
 
   private static enum CompositionOperator {
@@ -67,6 +72,11 @@ public class AclStrategyComposer {
       <Filter> Filter apply(AclComposer<Filter> composer, Filter lhs, Filter rhs) {
         return composer.and(lhs, rhs);
       }
+
+      @Override
+      <Filter> String toString(AclStrategy lhs, AclStrategy rhs) {
+        return "(" + lhs + " AND " + rhs + ")";
+      }
     },
 
     OR {
@@ -74,8 +84,15 @@ public class AclStrategyComposer {
       <Filter> Filter apply(AclComposer<Filter> composer, Filter lhs, Filter rhs) {
         return composer.or(lhs, rhs);
       }
+
+      @Override
+      <Filter> String toString(AclStrategy lhs, AclStrategy rhs) {
+        return "(" + lhs + " OR " + rhs + ")";
+      }
     };
 
     abstract <Filter> Filter apply(AclComposer<Filter> composer, Filter lhs, Filter rhs);
+
+    abstract <Filter> String toString(AclStrategy lhs, AclStrategy rhs);
   }
 }
