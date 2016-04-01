@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.github.lothar.security.acl.AclStrategy;
 import com.github.lothar.security.acl.AclStrategyProvider;
+import com.github.lothar.security.acl.AclStrategyProviderImpl;
 import com.github.lothar.security.acl.SimpleAclStrategy;
 import com.github.lothar.security.acl.compound.AclComposersRegistry;
 import com.github.lothar.security.acl.compound.AclStrategyComposer;
@@ -42,8 +43,8 @@ public class AclConfiguration {
 
   @Bean
   @ConditionalOnMissingBean(AclStrategyProvider.class)
-  public AclStrategyProvider aclStrategyProvider() {
-    return new AclStrategyProvider();
+  public AclStrategyProvider aclStrategyProviderImpl() {
+    return new AclStrategyProviderImpl();
   }
 
   @Bean

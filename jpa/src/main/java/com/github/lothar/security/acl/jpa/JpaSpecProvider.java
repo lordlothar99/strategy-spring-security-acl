@@ -28,10 +28,10 @@ public class JpaSpecProvider<T> {
   private AclStrategyProvider strategyProvider;
   private JpaSpecFeature<T> jpaSpecFeature;
 
-  public JpaSpecProvider(AclStrategyProvider aclStrategyProvider,
+  public JpaSpecProvider(AclStrategyProvider strategyProvider,
       JpaSpecFeature<T> jpaSpecFeature) {
     super();
-    this.strategyProvider = aclStrategyProvider;
+    this.strategyProvider = strategyProvider;
     this.jpaSpecFeature = jpaSpecFeature;
   }
 
