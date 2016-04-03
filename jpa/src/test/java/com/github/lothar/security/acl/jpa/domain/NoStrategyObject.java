@@ -13,32 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.github.lothar.security.acl.jpa.config;
+package com.github.lothar.security.acl.jpa.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import javax.annotation.Resource;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import com.github.lothar.security.acl.Acl;
 
-import com.github.lothar.security.acl.jpa.JpaSpecFeature;
+@Entity
+@Acl
+public class NoStrategyObject {
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(JpaSpecTestConfiguration.class)
-public class JpaSpecTest {
+  @Id
+  private Long id;
 
-  @Resource
-  private JpaSpecFeature<?> jpaSpecFeature;
-
-  @Test
-  public void should_grantEvaluatorFeature_be_loaded() {
-    assertThat(jpaSpecFeature).isNotNull();
+  public Long getId() {
+    return id;
   }
 
-  @Test
-  public void should_aclJpaRepository_be_loaded() {
-
+  public void setId(Long id) {
+    this.id = id;
   }
+
+
 }

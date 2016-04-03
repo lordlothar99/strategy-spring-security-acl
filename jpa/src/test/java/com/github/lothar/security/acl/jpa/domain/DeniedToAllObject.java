@@ -13,11 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.github.lothar.security.acl.jpa.config;
+package com.github.lothar.security.acl.jpa.domain;
 
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
-@SpringBootApplication
-public class JpaSpecTestConfiguration {
+import com.github.lothar.security.acl.Acl;
+
+@Entity
+@Acl("denyAllStrategy")
+public class DeniedToAllObject {
+
+  @Id
+  private Long id;
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
 
 }

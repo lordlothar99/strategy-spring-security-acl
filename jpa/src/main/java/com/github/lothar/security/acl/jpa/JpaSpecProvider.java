@@ -35,7 +35,7 @@ public class JpaSpecProvider<T> {
     this.jpaSpecFeature = jpaSpecFeature;
   }
 
-  public Specification<T> jpaSpecFor(Class<T> domainType) {
+  public Specification<T> jpaSpecFor(Class<? extends T> domainType) {
     AclStrategy strategy = strategyProvider.strategyFor(domainType);
     Specification<T> aclJpaSpec = strategy.handlerFor(jpaSpecFeature);
 
