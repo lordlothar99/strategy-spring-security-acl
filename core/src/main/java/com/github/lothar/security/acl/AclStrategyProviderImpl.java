@@ -50,8 +50,8 @@ public class AclStrategyProviderImpl implements BeanFactoryAware, AclStrategyPro
       strategy = loadStrategyBean(strategyBeanName);
 
     } else {
-      logger.debug("No {} annotation found on '{}'", Acl.class.getName(),
-          entityClass.getSimpleName());
+      logger.debug("No {} annotation found on '{}' > fall back on default strategy",
+          Acl.class.getName(), entityClass.getSimpleName());
       strategy = defaultStrategy;
     }
 
@@ -64,7 +64,7 @@ public class AclStrategyProviderImpl implements BeanFactoryAware, AclStrategyPro
       AclStrategy strategy = beanFactory.getBean(strategyBeanName, AclStrategy.class);
       return strategy;
     } catch (NoSuchBeanDefinitionException e) {
-      throw new IllegalArgumentException("Unable to find " + AclStrategy.class.getSimpleName()
+      throw new IllegalArgumentException("Unable to find " + AclStrategy.class.getName()
           + " bean with name '" + strategyBeanName + "'", e);
     }
   }

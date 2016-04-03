@@ -27,10 +27,12 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.github.lothar.security.acl.grant.domain.NoAclObject;
-import com.github.lothar.security.acl.grant.domain.NoStrategyObject;
 import com.github.lothar.security.acl.grant.domain.AllowedToAllObject;
 import com.github.lothar.security.acl.grant.domain.DeniedToAllObject;
+import com.github.lothar.security.acl.grant.domain.NoAclObject;
+import com.github.lothar.security.acl.grant.domain.NoStrategyObject;
+import com.github.lothar.security.acl.grant.domain.UnknownStrategyObject;
+import com.github.lothar.security.acl.grant.domain.WithoutHandlerObject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(GrantEvaluatorTestConfiguration.class)
@@ -95,10 +97,15 @@ public class GrantEvaluatorTest {
 
   // unknown strategy
 
-  @Test
-  public void should_throw_an_error_when_unknown_strategy() {
-    NoStrategyObject domainObject = new NoStrategyObject();
+  @Test(expected = IllegalArgumentException.class)
+  public void should_throw_an_error_when_unknown_strategy_using_strong_signature() {
+    UnknownStrategyObject domainObject = new UnknownStrategyObject();
     assertStrong(domainObject).isTrue();
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void should_throw_an_error_when_unknown_strategy_using_weak_signature() {
+    UnknownStrategyObject domainObject = new UnknownStrategyObject();
     assertWeak(domainObject).isTrue();
   }
 
@@ -106,7 +113,7 @@ public class GrantEvaluatorTest {
 
   @Test
   public void should_grant_when_without_grantEvaluator_in_strategy() {
-    NoStrategyObject domainObject = new NoStrategyObject();
+    WithoutHandlerObject domainObject = new WithoutHandlerObject();
     assertStrong(domainObject).isTrue();
     assertWeak(domainObject).isTrue();
   }

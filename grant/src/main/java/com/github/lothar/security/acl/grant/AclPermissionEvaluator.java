@@ -79,7 +79,8 @@ public class AclPermissionEvaluator implements PermissionEvaluator {
 
     grantEvaluator = strategy.handlerFor(grantEvaluatorFeature);
     if (grantEvaluator == null) {
-      logger.debug("No grant evaluator found in strategy {}", strategy);
+      logger.debug("No grant evaluator found in strategy {} > fall back on default grant evaluator",
+          strategy);
       grantEvaluator = defaultGrantEvaluator;
     }
     return grantEvaluator;
