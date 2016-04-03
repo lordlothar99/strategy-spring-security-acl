@@ -2,9 +2,10 @@ package com.github.lothar.security.acl.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import javax.annotation.Resource;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -14,11 +15,11 @@ import com.github.lothar.security.acl.AclStrategy;
 @SpringApplicationConfiguration(AclConfiguration.class)
 public class AclConfigurationTest {
 
-  @Autowired
+  @Resource
   private AclStrategy defaultStrategy;
-  @Autowired
+  @Resource
   private AclStrategy allowAllStrategy;
-  @Autowired
+  @Resource
   private AclStrategy denyAllStrategy;
 
   @Test

@@ -22,11 +22,11 @@ import com.github.lothar.security.acl.AclStrategy;
 
 public class AclStrategyComposer {
 
-  private AclComposersRegistry composersRegistry;
+  private AclStrategyComposerProvider composerProvider;
 
-  public AclStrategyComposer(AclComposersRegistry composersRegistry) {
+  public AclStrategyComposer(AclStrategyComposerProvider composerProvider) {
     super();
-    this.composersRegistry = composersRegistry;
+    this.composerProvider = composerProvider;
   }
 
   public CompoundAclStrategy and(AclStrategy lhs, AclStrategy rhs) {
@@ -55,7 +55,7 @@ public class AclStrategyComposer {
 
     @Override
     public <Filter> Filter filterFor(AclFeature<Filter> feature) {
-      AclComposer<Filter> composer = composersRegistry.composerFor(feature);
+      AclComposer<Filter> composer = composerProvider.composerFor(feature);
       return compositionOperator.apply(composer, lhs.filterFor(feature), rhs.filterFor(feature));
     }
 

@@ -22,7 +22,7 @@ import java.util.Objects;
 import com.github.lothar.security.acl.AclFeature;
 
 @SuppressWarnings("unchecked")
-public class AclComposersRegistry {
+public class AclComposersRegistry implements AclStrategyComposerProvider {
 
   private Map<AclFeature<?>, AclComposer<?>> composers = new HashMap<>();
 
@@ -34,6 +34,7 @@ public class AclComposersRegistry {
     return (AclComposer<Filter>) composers.remove(feature);
   }
 
+  @Override
   public <Filter> AclComposer<Filter> composerFor(AclFeature<Filter> feature) {
     return (AclComposer<Filter>) composers.get(feature);
   }
