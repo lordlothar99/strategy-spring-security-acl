@@ -30,13 +30,13 @@ public class CustomerGrantEvaluator extends AbstractGrantEvaluator<Customer, Str
   }
 
   @Override
-  protected boolean isGranted(Permission permission, Authentication authentication,
+  public boolean isGranted(Permission permission, Authentication authentication,
       Customer domainObject) {
     return "Smith".equals(domainObject.getLastName());
   }
 
   @Override
-  protected boolean isGranted(Permission permission, Authentication authentication, String targetId,
+  public boolean isGranted(Permission permission, Authentication authentication, String targetId,
       Class<? extends Customer> targetType) {
     // thanks to JpaSpecFeature, repository will count only authorized customers !
     return repository.count(idEqualTo(targetId)) == 1;
