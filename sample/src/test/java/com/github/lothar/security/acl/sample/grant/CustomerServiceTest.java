@@ -17,12 +17,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import javax.annotation.Resource;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,12 +39,6 @@ public class CustomerServiceTest {
   private CustomerService service;
   @Resource
   private SimpleAclStrategy customerStrategy;
-  private Logger logger = LoggerFactory.getLogger(getClass());
-
-  @Before
-  public void init() {
-    logger.info("Customer strategy : {}", customerStrategy);
-  }
 
   @Test
   public void should_save_an_authorized_customer() {
@@ -54,8 +46,8 @@ public class CustomerServiceTest {
     assertThat(savedCustomer.getLastName()).isEqualTo("Smith");
   }
 
-  @Test(expected = RuntimeException.class)
-  public void should_not_save_an_unauthorized_customer() {
+  @Test(expected = AccessDeniedException.class)
+  public void should_throw_AccessDenied_when_try_to_save_an_unauthorized_customer() {
     service.save(new Customer("John", "Doe"));
   }
 
