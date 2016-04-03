@@ -84,7 +84,7 @@ public class ElasticSearchAclConfiguration {
   @Bean
   public FilterBuilder denyAllFilter() {
     FilterBuilderBean denyAllFilter = new FilterBuilderBean(notFilter(matchAllFilter()));
-    allowAllStrategy.install(elasticSearchFeature, denyAllFilter);
+    denyAllStrategy.install(elasticSearchFeature, denyAllFilter);
     return denyAllFilter;
   }
 }
