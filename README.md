@@ -90,10 +90,8 @@ Add required dependencies :
 Then you need to tell Spring to load some beans definitions:
 * With Jpa module :
 ```
-	import com.github.lothar.security.acl.jpa.config.JpaSpecAclConfiguration;
 	import com.github.lothar.security.acl.jpa.repository.AclJpaRepositoryFactoryBean;
 ...
-	@Import( JpaSpecAclConfiguration.class )
 	@EnableJpaRepositories(
 		value = "<your jpa repositories package here>",
 		repositoryFactoryBeanClass = AclJpaRepositoryFactoryBean.class
@@ -102,14 +100,17 @@ Then you need to tell Spring to load some beans definitions:
 
 * With ElasticSearch module :
 ```
-	import com.github.lothar.security.acl.elasticsearch.config.ElasticSearchAclConfiguration;
 	import com.github.lothar.security.acl.elasticsearch.repository.AclElasticsearchRepositoryFactoryBean;
 ...
-	@Import( ElasticSearchAclConfiguration.class )
 	@EnableElasticsearchRepositories(
 		value = "<your elastic search repositories package here>",
 		repositoryFactoryBeanClass = AclElasticsearchRepositoryFactoryBean.class
 	)
+```
+
+* With GrantEvaluator module (if you want to enable Pre/Post annotations) :
+```
+	@EnableGlobalMethodSecurity(prePostEnabled = true)
 ```
 
 ### Struggling with integration ?
