@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  *******************************************************************************/
-package com.github.lothar.security.acl;
+package com.github.lothar.security.acl.compound;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,11 +25,15 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.github.lothar.security.acl.AclStrategy;
+import com.github.lothar.security.acl.AclTestConfiguration;
+import com.github.lothar.security.acl.SimpleAclStrategy;
+import com.github.lothar.security.acl.StringTesterFeature;
 import com.github.lothar.security.acl.compound.AclStrategyComposer;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(TestConfiguration.class)
-public class AclStrategyTest {
+@SpringApplicationConfiguration(AclTestConfiguration.class)
+public class AclStrategyComposerTest {
 
   @Resource
   private AclStrategyComposer aclStrategyComposer;

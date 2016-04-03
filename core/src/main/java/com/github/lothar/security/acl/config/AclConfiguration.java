@@ -29,7 +29,6 @@ import com.github.lothar.security.acl.compound.AclStrategyComposerProvider;
 public class AclConfiguration {
 
   @Bean
-  @ConditionalOnMissingBean(AclStrategyComposer.class)
   public AclStrategyComposer strategyComposer(
       AclStrategyComposerProvider strategyComposerProvider) {
     return new AclStrategyComposer(strategyComposerProvider);
@@ -47,7 +46,7 @@ public class AclConfiguration {
     return new AclStrategyProviderImpl();
   }
 
-  @Bean(name = { "allowAllStrategy", "defaultStrategy" })
+  @Bean(name = { "allowAllStrategy", "defaultAclStrategy" })
   public AclStrategy allowAllStrategy() {
     return new SimpleAclStrategy();
   }
