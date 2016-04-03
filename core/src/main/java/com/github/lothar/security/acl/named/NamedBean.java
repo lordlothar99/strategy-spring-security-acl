@@ -19,7 +19,7 @@ import java.util.Objects;
 
 import org.springframework.beans.factory.BeanNameAware;
 
-public abstract class NamedBean implements BeanNameAware {
+public class NamedBean implements BeanNameAware {
 
   private String name;
 

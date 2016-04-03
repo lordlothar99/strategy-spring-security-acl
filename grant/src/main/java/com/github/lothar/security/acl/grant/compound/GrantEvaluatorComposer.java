@@ -35,7 +35,7 @@ public class GrantEvaluatorComposer implements AclComposer<GrantEvaluator> {
     return new CompoundGrantEvaluator(lhs, rhs, CompositionOperator.OR);
   }
 
-  private static class CompoundGrantEvaluator implements GrantEvaluator {
+  public static class CompoundGrantEvaluator implements GrantEvaluator {
 
     private final GrantEvaluator lhs;
     private final GrantEvaluator rhs;

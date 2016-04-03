@@ -15,11 +15,9 @@
  *******************************************************************************/
 package com.github.lothar.security.acl.compound;
 
-import com.github.lothar.security.acl.AclFeature;
+public interface Operator<T> {
 
-@FunctionalInterface
-public interface AclStrategyComposerProvider {
-
-  <Filter> AclComposer<Filter> composerFor(AclFeature<Filter> feature);
-
+  default String toString(T lhs, T rhs) {
+    return "(" + lhs + " " + toString() + " " + rhs + ")";
+  }
 }

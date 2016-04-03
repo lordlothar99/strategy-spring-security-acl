@@ -13,13 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.github.lothar.security.acl.compound;
+package com.github.lothar.security.acl;
 
-import com.github.lothar.security.acl.AclFeature;
+import java.util.function.Function;
 
-@FunctionalInterface
-public interface AclStrategyComposerProvider {
+import com.github.lothar.security.acl.compound.AclComposer;
 
-  <Filter> AclComposer<Filter> composerFor(AclFeature<Filter> feature);
+public class StringTesterComposer implements AclComposer<Function<String, Boolean>> {
 
+  public Function<String, Boolean> and(Function<String, Boolean> lhs,
+      Function<String, Boolean> rhs) {
+    return (s) -> lhs.apply(s) && rhs.apply(s);
+  }
+
+  @Override
+  public Function<String, Boolean> or(Function<String, Boolean> lhs,
+      Function<String, Boolean> rhs) {
+    return (s) -> lhs.apply(s) || rhs.apply(s);
+  }
 }

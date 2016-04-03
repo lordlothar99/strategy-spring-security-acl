@@ -1,0 +1,51 @@
+/*******************************************************************************
+ * Copyright 2002-2016 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ *******************************************************************************/
+package com.github.lothar.security.acl;
+
+import javax.annotation.Resource;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.github.lothar.security.acl.compound.AclStrategyComposer;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(TestConfiguration.class)
+public class AclStrategyTest {
+
+  @Resource
+  private AclStrategyComposer aclStrategyComposer;
+  @Resource
+  private StringTesterFeature stringTesterFeature;
+  private SimpleAclStrategy isA;
+  private SimpleAclStrategy isB;
+
+  @Before
+  public void init() {
+    isA = new SimpleAclStrategy();
+    isA.install(stringTesterFeature, s -> "A".equals(s));
+    isB = new SimpleAclStrategy();
+    isB.install(stringTesterFeature, s -> "B".equals(s));
+  }
+
+  @Test
+  public void test_AND_strategy() {
+    AclStrategy aAndB = aclStrategyComposer.and(isA, isB);
+    aAndB.filterFor(stringTesterFeature);
+  }
+
+}

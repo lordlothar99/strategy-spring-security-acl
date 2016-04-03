@@ -11,12 +11,12 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  *******************************************************************************/
-package com.github.lothar.security.acl.compound;
+package com.github.lothar.security.acl;
 
-public interface AclComposer<Filter> {
+import java.util.function.Function;
 
-  Filter and(Filter lhs, Filter rhs);
+import com.github.lothar.security.acl.named.NamedBean;
 
-  Filter or(Filter lhs, Filter rhs);
-
+public class StringTesterFeature extends NamedBean
+    implements AclFeature<Function<String, Boolean>> {
 }

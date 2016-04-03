@@ -20,7 +20,7 @@ import org.springframework.util.Assert;
 import com.github.lothar.security.acl.AclFeature;
 import com.github.lothar.security.acl.AclStrategy;
 
-public class AclStrategyComposer {
+public class AclStrategyComposer implements AclComposer<AclStrategy> {
 
   private AclStrategyComposerProvider composerProvider;
 
@@ -29,11 +29,11 @@ public class AclStrategyComposer {
     this.composerProvider = composerProvider;
   }
 
-  public CompoundAclStrategy and(AclStrategy lhs, AclStrategy rhs) {
+  public AclStrategy and(AclStrategy lhs, AclStrategy rhs) {
     return new CompoundAclStrategy(lhs, rhs, CompositionOperator.AND);
   }
 
-  public CompoundAclStrategy or(AclStrategy lhs, AclStrategy rhs) {
+  public AclStrategy or(AclStrategy lhs, AclStrategy rhs) {
     return new CompoundAclStrategy(lhs, rhs, CompositionOperator.OR);
   }
 
@@ -56,6 +56,7 @@ public class AclStrategyComposer {
     @Override
     public <Filter> Filter filterFor(AclFeature<Filter> feature) {
       AclComposer<Filter> composer = composerProvider.composerFor(feature);
+      Assert.notNull(composer, "No composer found for " + feature);
       return compositionOperator.apply(composer, lhs.filterFor(feature), rhs.filterFor(feature));
     }
 
@@ -65,7 +66,7 @@ public class AclStrategyComposer {
     }
   }
 
-  private static enum CompositionOperator {
+  private static enum CompositionOperator implements Operator<Object> {
 
     AND {
       @Override
@@ -73,10 +74,10 @@ public class AclStrategyComposer {
         return composer.and(lhs, rhs);
       }
 
-      @Override
-      <Filter> String toString(AclStrategy lhs, AclStrategy rhs) {
-        return "(" + lhs + " AND " + rhs + ")";
-      }
+//      @Override
+//      <Filter> String toString(AclStrategy lhs, AclStrategy rhs) {
+//        return "(" + lhs + " AND " + rhs + ")";
+//      }
     },
 
     OR {
@@ -84,15 +85,15 @@ public class AclStrategyComposer {
       <Filter> Filter apply(AclComposer<Filter> composer, Filter lhs, Filter rhs) {
         return composer.or(lhs, rhs);
       }
-
-      @Override
-      <Filter> String toString(AclStrategy lhs, AclStrategy rhs) {
-        return "(" + lhs + " OR " + rhs + ")";
-      }
+//
+//      @Override
+//      <Filter> String toString(AclStrategy lhs, AclStrategy rhs) {
+//        return "(" + lhs + " OR " + rhs + ")";
+//      }
     };
 
     abstract <Filter> Filter apply(AclComposer<Filter> composer, Filter lhs, Filter rhs);
 
-    abstract <Filter> String toString(AclStrategy lhs, AclStrategy rhs);
+//    abstract <Filter> String toString(AclStrategy lhs, AclStrategy rhs);
   }
 }
