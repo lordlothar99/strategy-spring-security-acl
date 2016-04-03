@@ -22,7 +22,7 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.github.lothar.security.acl.bean.NamedBean;
+import com.github.lothar.security.acl.named.NamedBean;
 
 public class AllowAllSpecification<T> extends NamedBean implements Specification<T> {
 

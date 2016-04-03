@@ -21,7 +21,8 @@ import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.github.lothar.security.acl.bean.NamedBean;
+
+import com.github.lothar.security.acl.named.NamedBean;
 
 @SuppressWarnings("unchecked")
 public class SimpleAclStrategy extends NamedBean implements AclStrategy {

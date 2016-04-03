@@ -19,7 +19,7 @@ import java.io.Serializable;
 
 import org.springframework.security.core.Authentication;
 
-import com.github.lothar.security.acl.bean.NamedBean;
+import com.github.lothar.security.acl.named.NamedBean;
 
 /**
  * @author Francois Lecomte

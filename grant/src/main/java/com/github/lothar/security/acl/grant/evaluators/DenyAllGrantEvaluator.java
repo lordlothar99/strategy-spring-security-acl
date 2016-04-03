@@ -19,8 +19,8 @@ import java.io.Serializable;
 
 import org.springframework.security.core.Authentication;
 
-import com.github.lothar.security.acl.bean.NamedBean;
 import com.github.lothar.security.acl.grant.GrantEvaluator;
+import com.github.lothar.security.acl.named.NamedBean;
 
 public class DenyAllGrantEvaluator extends NamedBean implements GrantEvaluator {
 

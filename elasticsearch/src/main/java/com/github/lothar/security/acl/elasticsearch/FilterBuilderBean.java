@@ -23,7 +23,7 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.FilterBuilder;
 
-import com.github.lothar.security.acl.bean.NamedBean;
+import com.github.lothar.security.acl.named.NamedBean;
 
 public class FilterBuilderBean extends NamedBean implements FilterBuilder {
 
