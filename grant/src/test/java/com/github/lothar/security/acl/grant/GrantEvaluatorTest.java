@@ -40,23 +40,11 @@ public class GrantEvaluatorTest {
 
   @Resource
   private PermissionEvaluator permissionEvaluator;
-  @Resource
-  private GrantEvaluatorFeature grantEvaluatorFeature;
   private Authentication authentication;
 
   @Before
   public void init() {
     authentication = new TestingAuthenticationToken("fake principal", "fake credentials");
-  }
-
-  @Test
-  public void should_grantEvaluatorFeature_be_loaded() {
-    assertThat(grantEvaluatorFeature).isNotNull();
-  }
-
-  @Test
-  public void should_permissionEvaluator_be_loaded() {
-    assertThat(permissionEvaluator).isInstanceOf(AclPermissionEvaluator.class);
   }
 
   // allow all
