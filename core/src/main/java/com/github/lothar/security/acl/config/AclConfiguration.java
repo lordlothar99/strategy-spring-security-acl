@@ -56,4 +56,10 @@ public class AclConfiguration {
   public AclStrategy denyAllStrategy() {
     return new SimpleAclStrategy();
   }
+
+  @Bean
+  @ConditionalOnMissingBean(name = "defaultStrategy", value = AclStrategy.class)
+  public AclStrategy defaultStrategy(AclStrategy allowAllStrategy) {
+    return allowAllStrategy;
+  }
 }

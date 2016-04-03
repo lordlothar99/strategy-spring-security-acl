@@ -31,6 +31,6 @@ public @interface Acl {
   /**
    * {@link AclStrategy} bean name
    */
-  String value() default "allowAllStrategy";
+  String value() default "defaultAclStrategy";
 
 }
