@@ -38,9 +38,12 @@ public class GrantEvaluatorAclConfiguration {
   private GrantEvaluatorFeature grantEvaluatorFeature = new GrantEvaluatorFeature();
   private Logger logger = LoggerFactory.getLogger(GrantEvaluatorAclConfiguration.class);
 
+  public GrantEvaluatorAclConfiguration() {
+    logger.info("Configured feature : {}", grantEvaluatorFeature);
+  }
+
   @Bean
   public GrantEvaluatorFeature grantEvaluatorFeature() {
-    logger.info("Configured feature : {}", grantEvaluatorFeature);
     return grantEvaluatorFeature;
   }
 

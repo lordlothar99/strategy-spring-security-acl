@@ -41,9 +41,12 @@ public class JpaSpecAclConfiguration<T> {
   private JpaSpecFeature<T> jpaSpecFeature = new JpaSpecFeature<>();
   private Logger logger = LoggerFactory.getLogger(JpaSpecAclConfiguration.class);
 
+  public JpaSpecAclConfiguration() {
+    logger.info("Configured feature : {}", jpaSpecFeature);
+  }
+
   @Bean
   public JpaSpecFeature<T> jpaSpecFeature() {
-    logger.info("Configured feature : {}", jpaSpecFeature);
     return jpaSpecFeature;
   }
 
