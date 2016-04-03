@@ -18,7 +18,6 @@ package com.github.lothar.security.acl.grant;
 import java.io.Serializable;
 
 import org.springframework.security.core.Authentication;
-
 import com.github.lothar.security.acl.named.NamedBean;
 
 /**
@@ -49,12 +48,12 @@ public abstract class TypedGrantEvaluator<T, ID extends Serializable, A, P> exte
     P thePermission = mapPermission(permission);
     A theAuthentication = mapAuthentication(authentication);
     ID theTargetId = mapTargetId(targetId);
-    Class<T> theTargetType = mapTargetType(targetType);
+    Class<? extends T> theTargetType = mapTargetType(targetType);
     return isGranted(thePermission, theAuthentication, theTargetId, theTargetType);
   }
 
   protected abstract boolean isGranted(P permission, A authentication, ID targetId,
-      Class<T> targetType);
+      Class<? extends T> targetType);
 
   // ------------------------
   // Mappers ----------------
@@ -76,9 +75,9 @@ public abstract class TypedGrantEvaluator<T, ID extends Serializable, A, P> exte
     return (ID) targetId;
   }
 
-  private Class<T> mapTargetType(String targetType) {
+  private Class<? extends T> mapTargetType(String targetType) {
     try {
-      return (Class<T>) Class.forName(targetType);
+      return (Class<? extends T>) Class.forName(targetType);
     } catch (ClassNotFoundException e) {
       throw new IllegalArgumentException("Unable to find target type '" + targetType + "'");
     }
