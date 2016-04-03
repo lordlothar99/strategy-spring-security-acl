@@ -53,11 +53,13 @@ public class GrantEvaluatorAclConfiguration {
   }
 
   @Bean
-  public AclPermissionEvaluator aclPermissionEvaluator(AclStrategyProvider strategyProvider) {
-    return new AclPermissionEvaluator(strategyProvider, grantEvaluatorFeature);
+  public AclPermissionEvaluator aclPermissionEvaluator(AclStrategyProvider strategyProvider,
+      GrantEvaluator defaultGrantEvaluator) {
+    return new AclPermissionEvaluator(strategyProvider, grantEvaluatorFeature,
+        defaultGrantEvaluator);
   }
 
-  @Bean
+  @Bean(name = {"allowAllGrantEvaluator", "defaultGrantEvaluator"})
   public GrantEvaluator allowAllGrantEvaluator(SimpleAclStrategy allowAllStrategy) {
     GrantEvaluator allowAllGrantEvaluator = new AllowAllGrantEvaluator();
     allowAllStrategy.install(grantEvaluatorFeature, allowAllGrantEvaluator);

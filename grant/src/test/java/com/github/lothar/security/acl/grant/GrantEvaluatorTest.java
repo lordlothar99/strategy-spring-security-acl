@@ -102,6 +102,15 @@ public class GrantEvaluatorTest {
     assertWeak(domainObject).isTrue();
   }
 
+  // without handler
+
+  @Test
+  public void should_grant_when_without_grantEvaluator_in_strategy() {
+    NoStrategyObject domainObject = new NoStrategyObject();
+    assertStrong(domainObject).isTrue();
+    assertWeak(domainObject).isTrue();
+  }
+
   private AbstractBooleanAssert<?> assertWeak(Object domainObject) {
     return assertThat(permissionEvaluator.hasPermission(authentication, "fake id",
         domainObject.getClass().getName(), "fake permission"));
