@@ -17,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import javax.annotation.Resource;
 
+import org.assertj.core.api.AbstractBooleanAssert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,8 +27,10 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.github.lothar.security.acl.grant.domain.AllowedToAllDomainObject;
-import com.github.lothar.security.acl.grant.domain.DeniedToAllDomainObject;
+import com.github.lothar.security.acl.grant.domain.NoAclObject;
+import com.github.lothar.security.acl.grant.domain.NoStrategyObject;
+import com.github.lothar.security.acl.grant.domain.AllowedToAllObject;
+import com.github.lothar.security.acl.grant.domain.DeniedToAllObject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(GrantEvaluatorTestConfiguration.class)
@@ -35,6 +38,8 @@ public class GrantEvaluatorTest {
 
   @Resource
   private PermissionEvaluator permissionEvaluator;
+  @Resource
+  private GrantEvaluatorFeature grantEvaluatorFeature;
   private Authentication authentication;
 
   @Before
@@ -43,37 +48,67 @@ public class GrantEvaluatorTest {
   }
 
   @Test
+  public void should_grantEvaluatorFeature_be_loaded() {
+    assertThat(grantEvaluatorFeature).isNotNull();
+  }
+
+  @Test
   public void should_permissionEvaluator_be_loaded() {
     assertThat(permissionEvaluator).isInstanceOf(AclPermissionEvaluator.class);
   }
 
-  @Test
-  public void should_grant_when_allowAllStrategy_loaded() {
-    Object domainObject = new AllowedToAllDomainObject();
-    boolean grant =
-        permissionEvaluator.hasPermission(authentication, domainObject, "fake permission");
-    assertThat(grant).isTrue();
-  }
+  // allow all
 
   @Test
-  public void should_grant_when_allowAllStrategy_loaded_using_weak_ref_signature() {
-    boolean grant = permissionEvaluator.hasPermission(authentication, "fake id",
-        AllowedToAllDomainObject.class.getName(), "fake permission");
-    assertThat(grant).isTrue();
+  public void should_grant_when_allowAllStrategy_loaded() {
+    AllowedToAllObject domainObject = new AllowedToAllObject();
+    assertStrong(domainObject).isTrue();
+    assertWeak(domainObject).isTrue();
   }
+
+  // deny all
 
   @Test
   public void should_not_grant_when_denyAllStrategy_loaded() {
-    Object domainObject = new DeniedToAllDomainObject();
-    boolean grant =
-        permissionEvaluator.hasPermission(authentication, domainObject, "fake permission");
-    assertThat(grant).isFalse();
+    DeniedToAllObject domainObject = new DeniedToAllObject();
+    assertStrong(domainObject).isFalse();
+    assertWeak(domainObject).isFalse();
   }
 
+  // no acl
+
   @Test
-  public void should_not_grant_when_denyAllStrategy_loaded_using_weak_ref_signature() {
-    boolean grant = permissionEvaluator.hasPermission(authentication, "fake id",
-        DeniedToAllDomainObject.class.getName(), "fake permission");
-    assertThat(grant).isFalse();
+  public void should_grant_when_no_acl() {
+    NoAclObject domainObject = new NoAclObject();
+    assertStrong(domainObject).isTrue();
+    assertWeak(domainObject).isTrue();
+  }
+
+  // no strategy
+
+  @Test
+  public void should_grant_when_no_strategy() {
+    NoStrategyObject domainObject = new NoStrategyObject();
+    assertStrong(domainObject).isTrue();
+    assertWeak(domainObject).isTrue();
+  }
+
+  // unknown strategy
+
+  @Test
+  public void should_throw_an_error_when_unknown_strategy() {
+    NoStrategyObject domainObject = new NoStrategyObject();
+    assertStrong(domainObject).isTrue();
+    assertWeak(domainObject).isTrue();
+  }
+
+  private AbstractBooleanAssert<?> assertWeak(Object domainObject) {
+    return assertThat(permissionEvaluator.hasPermission(authentication, "fake id",
+        domainObject.getClass().getName(), "fake permission"));
+  }
+
+  private AbstractBooleanAssert<?> assertStrong(Object domainObject) {
+    return assertThat(
+        permissionEvaluator.hasPermission(authentication, domainObject, "fake permission"));
   }
 }

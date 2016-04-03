@@ -15,13 +15,14 @@
  *******************************************************************************/
 package com.github.lothar.security.acl.grant;
 
+import static org.springframework.util.Assert.notNull;
+
 import java.io.Serializable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
-
 import com.github.lothar.security.acl.AclStrategy;
 import com.github.lothar.security.acl.AclStrategyProvider;
 
@@ -42,11 +43,12 @@ public class AclPermissionEvaluator implements PermissionEvaluator {
   public boolean hasPermission(Authentication authentication, Object targetDomainObject,
       Object permission) {
 
-    if (targetDomainObject == null) {
-      throw new IllegalArgumentException("No domain object specified; permission=" + permission
-          + "; authentication=" + authentication);
-    }
+    notNull(targetDomainObject, "No domain object specified; permission=" + permission
+        + "; authentication=" + authentication);
     AclStrategy strategy = strategyProvider.strategyFor(targetDomainObject.getClass());
+    if (strategy == null) {
+      
+    }
     GrantEvaluator grantEvaluator = strategy.handlerFor(grantEvaluatorFeature);
 
     // TODO implement default grantEvaluator

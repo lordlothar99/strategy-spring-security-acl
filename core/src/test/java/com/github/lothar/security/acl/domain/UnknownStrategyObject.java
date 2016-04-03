@@ -17,6 +17,6 @@ package com.github.lothar.security.acl.domain;
 
 import com.github.lothar.security.acl.Acl;
 
-@Acl
-public class NoStrategyDomainObject {
+@Acl("unknownStrategy")
+public class UnknownStrategyObject {
 }

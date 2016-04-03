@@ -15,6 +15,8 @@
  *******************************************************************************/
 package com.github.lothar.security.acl;
 
+import static org.springframework.util.Assert.notNull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
@@ -27,7 +29,8 @@ public class AclStrategyProviderImpl implements BeanFactoryAware, AclStrategyPro
   private AclStrategy defaultStrategy;
   private BeanFactory beanFactory;
 
-  public void setDefaultStrategy(AclStrategy defaultStrategy) {
+  public AclStrategyProviderImpl(AclStrategy defaultStrategy) {
+    notNull(defaultStrategy, "Default ACL strategy can't be null");
     this.defaultStrategy = defaultStrategy;
   }
 

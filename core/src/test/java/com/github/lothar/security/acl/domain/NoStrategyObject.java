@@ -18,5 +18,5 @@ package com.github.lothar.security.acl.domain;
 import com.github.lothar.security.acl.Acl;
 
 @Acl
-public class NoAclDomainObject {
+public class NoStrategyObject {
 }

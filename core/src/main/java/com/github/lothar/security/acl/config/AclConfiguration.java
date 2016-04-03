@@ -42,8 +42,8 @@ public class AclConfiguration {
 
   @Bean
   @ConditionalOnMissingBean(AclStrategyProvider.class)
-  public AclStrategyProvider aclStrategyProvider() {
-    return new AclStrategyProviderImpl();
+  public AclStrategyProvider aclStrategyProvider(AclStrategy defaultAclStrategy) {
+    return new AclStrategyProviderImpl(defaultAclStrategy);
   }
 
   @Bean(name = { "allowAllStrategy", "defaultAclStrategy" })

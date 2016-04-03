@@ -24,10 +24,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.lothar.security.acl.AclStrategy;
 import com.github.lothar.security.acl.AclStrategyProvider;
-import com.github.lothar.security.acl.domain.AllowedToAllDomainObject;
-import com.github.lothar.security.acl.domain.DeniedToAllDomainObject;
-import com.github.lothar.security.acl.domain.NoAclDomainObject;
-import com.github.lothar.security.acl.domain.NoStrategyDomainObject;
+import com.github.lothar.security.acl.domain.AllowedToAllObject;
+import com.github.lothar.security.acl.domain.DeniedToAllObject;
+import com.github.lothar.security.acl.domain.NoAclObject;
+import com.github.lothar.security.acl.domain.NoStrategyObject;
+import com.github.lothar.security.acl.domain.UnknownStrategyObject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(AclConfiguration.class)
@@ -54,21 +55,26 @@ public class AclConfigurationTest {
 
   @Test
   public void test_provider_for_allowAllStrategy() {
-    assertThat(strategyProvider.strategyFor(AllowedToAllDomainObject.class)).isNotNull();
+    assertThat(strategyProvider.strategyFor(AllowedToAllObject.class)).isSameAs(allowAllStrategy);
   }
 
   @Test
   public void test_provider_for_denyAllStrategy() {
-    assertThat(strategyProvider.strategyFor(DeniedToAllDomainObject.class)).isNotNull();
+    assertThat(strategyProvider.strategyFor(DeniedToAllObject.class)).isSameAs(denyAllStrategy);
   }
 
   @Test
   public void should_provider_return_defaultStrategy_when_no_strategy() {
-    assertThat(strategyProvider.strategyFor(NoStrategyDomainObject.class)).isNotNull();
+    assertThat(strategyProvider.strategyFor(NoStrategyObject.class)).isSameAs(defaultAclStrategy);
   }
 
   @Test
   public void should_provider_return_defaultStrategy_when_no_acl_annotation() {
-    assertThat(strategyProvider.strategyFor(NoAclDomainObject.class)).isNotNull();
+    assertThat(strategyProvider.strategyFor(NoAclObject.class)).isSameAs(defaultAclStrategy);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void should_provider_throw_error_when_unknown_strategy() {
+    assertThat(strategyProvider.strategyFor(UnknownStrategyObject.class)).isNull();
   }
 }

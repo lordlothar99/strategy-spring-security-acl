@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.github.lothar.security.acl.domain;
+package com.github.lothar.security.acl.grant.domain;
 
-import com.github.lothar.security.acl.Acl;
-
-@Acl("denyAllStrategy")
-public class DeniedToAllDomainObject {
+public class NoAclObject {
 }
