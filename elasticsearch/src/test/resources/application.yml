@@ -1,0 +1,12 @@
+spring:
+    data:
+        elasticsearch:
+            cluster-name:
+            cluster-nodes:
+            properties:
+                path:
+                    logs: target/elasticsearch/log
+                    data: target/elasticsearch/data
+logging:
+    level:
+        com.github.lothar.security.acl: debug
