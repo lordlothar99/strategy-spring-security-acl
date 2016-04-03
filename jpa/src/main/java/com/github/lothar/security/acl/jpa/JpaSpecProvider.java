@@ -37,7 +37,7 @@ public class JpaSpecProvider<T> {
 
   public Specification<T> jpaSpecFor(Class<T> domainType) {
     AclStrategy strategy = strategyProvider.strategyFor(domainType);
-    Specification<T> aclJpaSpec = strategy.filterFor(jpaSpecFeature);
+    Specification<T> aclJpaSpec = strategy.handlerFor(jpaSpecFeature);
 
     // TODO implement default aclJpaSpec
 

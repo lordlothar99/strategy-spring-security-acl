@@ -21,6 +21,7 @@ import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
 
 import com.github.lothar.security.acl.named.NamedBean;
 
@@ -28,33 +29,31 @@ import com.github.lothar.security.acl.named.NamedBean;
 public class SimpleAclStrategy extends NamedBean implements AclStrategy {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
-  private Map<AclFeature<?>, Object> filtersByFeature = new HashMap<>();
+  private Map<AclFeature<?>, Object> handlersByFeature = new HashMap<>();
 
-  public <Filter> void install(AclFeature<Filter> feature, Filter filter) {
-    if (filter == null) {
-      throw new IllegalArgumentException("Filter to register can't be null ; please use unregister("
-          + AclFeature.class.getSimpleName() + ")");
-    }
-    filtersByFeature.put(feature, filter);
-    logger.debug("Installed {} in {} : {}", feature, name(), filter);
+  public <Handler> void install(AclFeature<Handler> feature, Handler handler) {
+    Assert.notNull(handler, "Can't register a null handler ; please use unregister("
+        + AclFeature.class.getSimpleName() + ")");
+    handlersByFeature.put(feature, handler);
+    logger.debug("Installed {} in {} : {}", feature, name(), handler);
   }
 
-  public <Filter> Filter uninstall(AclFeature<Filter> feature) {
-    Filter filter = (Filter) filtersByFeature.remove(feature);
+  public <Handler> Handler uninstall(AclFeature<Handler> feature) {
+    Handler filter = (Handler) handlersByFeature.remove(feature);
     logger.debug("Uninstalled {} from {}", feature, name());
     return filter;
   }
 
-  public <Filter> Filter filterFor(AclFeature<Filter> feature) {
-    return (Filter) filtersByFeature.get(feature);
+  public <Handler> Handler handlerFor(AclFeature<Handler> feature) {
+    return (Handler) handlersByFeature.get(feature);
   }
 
-  public <Filter> boolean hasFilter(AclFeature<Filter> feature) {
-    return filtersByFeature.containsKey(feature);
+  public <Handler> boolean hasHandler(AclFeature<Handler> feature) {
+    return handlersByFeature.containsKey(feature);
   }
 
   @Override
   public String toString() {
-    return name() + ":" + Objects.toString(filtersByFeature);
+    return name() + ":" + Objects.toString(handlersByFeature);
   }
 }

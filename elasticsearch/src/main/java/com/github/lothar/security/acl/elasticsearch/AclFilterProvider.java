@@ -35,7 +35,7 @@ public class AclFilterProvider {
 
   public FilterBuilder filterFor(Class<?> domainType) {
     AclStrategy strategy = strategyProvider.strategyFor(domainType);
-    FilterBuilder filterBuilder = strategy.filterFor(elasticSearchFeature);
+    FilterBuilder filterBuilder = strategy.handlerFor(elasticSearchFeature);
 
     // TODO implement default filterBuilder
 

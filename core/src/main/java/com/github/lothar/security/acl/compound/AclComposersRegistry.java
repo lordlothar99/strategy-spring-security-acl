@@ -26,17 +26,17 @@ public class AclComposersRegistry implements AclStrategyComposerProvider {
 
   private Map<AclFeature<?>, AclComposer<?>> composers = new HashMap<>();
 
-  public <Filter> void register(AclFeature<Filter> feature, AclComposer<Filter> composer) {
+  public <Handler> void register(AclFeature<Handler> feature, AclComposer<Handler> composer) {
     composers.put(feature, composer);
   }
 
-  public <Filter> AclComposer<Filter> unregister(AclFeature<Filter> feature) {
-    return (AclComposer<Filter>) composers.remove(feature);
+  public <Handler> AclComposer<Handler> unregister(AclFeature<Handler> feature) {
+    return (AclComposer<Handler>) composers.remove(feature);
   }
 
   @Override
-  public <Filter> AclComposer<Filter> composerFor(AclFeature<Filter> feature) {
-    return (AclComposer<Filter>) composers.get(feature);
+  public <Handler> AclComposer<Handler> composerFor(AclFeature<Handler> feature) {
+    return (AclComposer<Handler>) composers.get(feature);
   }
 
   @Override

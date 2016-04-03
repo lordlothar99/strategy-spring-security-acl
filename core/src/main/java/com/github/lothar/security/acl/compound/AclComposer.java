@@ -13,10 +13,10 @@
  *******************************************************************************/
 package com.github.lothar.security.acl.compound;
 
-public interface AclComposer<Filter> {
+public interface AclComposer<Handler> {
 
-  Filter and(Filter lhs, Filter rhs);
+  Handler and(Handler lhs, Handler rhs);
 
-  Filter or(Filter lhs, Filter rhs);
+  Handler or(Handler lhs, Handler rhs);
 
 }

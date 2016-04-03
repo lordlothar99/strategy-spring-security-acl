@@ -45,7 +45,7 @@ public class AclStrategyTest {
   @Test
   public void test_AND_strategy() {
     AclStrategy aAndB = aclStrategyComposer.and(isA, isB);
-    aAndB.filterFor(stringTesterFeature);
+    aAndB.handlerFor(stringTesterFeature);
   }
 
 }

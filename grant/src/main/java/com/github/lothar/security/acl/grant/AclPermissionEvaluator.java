@@ -47,7 +47,7 @@ public class AclPermissionEvaluator implements PermissionEvaluator {
           + "; authentication=" + authentication);
     }
     AclStrategy strategy = strategyProvider.strategyFor(targetDomainObject.getClass());
-    GrantEvaluator grantEvaluator = strategy.filterFor(grantEvaluatorFeature);
+    GrantEvaluator grantEvaluator = strategy.handlerFor(grantEvaluatorFeature);
 
     // TODO implement default grantEvaluator
 
@@ -64,7 +64,7 @@ public class AclPermissionEvaluator implements PermissionEvaluator {
 
     Class<?> entityClass = asClass(targetType);
     AclStrategy strategy = strategyProvider.strategyFor(entityClass);
-    GrantEvaluator grantEvaluator = strategy.filterFor(grantEvaluatorFeature);
+    GrantEvaluator grantEvaluator = strategy.handlerFor(grantEvaluatorFeature);
 
     // TODO implement default grantEvaluator
 

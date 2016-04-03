@@ -58,7 +58,7 @@ public class CustomerRepositoryTest {
 
   @Test
   public void should_customer_spec_be_registered_in_customer_strategy() {
-    Specification<Customer> customerSpec = customerStrategy.filterFor(jpaSpecFeature);
+    Specification<Customer> customerSpec = customerStrategy.handlerFor(jpaSpecFeature);
     assertThat(customerSpec) //
         .as("Customer ACL JPA specification not registered") //
         .isNotNull();
