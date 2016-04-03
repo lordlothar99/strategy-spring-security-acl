@@ -26,12 +26,11 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.github.lothar.security.acl.grant.config.GrantEvaluatorAclConfiguration;
 import com.github.lothar.security.acl.grant.domain.AllowedToAllDomainObject;
 import com.github.lothar.security.acl.grant.domain.DeniedToAllDomainObject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(GrantEvaluatorAclConfiguration.class)
+@SpringApplicationConfiguration(GrantEvaluatorTestConfiguration.class)
 public class GrantEvaluatorTest {
 
   @Resource
