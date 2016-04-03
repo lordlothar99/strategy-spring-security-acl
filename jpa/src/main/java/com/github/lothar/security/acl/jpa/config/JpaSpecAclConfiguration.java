@@ -19,6 +19,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import com.github.lothar.security.acl.AclStrategyProvider;
@@ -55,8 +56,9 @@ public class JpaSpecAclConfiguration<T> {
   }
 
   @Bean
-  public JpaSpecProvider<T> jpaSpecProvider(AclStrategyProvider strategyProvider) {
-    return new JpaSpecProvider<>(strategyProvider, jpaSpecFeature);
+  public JpaSpecProvider<T> jpaSpecProvider(AclStrategyProvider strategyProvider,
+      Specification<T> defaultAclSpecification) {
+    return new JpaSpecProvider<>(strategyProvider, jpaSpecFeature, defaultAclSpecification);
   }
 
   @Bean(name = {"allowAllSpecification", "defaultAclSpecification"})

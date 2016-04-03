@@ -29,6 +29,7 @@ import com.github.lothar.security.acl.jpa.domain.DeniedToAllObject;
 import com.github.lothar.security.acl.jpa.domain.NoAclObject;
 import com.github.lothar.security.acl.jpa.domain.NoStrategyObject;
 import com.github.lothar.security.acl.jpa.domain.UnknownStrategyObject;
+import com.github.lothar.security.acl.jpa.domain.WithoutHandlerObject;
 import com.github.lothar.security.acl.jpa.spec.AllowAllSpecification;
 import com.github.lothar.security.acl.jpa.spec.DenyAllSpecification;
 
@@ -66,6 +67,11 @@ public class AclJpaRepositoryFactoryBeanTest {
   @Test(expected = IllegalArgumentException.class)
   public void should_provider_return_allowAll_spec_for_unknownStrategy() {
     assertThat(jpaSpecProvider.jpaSpecFor(UnknownStrategyObject.class)).isNull();
+  }
+
+  @Test
+  public void should_provider_return_allowAll_spec_for_withoutHandlerStrategy() {
+    assertThat(jpaSpecProvider.jpaSpecFor(WithoutHandlerObject.class)).isSameAs(allowAllSpec);
   }
 
 }
