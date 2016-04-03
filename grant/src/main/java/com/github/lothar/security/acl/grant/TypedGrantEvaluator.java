@@ -40,7 +40,7 @@ public abstract class TypedGrantEvaluator<T, ID extends Serializable, A, P> exte
     return isGranted(thePermission, theAuthentication, theDomainObject);
   }
 
-  protected abstract boolean isGranted(P permission, A authentication, T domainObject);
+  public abstract boolean isGranted(P permission, A authentication, T domainObject);
 
   @Override
   public boolean isGranted(Object permission, Authentication authentication, Serializable targetId,
@@ -52,7 +52,7 @@ public abstract class TypedGrantEvaluator<T, ID extends Serializable, A, P> exte
     return isGranted(thePermission, theAuthentication, theTargetId, theTargetType);
   }
 
-  protected abstract boolean isGranted(P permission, A authentication, ID targetId,
+  public abstract boolean isGranted(P permission, A authentication, ID targetId,
       Class<? extends T> targetType);
 
   // ------------------------
