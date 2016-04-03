@@ -46,13 +46,13 @@ public class AclConfiguration {
     return new AclStrategyProviderImpl(defaultAclStrategy);
   }
 
-  @Bean(name = { "allowAllStrategy", "defaultAclStrategy" })
-  public AclStrategy allowAllStrategy() {
+  @Bean(name = {"allowAllStrategy", "defaultAclStrategy"})
+  public SimpleAclStrategy allowAllStrategy() {
     return new SimpleAclStrategy();
   }
 
   @Bean
-  public AclStrategy denyAllStrategy() {
+  public SimpleAclStrategy denyAllStrategy() {
     return new SimpleAclStrategy();
   }
 }
