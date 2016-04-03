@@ -15,6 +15,8 @@
  *******************************************************************************/
 package com.github.lothar.security.acl.compound;
 
+import static org.springframework.util.Assert.notNull;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -27,6 +29,7 @@ public class AclComposersRegistry implements AclStrategyComposerProvider {
   private Map<AclFeature<?>, AclComposer<?>> composers = new HashMap<>();
 
   public <Handler> void register(AclFeature<Handler> feature, AclComposer<Handler> composer) {
+    notNull(feature, "Feature can't be null");
     composers.put(feature, composer);
   }
 

@@ -13,6 +13,10 @@
  *******************************************************************************/
 package com.github.lothar.security.acl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.function.Function;
+
 import javax.annotation.Resource;
 
 import org.junit.Before;
@@ -31,21 +35,41 @@ public class AclStrategyTest {
   private AclStrategyComposer aclStrategyComposer;
   @Resource
   private StringTesterFeature stringTesterFeature;
-  private SimpleAclStrategy isA;
-  private SimpleAclStrategy isB;
+  private SimpleAclStrategy containsA;
+  private SimpleAclStrategy containsB;
 
   @Before
   public void init() {
-    isA = new SimpleAclStrategy();
-    isA.install(stringTesterFeature, s -> "A".equals(s));
-    isB = new SimpleAclStrategy();
-    isB.install(stringTesterFeature, s -> "B".equals(s));
+    containsA = new SimpleAclStrategy();
+    containsA.install(stringTesterFeature, s -> s.contains("A"));
+    containsB = new SimpleAclStrategy();
+    containsB.install(stringTesterFeature, s -> s.contains("B"));
   }
 
   @Test
-  public void test_AND_strategy() {
-    AclStrategy aAndB = aclStrategyComposer.and(isA, isB);
-    aAndB.handlerFor(stringTesterFeature);
+  public void test_and_strategy() {
+    AclStrategy aAndB = aclStrategyComposer.and(containsA, containsB);
+    Function<String, Boolean> stringTester = aAndB.handlerFor(stringTesterFeature);
+    assertThat(stringTester.apply("A")).isFalse();
+    assertThat(stringTester.apply("B")).isFalse();
+    assertThat(stringTester.apply("C")).isFalse();
+    assertThat(stringTester.apply("AB")).isTrue();
+    assertThat(stringTester.apply("ABC")).isTrue();
+    assertThat(stringTester.apply("AC")).isFalse();
+    assertThat(stringTester.apply("BC")).isFalse();
+  }
+
+  @Test
+  public void test_or_strategy() {
+    AclStrategy aOrB = aclStrategyComposer.or(containsA, containsB);
+    Function<String, Boolean> stringTester = aOrB.handlerFor(stringTesterFeature);
+    assertThat(stringTester.apply("A")).isTrue();
+    assertThat(stringTester.apply("B")).isTrue();
+    assertThat(stringTester.apply("C")).isFalse();
+    assertThat(stringTester.apply("AB")).isTrue();
+    assertThat(stringTester.apply("ABC")).isTrue();
+    assertThat(stringTester.apply("AC")).isTrue();
+    assertThat(stringTester.apply("BC")).isTrue();
   }
 
 }

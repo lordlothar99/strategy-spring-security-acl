@@ -13,7 +13,7 @@
  *******************************************************************************/
 package com.github.lothar.security.acl.compound;
 
-import org.springframework.util.Assert;
+import static org.springframework.util.Assert.notNull;
 
 import com.github.lothar.security.acl.AclFeature;
 import com.github.lothar.security.acl.AclStrategy;
@@ -28,43 +28,29 @@ public class AclStrategyComposer implements AclComposer<AclStrategy> {
   }
 
   public AclStrategy and(AclStrategy lhs, AclStrategy rhs) {
-    return new CompoundAclStrategy(lhs, rhs, CompositionOperator.AND);
+    return new CompoundAclStrategy(lhs, rhs, StrategyOperator.AND);
   }
 
   public AclStrategy or(AclStrategy lhs, AclStrategy rhs) {
-    return new CompoundAclStrategy(lhs, rhs, CompositionOperator.OR);
+    return new CompoundAclStrategy(lhs, rhs, StrategyOperator.OR);
   }
 
-  private class CompoundAclStrategy implements AclStrategy {
+  private class CompoundAclStrategy extends AbstractCompound<AclStrategy, StrategyOperator>
+      implements AclStrategy {
 
-    private final AclStrategy lhs;
-    private final AclStrategy rhs;
-    private final CompositionOperator compositionOperator;
-
-    private CompoundAclStrategy(AclStrategy lhs, AclStrategy rhs,
-        CompositionOperator compositionOperator) {
-
-      Assert.notNull(compositionOperator, "CompositionType must not be null!");
-
-      this.lhs = lhs;
-      this.rhs = rhs;
-      this.compositionOperator = compositionOperator;
+    private CompoundAclStrategy(AclStrategy lhs, AclStrategy rhs, StrategyOperator operator) {
+      super(lhs, rhs, operator);
     }
 
     @Override
     public <Handler> Handler handlerFor(AclFeature<Handler> feature) {
       AclComposer<Handler> composer = composerProvider.composerFor(feature);
-      Assert.notNull(composer, "No composer found for " + feature);
-      return compositionOperator.apply(composer, lhs.handlerFor(feature), rhs.handlerFor(feature));
-    }
-
-    @Override
-    public String toString() {
-      return compositionOperator.toString(lhs, rhs);
+      notNull(composer, "No composer found for " + feature);
+      return operator.apply(composer, lhs.handlerFor(feature), rhs.handlerFor(feature));
     }
   }
 
-  private static enum CompositionOperator implements Operator<Object> {
+  private static enum StrategyOperator implements Operator<AclStrategy> {
 
     AND {
       @Override

@@ -16,7 +16,6 @@
 package com.github.lothar.security.acl;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -24,21 +23,20 @@ import com.github.lothar.security.acl.compound.AclComposersRegistry;
 import com.github.lothar.security.acl.config.AclConfiguration;
 
 @Configuration
-@ComponentScan
 @Import(AclConfiguration.class)
 public class TestConfiguration {
 
-  private StringTesterFeature stringTesterFeature;
+  private StringTesterFeature stringTesterFeature = new StringTesterFeature();
+
+  @Bean
+  public StringTesterFeature stringTesterFeature() {
+    return stringTesterFeature;
+  }
 
   @Bean
   public StringTesterComposer stringTesterComposer(AclComposersRegistry composersRegistry) {
     StringTesterComposer stringTesterComposer = new StringTesterComposer();
     composersRegistry.register(stringTesterFeature, stringTesterComposer);
     return stringTesterComposer;
-  }
-
-  @Bean
-  public StringTesterFeature stringTesterFeature() {
-    return stringTesterFeature;
   }
 }

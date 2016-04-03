@@ -15,14 +15,14 @@
  *******************************************************************************/
 package com.github.lothar.security.acl;
 
+import static org.springframework.util.Assert.notNull;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
-
 import com.github.lothar.security.acl.named.NamedBean;
 
 @SuppressWarnings("unchecked")
@@ -32,7 +32,8 @@ public class SimpleAclStrategy extends NamedBean implements AclStrategy {
   private Map<AclFeature<?>, Object> handlersByFeature = new HashMap<>();
 
   public <Handler> void install(AclFeature<Handler> feature, Handler handler) {
-    Assert.notNull(handler, "Can't register a null handler ; please use unregister("
+    notNull(feature, "Feature can't be null");
+    notNull(handler, "Can't register a null handler ; please use unregister("
         + AclFeature.class.getSimpleName() + ")");
     handlersByFeature.put(feature, handler);
     logger.debug("Installed {} in {} : {}", feature, name(), handler);
