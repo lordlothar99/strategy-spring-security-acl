@@ -36,12 +36,16 @@ public class SimpleAclStrategy extends NamedBean implements AclStrategy {
     notNull(handler, "Can't register a null handler ; please use unregister("
         + AclFeature.class.getSimpleName() + ")");
     handlersByFeature.put(feature, handler);
-    logger.debug("Installed {} handler in {} : {}", feature, name(), handler);
+    if (logger.isDebugEnabled()) {
+      logger.debug("Installed {} handler in {} : {}", feature, name(), handler);
+    }
   }
 
   public <Handler> Handler uninstall(AclFeature<Handler> feature) {
     Handler filter = (Handler) handlersByFeature.remove(feature);
-    logger.debug("Uninstalled {} handler from {}", feature, name());
+    if (logger.isDebugEnabled()) {
+      logger.debug("Uninstalled {} handler from {}", feature, name());
+    }
     return filter;
   }
 
