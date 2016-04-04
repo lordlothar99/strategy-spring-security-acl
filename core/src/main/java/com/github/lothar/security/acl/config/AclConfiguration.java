@@ -13,10 +13,20 @@
  *******************************************************************************/
 package com.github.lothar.security.acl.config;
 
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 
+import com.github.lothar.security.acl.AclStrategy;
 import com.github.lothar.security.acl.AclStrategyProvider;
 import com.github.lothar.security.acl.AclStrategyProviderImpl;
 import com.github.lothar.security.acl.SimpleAclStrategy;
@@ -28,6 +38,9 @@ import com.github.lothar.security.acl.compound.AclStrategyComposerProvider;
 public class AclConfiguration {
 
   private SimpleAclStrategy allowAllStrategy = new SimpleAclStrategy();
+  @Resource
+  private ApplicationContext applicationContext;
+  private Logger logger = LoggerFactory.getLogger(AclConfiguration.class);
 
   @Bean
   public AclStrategyComposer strategyComposer(
@@ -55,5 +68,14 @@ public class AclConfiguration {
   @Bean
   public SimpleAclStrategy denyAllStrategy() {
     return new SimpleAclStrategy();
+  }
+
+  @EventListener(ContextRefreshedEvent.class)
+  public void logStrategies() {
+    if (logger.isDebugEnabled()) {
+      Map<String, AclStrategy> strategies = applicationContext.getBeansOfType(AclStrategy.class);
+      strategies.entrySet().stream() //
+          .forEach(e -> logger.debug("Strategy {}: {}", e.getKey(), e.getValue()));
+    }
   }
 }
