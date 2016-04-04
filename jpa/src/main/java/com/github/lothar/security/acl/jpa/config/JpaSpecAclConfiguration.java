@@ -20,8 +20,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-
 import com.github.lothar.security.acl.AclStrategyProvider;
 import com.github.lothar.security.acl.SimpleAclStrategy;
 import com.github.lothar.security.acl.compound.AclComposersRegistry;
@@ -29,13 +27,11 @@ import com.github.lothar.security.acl.config.AclConfiguration;
 import com.github.lothar.security.acl.jpa.JpaSpecFeature;
 import com.github.lothar.security.acl.jpa.JpaSpecProvider;
 import com.github.lothar.security.acl.jpa.compound.JpaSpecComposer;
-import com.github.lothar.security.acl.jpa.repository.AclJpaRepositoryFactoryBean;
 import com.github.lothar.security.acl.jpa.spec.AllowAllSpecification;
 import com.github.lothar.security.acl.jpa.spec.DenyAllSpecification;
 
 @Configuration
 @Import(AclConfiguration.class)
-@EnableJpaRepositories(repositoryFactoryBeanClass = AclJpaRepositoryFactoryBean.class)
 public class JpaSpecAclConfiguration<T> {
 
   private JpaSpecFeature<T> jpaSpecFeature = new JpaSpecFeature<>();

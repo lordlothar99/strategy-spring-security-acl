@@ -19,13 +19,10 @@ import static org.elasticsearch.index.query.FilterBuilders.notFilter;
 import org.elasticsearch.index.query.FilterBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
-
 import com.github.lothar.security.acl.AclStrategyProvider;
 import com.github.lothar.security.acl.SimpleAclStrategy;
 import com.github.lothar.security.acl.compound.AclComposersRegistry;
@@ -34,13 +31,9 @@ import com.github.lothar.security.acl.elasticsearch.AclFilterProvider;
 import com.github.lothar.security.acl.elasticsearch.ElasticSearchFeature;
 import com.github.lothar.security.acl.elasticsearch.FilterBuilderBean;
 import com.github.lothar.security.acl.elasticsearch.compound.FilterBuilderComposer;
-import com.github.lothar.security.acl.elasticsearch.repository.AclElasticsearchRepositoryFactoryBean;
 
 @Configuration
 @Import(AclConfiguration.class)
-@AutoConfigureAfter(AclConfiguration.class)
-@EnableElasticsearchRepositories(
-    repositoryFactoryBeanClass = AclElasticsearchRepositoryFactoryBean.class)
 public class ElasticSearchAclConfiguration {
 
   private ElasticSearchFeature elasticSearchFeature = new ElasticSearchFeature();
