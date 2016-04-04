@@ -28,19 +28,19 @@ Propose an alternative to [Spring Security Acl][]
 
 ### Easy to configure
 
-Thanks to [Spring Boot][] auto-configure awesome feature
+Thanks to [Spring Boot][] auto-configure awesome magic
 
 ### Extensibility !!
 
-You need more than bundled modules ? Create your own !! and share it ;).
-Current bundled modules are:
+Current bundled features are:
 * Grant : implementation of PermissionEvaluator which delegates to adequate `GrantEvaluator` beans
 * JPA : injects `JpaSpecification` in your repositories so they would retrieve only authorized objects from database ; thanks to [Spring Data JPA][]
 * ElasticSearch : injects `FilterBuilder` in your repositories so they would retrieve only authorized objects from ElasticSearch ; thanks to [Spring Data ElasticSearch][]
+You need more than existing features ? Create your own !! and share it ;).
 
 ### Strategy oriented
 
-1. Create ACL strategies as Spring beans. Strategies are composite objects wrapping ACL filter components  
+1. Create ACL strategies as Spring beans. Strategies are composite objects wrapping ACL filter components (1 for each feature)  
 2. Install for each business object, and you
 
 ## <a name="Installation">Installation</a>
@@ -58,16 +58,10 @@ Add Github as a maven repository (yes, you can) :
 		</repository>
 	</repositories>
 
-### I know Spring-boot / I like Spring-boot / I want Spring-boot / I'm a Spring-boot addict / I dream of Spring-boot every single night / ...
+### [Spring Boot][]
 
-That's great !!! So, you just have to add necessary dependencies to your pom.xml :
-
-<< coming soon >>
-
-### Spring-boot... what's that ?? / I don't know Spring-boot
-
-Have a look [here][Spring Boot] (you really should). Ok, no time for that ?
-Add required dependencies :
+We love [Spring Boot][]. Configured beans are automatically loaded by [Spring Boot][]'s magic, as soon jars are in the path.
+Add required dependencies to your pom :
 
 	<dependency>
 		<groupId>com.github.lothar.security.acl</groupId>
@@ -87,8 +81,8 @@ Add required dependencies :
 		<version>LATEST</version>
 	</dependency>
 
-Then you need to tell Spring to load some beans definitions:
-* With Jpa module :
+Then you need very few Spring config:
+* For Jpa feature :
 ```
 	import com.github.lothar.security.acl.jpa.repository.AclJpaRepositoryFactoryBean;
 ...
@@ -98,7 +92,7 @@ Then you need to tell Spring to load some beans definitions:
 	)
 ```
 
-* With ElasticSearch module :
+* For ElasticSearch feature :
 ```
 	import com.github.lothar.security.acl.elasticsearch.repository.AclElasticsearchRepositoryFactoryBean;
 ...
@@ -108,9 +102,64 @@ Then you need to tell Spring to load some beans definitions:
 	)
 ```
 
-* With GrantEvaluator module (if you want to enable Pre/Post annotations) :
+* For GrantEvaluator feature (if you want to enable Pre/Post annotations) :
 ```
 	@EnableGlobalMethodSecurity(prePostEnabled = true)
+```
+
+Now, let's say you have a `Customer` domain entity in your project, and you need to restrict readable customers, so that only those whose last name is "Smith" can be retrieved.
+1. Define your strategy : let's create an `CustomerAclStrategy`, which will contain our different ACL features implementations (1 implementation by feature). `SimpleAclStrategy` implementation is recommanded as a start. In your favorite `Configuration` bean, let's define :
+```
+  @Bean
+  public SimpleAclStrategy customerStrategy() {
+    return new SimpleAclStrategy();
+  }
+```
+2. Create a `CustomerGrantEvaluator` bean, and install it inside the `CustomerStrategy`. Let's add a new bean into `Configuration` :
+```
+  @Bean
+  public GrantEvaluator smithFamilyGrantEvaluator(CustomerRepository customerRepository,
+      GrantEvaluatorFeature grantEvaluatorFeature) {
+    GrantEvaluator smithFamilyGrantEvaluator = new CustomerGrantEvaluator(customerRepository);
+    customerStrategy.install(grantEvaluatorFeature, smithFamilyGrantEvaluator);
+    return smithFamilyGrantEvaluator;
+  }
+```
+And create a dedicated `CustomerGrantEvaluator` class, it's close to Spring's `PermissionEvaluator` API :
+```
+import static com.github.lothar.security.acl.jpa.spec.AclJpaSpecifications.idEqualTo;
+import org.springframework.security.core.Authentication;
+import com.github.lothar.security.acl.sample.domain.Customer;
+import com.github.lothar.security.acl.sample.jpa.CustomerRepository;
+
+public class CustomerGrantEvaluator extends AbstractGrantEvaluator<Customer, String> {
+
+  private CustomerRepository repository;
+
+  public CustomerGrantEvaluator(CustomerRepository repository) {
+    super();
+    this.repository = repository;
+  }
+
+  @Override
+  public boolean isGranted(Permission permission, Authentication authentication,
+      Customer domainObject) {
+    return "Smith".equals(domainObject.getLastName());
+  }
+
+  @Override
+  public boolean isGranted(Permission permission, Authentication authentication, String targetId,
+      Class<? extends Customer> targetType) {
+    // thanks to JpaSpecFeature, repository will count only authorized customers !
+    return repository.count(idEqualTo(targetId)) == 1;
+  }
+}
+```
+3. Add Pre/Post annotations on adequate methods :
+```
+  @PreAuthorize("hasPermission(#customer, 'SAVE')")
+...
+  @PreAuthorize("hasPermission(#customerId, 'com.github.lothar.security.acl.sample.domain.Customer', 'READ')")
 ```
 
 ### Struggling with integration ?
