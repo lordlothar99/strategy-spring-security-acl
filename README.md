@@ -81,6 +81,8 @@ Add required dependencies to your pom :
 		<version>LATEST</version>
 	</dependency>
 
+### Integration
+
 Then you need very few Spring config:
 * For Jpa feature :
 ```
