@@ -17,7 +17,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.github.lothar.security.acl.AclStrategy;
 import com.github.lothar.security.acl.AclStrategyProvider;
 import com.github.lothar.security.acl.AclStrategyProviderImpl;
 import com.github.lothar.security.acl.SimpleAclStrategy;
@@ -27,6 +26,8 @@ import com.github.lothar.security.acl.compound.AclStrategyComposerProvider;
 
 @Configuration
 public class AclConfiguration {
+
+  private SimpleAclStrategy allowAllStrategy = new SimpleAclStrategy();
 
   @Bean
   public AclStrategyComposer strategyComposer(
@@ -42,13 +43,13 @@ public class AclConfiguration {
 
   @Bean
   @ConditionalOnMissingBean(AclStrategyProvider.class)
-  public AclStrategyProvider aclStrategyProvider(AclStrategy defaultAclStrategy) {
-    return new AclStrategyProviderImpl(defaultAclStrategy);
+  public AclStrategyProvider aclStrategyProvider() {
+    return new AclStrategyProviderImpl(allowAllStrategy);
   }
 
   @Bean(name = {"allowAllStrategy", "defaultAclStrategy"})
   public SimpleAclStrategy allowAllStrategy() {
-    return new SimpleAclStrategy();
+    return allowAllStrategy;
   }
 
   @Bean
