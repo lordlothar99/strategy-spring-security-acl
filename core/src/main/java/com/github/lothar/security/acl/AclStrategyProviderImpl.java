@@ -46,7 +46,7 @@ public class AclStrategyProviderImpl implements BeanFactoryAware, AclStrategyPro
     if (acl != null) {
       String strategyBeanName = acl.value();
       logger.debug("{} annotation found on '{}', indicating strategy '{}'", Acl.class.getName(),
-          entityClass.getSimpleName(), strategy);
+          entityClass.getSimpleName(), strategyBeanName);
       strategy = loadStrategyBean(strategyBeanName);
 
     } else {
