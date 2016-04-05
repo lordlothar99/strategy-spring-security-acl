@@ -42,6 +42,8 @@ public class AclConfigurationTest {
   private AclStrategy denyAllStrategy;
   @Resource
   private AclStrategyProvider strategyProvider;
+  @Resource
+  private AclProperties properties;
 
   @Test
   public void should_default_and_allowAll_be_the_same() {
@@ -76,5 +78,16 @@ public class AclConfigurationTest {
   @Test(expected = IllegalArgumentException.class)
   public void should_provider_throw_error_when_unknown_strategy() {
     assertThat(strategyProvider.strategyFor(UnknownStrategyObject.class)).isNull();
+  }
+
+  @Test
+  public void should_use_specified_strategy_when_override_set() {
+    assertThat(properties.getOverrideStrategy()).isNull();
+    properties.setOverrideStrategy("denyAllStrategy");
+    try {
+      assertThat(strategyProvider.strategyFor(UnknownStrategyObject.class)).isSameAs(denyAllStrategy);
+    } finally {
+      properties.setOverrideStrategy(null);
+    }
   }
 }

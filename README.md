@@ -22,13 +22,9 @@ Dealing with Access Control List is not a PermissionEvaluator-only concern. Let'
 
 Strategy-spring-security-acl relies on several principles :
 
-### Easy to plug extension of [Spring Security][]
+### Auto-configured
 
-Propose an alternative to [Spring Security Acl][]
-
-### Easy to configure
-
-Thanks to [Spring Boot][] auto-configure awesome magic
+Strategy-security-acl is an extension of [Spring Security][] which will auto-configure thanks to [Spring Boot][] awesome magic
 
 ### Extensibility !!
 
@@ -40,8 +36,12 @@ You need more than existing features ? Create your own !! and share it ;).
 
 ### Strategy oriented
 
-1. Create ACL strategies as Spring beans. Strategies are composite objects wrapping ACL filter components (1 for each feature)  
-2. Install for each business object, and you
+1. ACL strategies are Spring beans
+2. You can create reusable strategies, and apply them to several domain objects, or associate 1 specific strategy for each domain object
+3. Strategies are composite objects wrapping ACL filter implementations dedicated to each supported technology, which are called "feature" :
+- GrantEvaluator, as a typed delegation of [Spring Security][]'s `PermissionEvaluator`
+- Specification, implementation of [Spring Data JPA][]'s API
+- FilterBuilder, implementation of [Spring Data ElasticSearch][]'s API
 
 ## <a name="Installation">Installation</a>
 
@@ -60,7 +60,7 @@ Add Github as a maven repository (yes, you can) :
 
 ### [Spring Boot][]
 
-We love [Spring Boot][]. Configured beans are automatically loaded by [Spring Boot][]'s magic, as soon jars are in the path.
+Configured beans are automatically loaded by [Spring Boot][]'s magic, as soon jars are in the path.
 Add required dependencies to your pom :
 
 	<dependency>
@@ -110,14 +110,14 @@ Then you need very few Spring config:
 ```
 
 Now, let's say you have a `Customer` domain entity in your project, and you need to restrict readable customers, so that only those whose last name is "Smith" can be retrieved.
-1. Define your strategy : let's create an `CustomerAclStrategy`, which will contain our different ACL features implementations (1 implementation by feature). `SimpleAclStrategy` implementation is recommanded as a start. In your favorite `Configuration` bean, let's define :
+1. Define your strategy : let's create an `CustomerAclStrategy`, which will contain our different ACL features implementations (1 implementation by feature). `SimpleAclStrategy` implementation is recommended as a start. In your favorite `Configuration` bean, let's define :
 ```
   @Bean
   public SimpleAclStrategy customerStrategy() {
     return new SimpleAclStrategy();
   }
 ```
-2. Create a `CustomerGrantEvaluator` bean, and install it inside the `CustomerStrategy`. Let's add a new bean into `Configuration` :
+2. If you are using GrantEvaluator feature, create a `CustomerGrantEvaluator` bean, and install it inside the `CustomerStrategy`. Let's add a new bean into `Configuration` :
 ```
   @Bean
   public GrantEvaluator smithFamilyGrantEvaluator(CustomerRepository customerRepository,
@@ -162,6 +162,39 @@ public class CustomerGrantEvaluator extends AbstractGrantEvaluator<Customer, Str
   @PreAuthorize("hasPermission(#customer, 'SAVE')")
 ...
   @PreAuthorize("hasPermission(#customerId, 'com.github.lothar.security.acl.sample.domain.Customer', 'READ')")
+```
+4. If you are using Jpa feature, create a `Specification` bean, and install it inside the `CustomerStrategy`. Let's add this new bean into `Configuration` :
+```
+  @Bean
+  public Specification<Customer> smithFamilySpec(JpaSpecFeature<Customer> jpaSpecFeature) {
+    Specification<Customer> smithFamilySpec = new Specification<Customer>() {
+      @Override
+      public Predicate toPredicate(Root<Customer> root, CriteriaQuery<?> query,
+          CriteriaBuilder cb) {
+        return cb.equal(root.get("lastName"), "Smith");
+      }
+    };
+    customerStrategy.install(jpaSpecFeature, smithFamilySpec);
+    return smithFamilySpec;
+  }
+```
+5. If you are using ElasticSearch feature, create a `FilterBuilder` bean, and install it inside the `CustomerStrategy`. Let's add this new bean into `Configuration` :
+```
+  @Bean
+  public TermFilterBuilder smithFamilyFilter(ElasticSearchFeature elasticSearchFeature) {
+    TermFilterBuilder smithFamilyFilter = termFilter("lastName", "Smith");
+    customerStrategy.install(elasticSearchFeature, smithFamilyFilter);
+    return smithFamilyFilter;
+  }
+```
+
+### Override strategies
+
+It may be useful (for tests purpose for example) to disable all domain objects strategies, and use only one (which may be `allowAllStrategy`, so no restriction would be applied). Just add following property in your project's yml/properties file:
+
+```
+strategy-security-acl:
+    override-strategy: allowAllStrategy
 ```
 
 ### Struggling with integration ?

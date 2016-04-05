@@ -21,13 +21,17 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 
+import com.github.lothar.security.acl.config.AclProperties;
+
 public class AclStrategyProviderImpl implements BeanFactoryAware, AclStrategyProvider {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
   private AclStrategy defaultStrategy;
   private BeanFactory beanFactory;
+  private AclProperties properties;
 
-  public AclStrategyProviderImpl(AclStrategy defaultStrategy) {
+  public AclStrategyProviderImpl(AclStrategy defaultStrategy, AclProperties properties) {
+    this.properties = properties;
     notNull(defaultStrategy, "Default ACL strategy can't be null");
     this.defaultStrategy = defaultStrategy;
   }
@@ -40,23 +44,33 @@ public class AclStrategyProviderImpl implements BeanFactoryAware, AclStrategyPro
   @Override
   public AclStrategy strategyFor(Class<?> entityClass) {
 
-    AclStrategy strategy = null;
+    String strategyBeanName = strategyBeanName(entityClass);
+
+    AclStrategy strategy = strategyBeanName != null //
+        ? loadStrategyBean(strategyBeanName) //
+        : defaultStrategy;
+
+    logger.debug("Using acl strategy on '{}' : {}", entityClass.getSimpleName(), strategy);
+    return strategy;
+  }
+
+  private String strategyBeanName(Class<?> entityClass) {
+    String strategyBeanName = properties.getOverrideStrategy();
+    if (strategyBeanName != null) {
+      logger.debug("Using override strategy: {}", strategyBeanName);
+      return strategyBeanName;
+    }
 
     Acl acl = entityClass.getAnnotation(Acl.class);
     if (acl != null) {
-      String strategyBeanName = acl.value();
-      logger.debug("{} annotation found on '{}', indicating strategy '{}'", Acl.class.getName(),
+      strategyBeanName = acl.value();
+      logger.debug("{} annotation found on '{}', indicating strategy {}", Acl.class.getName(),
           entityClass.getSimpleName(), strategyBeanName);
-      strategy = loadStrategyBean(strategyBeanName);
-
     } else {
       logger.debug("No {} annotation found on '{}' > fall back on default strategy",
           Acl.class.getName(), entityClass.getSimpleName());
-      strategy = defaultStrategy;
     }
-
-    logger.debug("Using acl strategy on '{}' : '{}'", entityClass.getSimpleName(), strategy);
-    return strategy;
+    return strategyBeanName;
   }
 
   private AclStrategy loadStrategyBean(String strategyBeanName) {
