@@ -21,16 +21,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.lothar.security.acl.AclFeature;
 
 @SuppressWarnings("unchecked")
 public class AclComposersRegistry implements AclStrategyComposerProvider {
 
+  private Logger logger = LoggerFactory.getLogger(getClass());
   private Map<AclFeature<?>, AclComposer<?>> composers = new HashMap<>();
 
   public <Handler> void register(AclFeature<Handler> feature, AclComposer<Handler> composer) {
     notNull(feature, "Feature can't be null");
     composers.put(feature, composer);
+    logger.debug("Registered {} composer: {}", feature, composer);
   }
 
   public <Handler> AclComposer<Handler> unregister(AclFeature<Handler> feature) {
