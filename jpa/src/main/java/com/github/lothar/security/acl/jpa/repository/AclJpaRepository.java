@@ -15,16 +15,14 @@
  *******************************************************************************/
 package com.github.lothar.security.acl.jpa.repository;
 
-import static com.github.lothar.security.acl.jpa.spec.AclJpaSpecifications.idsIn;
 import static org.springframework.data.jpa.domain.Specifications.where;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -55,48 +53,22 @@ public class AclJpaRepository<T, ID extends Serializable> extends SimpleJpaRepos
   }
 
   @Override
-  public List<T> findAll() {
-    return super.findAll(aclJpaSpec());
-  }
-
-  @Override
-  public List<T> findAll(Iterable<ID> ids) {
-    return this.findAll(idsIn(ids));
-  }
-
-  @Override
-  public List<T> findAll(Sort sort) {
-    return super.findAll(aclJpaSpec(), sort);
-  }
-
-  @Override
-  public Page<T> findAll(Pageable pageable) {
-    return super.findAll(aclJpaSpec(), pageable);
-  }
-
-  @Override
-  public List<T> findAll(Specification<T> spec) {
-    return super.findAll(aclJpaSpec().and(spec));
-  }
-
-  @Override
-  public Page<T> findAll(Specification<T> spec, Pageable pageable) {
-    return super.findAll(aclJpaSpec().and(spec), pageable);
-  }
-
-  @Override
-  public List<T> findAll(Specification<T> spec, Sort sort) {
-    return super.findAll(aclJpaSpec().and(spec), sort);
-  }
-
-  @Override
   public long count() {
-    return super.count(aclJpaSpec());
+    return super.count(null);
   }
 
   @Override
-  public long count(Specification<T> spec) {
-    return super.count(aclJpaSpec().and(spec));
+  protected TypedQuery<Long> getCountQuery(Specification<T> spec) {
+    return super.getCountQuery(aclJpaSpec().and(spec));
+  }
+
+  protected TypedQuery<T> getQuery(Specification<T> spec, Sort sort) {
+    return super.getQuery(aclJpaSpec().and(spec), sort);
+  }
+
+  @Override
+  protected TypedQuery<T> getQuery(Specification<T> spec, Pageable pageable) {
+    return super.getQuery(aclJpaSpec().and(spec), pageable);
   }
 
   private Specifications<T> aclJpaSpec() {
