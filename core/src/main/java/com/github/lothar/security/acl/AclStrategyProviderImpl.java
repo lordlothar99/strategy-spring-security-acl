@@ -45,11 +45,7 @@ public class AclStrategyProviderImpl implements BeanFactoryAware, AclStrategyPro
   public AclStrategy strategyFor(Class<?> entityClass) {
 
     String strategyBeanName = strategyBeanName(entityClass);
-
-    AclStrategy strategy = strategyBeanName != null //
-        ? loadStrategyBean(strategyBeanName) //
-        : defaultStrategy;
-
+    AclStrategy strategy = loadStrategyBean(strategyBeanName);
     logger.debug("Using acl strategy on '{}' : {}", entityClass.getSimpleName(), strategy);
     return strategy;
   }
@@ -74,13 +70,16 @@ public class AclStrategyProviderImpl implements BeanFactoryAware, AclStrategyPro
   }
 
   private AclStrategy loadStrategyBean(String strategyBeanName) {
-    try {
-      AclStrategy strategy = beanFactory.getBean(strategyBeanName, AclStrategy.class);
-      return strategy;
-    } catch (NoSuchBeanDefinitionException e) {
-      throw new IllegalArgumentException("Unable to find " + AclStrategy.class.getName()
-          + " bean with name '" + strategyBeanName + "'", e);
+    AclStrategy strategy = defaultStrategy;
+    if (strategyBeanName != null) {
+      try {
+        strategy = beanFactory.getBean(strategyBeanName, AclStrategy.class);
+      } catch (NoSuchBeanDefinitionException e) {
+        logger.warn("Unable to find {} bean with name '{}' > fall back on default strategy", AclStrategy.class.getName(),
+            strategyBeanName);
+      } 
     }
+    return strategy;
   }
 
 }

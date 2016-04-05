@@ -14,13 +14,18 @@
 package com.github.lothar.security.acl.jpa;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 import javax.annotation.Resource;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.github.lothar.security.acl.jpa.domain.NoStrategyObject;
+import com.github.lothar.security.acl.jpa.domain.UnknownStrategyObject;
+import com.github.lothar.security.acl.jpa.domain.WithoutHandlerObject;
 import com.github.lothar.security.acl.jpa.repository.AllowedToAllRepository;
 import com.github.lothar.security.acl.jpa.repository.DeniedToAllRepository;
 import com.github.lothar.security.acl.jpa.repository.NoAclRepository;
@@ -32,6 +37,10 @@ import com.github.lothar.security.acl.jpa.repository.WithoutHandlerRepository;
 @SpringApplicationConfiguration(JpaSpecTestConfiguration.class)
 public class JpaSpecProviderTest {
 
+  @Resource
+  private JpaSpecProvider<Object> jpaSpecProvider;
+  @Resource
+  private Specification<?> defaultAclSpecification;
   @Resource
   private AllowedToAllRepository allowedToAllRepository;
   @Resource
@@ -55,4 +64,18 @@ public class JpaSpecProviderTest {
     assertThat(withoutHandlerRepository).isNotNull();
   }
 
+  @Test
+  public void should_use_default_handler_when_none_defined() {
+    assertThat(jpaSpecProvider.jpaSpecFor(WithoutHandlerObject.class)).isSameAs(defaultAclSpecification);
+  }
+
+  @Test
+  public void should_use_default_handler_when_unknown_defined() {
+    assertThat(jpaSpecProvider.jpaSpecFor(UnknownStrategyObject.class)).isSameAs(defaultAclSpecification);
+  }
+
+  @Test
+  public void should_use_default_handler_when_no_strategy_defined() {
+    assertThat(jpaSpecProvider.jpaSpecFor(NoStrategyObject.class)).isSameAs(defaultAclSpecification);
+  }
 }

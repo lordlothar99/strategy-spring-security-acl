@@ -75,9 +75,9 @@ public class AclConfigurationTest {
     assertThat(strategyProvider.strategyFor(NoAclObject.class)).isSameAs(defaultAclStrategy);
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void should_provider_throw_error_when_unknown_strategy() {
-    assertThat(strategyProvider.strategyFor(UnknownStrategyObject.class)).isNull();
+  @Test
+  public void should_provider_return_defaultStrategy_when_unknown_strategy() {
+    assertThat(strategyProvider.strategyFor(UnknownStrategyObject.class)).isSameAs(defaultAclStrategy);
   }
 
   @Test

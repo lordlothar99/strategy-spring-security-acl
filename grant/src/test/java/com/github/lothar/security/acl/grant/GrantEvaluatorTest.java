@@ -85,14 +85,14 @@ public class GrantEvaluatorTest {
 
   // unknown strategy
 
-  @Test(expected = IllegalArgumentException.class)
-  public void should_throw_an_error_when_unknown_strategy_using_strong_signature() {
+  @Test
+  public void should_grant_when_unknown_strategy_using_strong_signature() {
     UnknownStrategyObject domainObject = new UnknownStrategyObject();
     assertStrong(domainObject).isTrue();
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void should_throw_an_error_when_unknown_strategy_using_weak_signature() {
+  @Test
+  public void should_grant_when_unknown_strategy_using_weak_signature() {
     UnknownStrategyObject domainObject = new UnknownStrategyObject();
     assertWeak(domainObject).isTrue();
   }

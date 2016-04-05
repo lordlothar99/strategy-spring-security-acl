@@ -64,9 +64,9 @@ public class AclJpaRepositoryFactoryBeanTest {
     assertThat(jpaSpecProvider.jpaSpecFor(NoStrategyObject.class)).isSameAs(allowAllSpec);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void should_provider_return_allowAll_spec_for_unknownStrategy() {
-    assertThat(jpaSpecProvider.jpaSpecFor(UnknownStrategyObject.class)).isNull();
+    assertThat(jpaSpecProvider.jpaSpecFor(UnknownStrategyObject.class)).isSameAs(allowAllSpec);
   }
 
   @Test
