@@ -13,12 +13,19 @@
  *******************************************************************************/
 package com.github.lothar.security.acl.jpa;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import com.github.lothar.security.acl.AclStrategy;
 import com.github.lothar.security.acl.SimpleAclStrategy;
+import com.github.lothar.security.acl.jpa.domain.Customer;
 import com.github.lothar.security.acl.jpa.repository.AclJpaRepositoryFactoryBean;
 
 @SpringBootApplication
@@ -26,8 +33,28 @@ import com.github.lothar.security.acl.jpa.repository.AclJpaRepositoryFactoryBean
     repositoryFactoryBeanClass = AclJpaRepositoryFactoryBean.class)
 public class JpaSpecTestConfiguration {
 
+  private SimpleAclStrategy customerStrategy = new SimpleAclStrategy();
+
   @Bean
   public AclStrategy withoutHandlerStrategy() {
     return new SimpleAclStrategy();
+  }
+
+  @Bean
+  public SimpleAclStrategy customerStrategy() {
+    return customerStrategy;
+  }
+
+  @Bean
+  public Specification<Customer> smithFamilySpec(JpaSpecFeature<Customer> jpaSpecFeature) {
+    Specification<Customer> smithFamilySpec = new Specification<Customer>() {
+      @Override
+      public Predicate toPredicate(Root<Customer> root, CriteriaQuery<?> query,
+          CriteriaBuilder cb) {
+        return cb.equal(root.get("lastName"), "Smith");
+      }
+    };
+    customerStrategy.install(jpaSpecFeature, smithFamilySpec);
+    return smithFamilySpec;
   }
 }
