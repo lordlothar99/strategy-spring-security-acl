@@ -48,9 +48,9 @@ public class AclPermissionEvaluator implements PermissionEvaluator {
     GrantEvaluator grantEvaluator = grantEvaluator(entityClass);
 
     boolean grant = grantEvaluator.isGranted(permission, authentication, targetDomainObject);
-    String granted = grant ? "granted" : "not granted";
-    logger.debug("Permission '{}' {} for {} on object {} using {}", permission, granted,
-        authentication, targetDomainObject, grantEvaluator);
+    String granted = grant ? "granted" : "NOT granted";
+    logger.trace("{} said permission '{}' is {} for {} on object {}", grantEvaluator, permission,
+        granted, authentication, targetDomainObject);
     return grant;
   }
 
@@ -63,8 +63,8 @@ public class AclPermissionEvaluator implements PermissionEvaluator {
 
     boolean grant = grantEvaluator.isGranted(permission, authentication, targetId, targetType);
     String granted = grant ? "granted" : "not granted";
-    logger.debug("Permission '{}' {} for {} on object {}#{} using {}", permission, granted,
-        authentication, targetType, targetId, grantEvaluator);
+    logger.trace("{} said permission '{}' {} for {} on object {}#{}", grantEvaluator, permission,
+        granted, authentication, targetType, targetId);
     return grant;
   }
 
@@ -83,6 +83,7 @@ public class AclPermissionEvaluator implements PermissionEvaluator {
           strategy);
       grantEvaluator = defaultGrantEvaluator;
     }
+    logger.debug("Using grant evaluator on '{}' : '{}'", entityClass.getSimpleName(), grantEvaluator);
     return grantEvaluator;
   }
 
