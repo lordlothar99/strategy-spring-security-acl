@@ -57,11 +57,12 @@ public class ElasticSearchAclConfiguration {
   }
 
   @Bean
-  public AclFilterProvider aclFilterProvider(AclStrategyProvider strategyProvider) {
-    return new AclFilterProvider(strategyProvider, elasticSearchFeature);
+  public AclFilterProvider aclFilterProvider(AclStrategyProvider strategyProvider,
+      FilterBuilder defaultFilter) {
+    return new AclFilterProvider(strategyProvider, elasticSearchFeature, defaultFilter);
   }
 
-  @Bean
+  @Bean(name = {"allowAllFilter", "defaultFilter"})
   public FilterBuilder allowAllFilter(SimpleAclStrategy allowAllStrategy) {
     FilterBuilderBean allowAllFilter = new FilterBuilderBean(matchAllFilter());
     allowAllStrategy.install(elasticSearchFeature, allowAllFilter);

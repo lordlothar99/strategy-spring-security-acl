@@ -25,19 +25,33 @@ public class AclFilterProvider {
   private Logger logger = LoggerFactory.getLogger(getClass());
   private AclStrategyProvider strategyProvider;
   private ElasticSearchFeature elasticSearchFeature;
+  private FilterBuilder defaultFilterBuilder;
 
   public AclFilterProvider(AclStrategyProvider strategyProvider,
-      ElasticSearchFeature elasticSearchFeature) {
+      ElasticSearchFeature elasticSearchFeature, FilterBuilder defaultFilterBuilder) {
     super();
     this.strategyProvider = strategyProvider;
     this.elasticSearchFeature = elasticSearchFeature;
+    this.defaultFilterBuilder = defaultFilterBuilder;
   }
 
   public FilterBuilder filterFor(Class<?> domainType) {
-    AclStrategy strategy = strategyProvider.strategyFor(domainType);
-    FilterBuilder filterBuilder = strategy.handlerFor(elasticSearchFeature);
+    FilterBuilder filterBuilder = defaultFilterBuilder;
 
-    // TODO implement default filterBuilder
+    AclStrategy strategy = strategyProvider.strategyFor(domainType);
+    if (strategy == null) {
+      logger.debug("No strategy found for '{}' in strategy provider", domainType.getSimpleName());
+
+    } else {
+      FilterBuilder filter = strategy.handlerFor(elasticSearchFeature);
+      if (filter == null) {
+        logger.debug(
+            "No ACL ElasticSearch found in strategy {} > fall back on default ACL ElasticSearch specification",
+            strategy);
+      } else {
+        filterBuilder = filter;
+      }
+    }
 
     logger.debug("Using ACL ElasticSearch filter builder for {} using strategy {}: {}",
         domainType.getSimpleName(), strategy, filterBuilder);
