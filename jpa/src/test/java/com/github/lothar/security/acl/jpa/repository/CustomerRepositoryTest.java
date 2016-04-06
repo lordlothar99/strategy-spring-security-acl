@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import javax.annotation.Resource;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -94,10 +93,24 @@ public class CustomerRepositoryTest {
     });
   }
 
-  @Ignore("NOt yet implemented")
   @Test
-  public void should_not_find_members_of_Doe_family_when_strategy_applied() {
+  public void should_not_find_members_of_Doe_family_with_method_query() {
     assertThat(repository.findByLastName("Doe")).isEmpty();
+  }
+
+  @Test
+  public void should_find_members_of_Smith_family_with_method_query() {
+    assertThat(repository.findByLastName("Smith")).hasSize(2);
+  }
+
+  @Test
+  public void should_not_count_members_of_Doe_family_with_method_query() {
+    assertThat(repository.countByLastName("Doe")).isEqualTo(0);
+  }
+
+  @Test
+  public void should_count_members_of_Smith_family_with_method_query() {
+    assertThat(repository.countByLastName("Smith")).isEqualTo(2);
   }
 
   private void doWithoutCustomerSpec(Runnable runnable) {

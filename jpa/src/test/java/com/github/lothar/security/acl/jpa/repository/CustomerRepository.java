@@ -15,7 +15,6 @@
 package com.github.lothar.security.acl.jpa.repository;
 
 import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -27,5 +26,7 @@ public interface CustomerRepository
   Customer findByFirstName(String firstName);
 
   List<Customer> findByLastName(String lastName);
+
+  int countByLastName(String lastName);
 
 }

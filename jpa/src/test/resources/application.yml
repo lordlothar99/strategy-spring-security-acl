@@ -1,0 +1,8 @@
+spring:
+    jpa:
+        hibernate:
+            ddl-auto: create
+logging:
+    level:
+        org.hibernate.SQL: debug
+        com.github.lothar.security.acl: debug
