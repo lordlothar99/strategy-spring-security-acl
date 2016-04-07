@@ -27,6 +27,7 @@ import com.github.lothar.security.acl.config.AclConfiguration;
 import com.github.lothar.security.acl.jpa.JpaSpecFeature;
 import com.github.lothar.security.acl.jpa.JpaSpecProvider;
 import com.github.lothar.security.acl.jpa.compound.JpaSpecComposer;
+import com.github.lothar.security.acl.jpa.query.JpaQuerySpecInstaller;
 import com.github.lothar.security.acl.jpa.spec.AllowAllSpecification;
 import com.github.lothar.security.acl.jpa.spec.DenyAllSpecification;
 
@@ -52,6 +53,11 @@ public class JpaSpecAclConfiguration<T> {
     JpaSpecComposer<T> composer = new JpaSpecComposer<>();
     registry.register(jpaSpecFeature, composer);
     return composer;
+  }
+
+  @Bean
+  public JpaQuerySpecInstaller jpaQuerySpecInstaller(JpaSpecProvider<Object> jpaSpecProvider) {
+    return new JpaQuerySpecInstaller(jpaSpecProvider);
   }
 
   @Bean

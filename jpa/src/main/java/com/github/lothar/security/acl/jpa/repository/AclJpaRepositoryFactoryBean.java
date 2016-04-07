@@ -18,7 +18,6 @@ import java.lang.reflect.Method;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
@@ -37,13 +36,15 @@ import org.springframework.data.repository.query.RepositoryQuery;
 
 import com.github.lothar.security.acl.Acl;
 import com.github.lothar.security.acl.jpa.JpaSpecProvider;
-import com.github.lothar.security.acl.jpa.query.AclJpaQuery;
+import com.github.lothar.security.acl.jpa.query.JpaQuerySpecInstaller;
 
 public class AclJpaRepositoryFactoryBean<T extends Repository<S, ID>, S, ID extends Serializable>
     extends JpaRepositoryFactoryBean<T, S, ID> {
 
   @Resource
   private JpaSpecProvider<Object> jpaSpecProvider;
+  @Resource
+  private JpaQuerySpecInstaller jpaQuerySpecInstaller;
 
   protected RepositoryFactorySupport createRepositoryFactory(EntityManager entityManager) {
     return new Factory(entityManager);
@@ -110,9 +111,8 @@ public class AclJpaRepositoryFactoryBean<T extends Repository<S, ID>, S, ID exte
         QueryLookupStrategy queryLookupStrategy =
             Factory.super.getQueryLookupStrategy(key, evaluationContextProvider);
         RepositoryQuery query = queryLookupStrategy.resolveQuery(method, metadata, namedQueries);
-        AclJpaQuery aclQuery =
-            new AclJpaQuery(query, em, jpaSpecProvider, metadata.getDomainType());
-        return aclQuery;
+        jpaQuerySpecInstaller.installAclSpec(method, query, metadata.getDomainType(), em);
+        return query;
       }
     }
   }

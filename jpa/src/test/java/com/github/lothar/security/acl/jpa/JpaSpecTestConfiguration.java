@@ -13,6 +13,8 @@
  *******************************************************************************/
 package com.github.lothar.security.acl.jpa;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -27,13 +29,27 @@ import com.github.lothar.security.acl.AclStrategy;
 import com.github.lothar.security.acl.SimpleAclStrategy;
 import com.github.lothar.security.acl.jpa.domain.Customer;
 import com.github.lothar.security.acl.jpa.repository.AclJpaRepositoryFactoryBean;
+import com.github.lothar.security.acl.jpa.spec.AllowAllSpecification;
 
 @SpringBootApplication
 @EnableJpaRepositories(value = "com.github.lothar.security.acl.jpa.repository",
     repositoryFactoryBeanClass = AclJpaRepositoryFactoryBean.class)
 public class JpaSpecTestConfiguration {
 
+  @Resource
+  private SimpleAclStrategy allowAllStrategy;
+  @Resource
+  private AllowAllSpecification<?> allowAllSpecification;
+  @Resource
+  private JpaSpecFeature<Customer> jpaSpecFeature;
   private SimpleAclStrategy customerStrategy = new SimpleAclStrategy();
+  private Specification<Customer> smithFamilySpec = new Specification<Customer>() {
+    @Override
+    public Predicate toPredicate(Root<Customer> root, CriteriaQuery<?> query,
+        CriteriaBuilder cb) {
+      return cb.equal(root.get("lastName"), "Smith");
+    }
+  };
 
   @Bean
   public AclStrategy withoutHandlerStrategy() {
@@ -41,20 +57,17 @@ public class JpaSpecTestConfiguration {
   }
 
   @Bean
-  public SimpleAclStrategy customerStrategy() {
+  public AclStrategy customerStrategy() {
     return customerStrategy;
   }
 
   @Bean
-  public Specification<Customer> smithFamilySpec(JpaSpecFeature<Customer> jpaSpecFeature) {
-    Specification<Customer> smithFamilySpec = new Specification<Customer>() {
-      @Override
-      public Predicate toPredicate(Root<Customer> root, CriteriaQuery<?> query,
-          CriteriaBuilder cb) {
-        return cb.equal(root.get("lastName"), "Smith");
-      }
-    };
-    customerStrategy.install(jpaSpecFeature, smithFamilySpec);
+  public Specification<Customer> smithFamilySpec() {
     return smithFamilySpec;
+  }
+
+  @PostConstruct
+  public void installStrategy() {
+    customerStrategy.install(jpaSpecFeature, smithFamilySpec);
   }
 }
