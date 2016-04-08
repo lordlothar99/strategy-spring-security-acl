@@ -19,14 +19,14 @@ import org.elasticsearch.index.query.TermFilterBuilder;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
-import org.springframework.data.elasticsearch.repository.support.ElasticsearchRepositoryFactoryBean;
 
 import com.github.lothar.security.acl.AclStrategy;
 import com.github.lothar.security.acl.SimpleAclStrategy;
+import com.github.lothar.security.acl.elasticsearch.repository.AclElasticsearchRepositoryFactoryBean;
 
 @SpringBootApplication
 @EnableElasticsearchRepositories(value = "com.github.lothar.security.acl.elasticsearch.repository",
-repositoryFactoryBeanClass = ElasticsearchRepositoryFactoryBean.class)
+    repositoryFactoryBeanClass = AclElasticsearchRepositoryFactoryBean.class)
 public class ElasticSearchTestConfiguration {
 
   private SimpleAclStrategy customerStrategy = new SimpleAclStrategy();
