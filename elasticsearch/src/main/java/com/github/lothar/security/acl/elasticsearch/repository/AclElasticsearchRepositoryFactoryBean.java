@@ -65,7 +65,7 @@ public class AclElasticsearchRepositoryFactoryBean<T extends Repository<S, ID>, 
     protected Class<?> getRepositoryBaseClass(RepositoryMetadata metadata) {
       return !hasAclStrategyAnnotation(metadata.getDomainType()) //
           ? super.getRepositoryBaseClass(metadata) //
-          : AclNumberKeyedRepository.class;
+          : AclElasticsearchRepository.class;
     }
 
     @Override
@@ -79,7 +79,7 @@ public class AclElasticsearchRepositoryFactoryBean<T extends Repository<S, ID>, 
       }
 
       // invokes
-      // com.github.lothar.security.acl.elasticsearch.repository.AclNumberKeyedRepository.AclNumberKeyedRepository(ElasticsearchEntityInformation<T,
+      // com.github.lothar.security.acl.elasticsearch.repository.AclElasticsearchRepository.AclNumberKeyedRepository(ElasticsearchEntityInformation<T,
       // ID>, ElasticsearchOperations, AclFilterProvider)
       ElasticsearchRepository<?, ?> repository = getTargetRepositoryViaReflection(metadata,
           entityInformation, elasticsearchOperations, filterProvider);

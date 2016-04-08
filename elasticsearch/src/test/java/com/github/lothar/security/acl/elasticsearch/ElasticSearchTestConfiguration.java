@@ -13,9 +13,10 @@
  *******************************************************************************/
 package com.github.lothar.security.acl.elasticsearch;
 
-import static org.elasticsearch.index.query.FilterBuilders.termFilter;
+import static org.elasticsearch.index.query.FilterBuilders.queryFilter;
+import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 
-import org.elasticsearch.index.query.TermFilterBuilder;
+import org.elasticsearch.index.query.QueryFilterBuilder;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
@@ -42,8 +43,8 @@ public class ElasticSearchTestConfiguration {
   }
 
   @Bean
-  public TermFilterBuilder smithFamilyFilter(ElasticSearchFeature elasticSearchFeature) {
-    TermFilterBuilder smithFamilyFilter = termFilter("lastName", "Smith");
+  public QueryFilterBuilder smithFamilyFilter(ElasticSearchFeature elasticSearchFeature) {
+    QueryFilterBuilder smithFamilyFilter = queryFilter(matchQuery("lastName", "Smith"));
     customerStrategy.install(elasticSearchFeature, smithFamilyFilter);
     return smithFamilyFilter;
   }
