@@ -17,8 +17,6 @@ package com.github.lothar.security.acl.jpa.query;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaQuery;
@@ -29,61 +27,82 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.query.PartTreeJpaQuery;
+import org.springframework.data.repository.query.QueryMethod;
 import org.springframework.data.repository.query.RepositoryQuery;
 import org.springframework.util.ReflectionUtils;
 
 import com.github.lothar.security.acl.jpa.JpaSpecProvider;
 
-public class JpaQuerySpecInstaller {
+public class AclJpaQuery implements RepositoryQuery {
+
 
   private Logger logger = LoggerFactory.getLogger(getClass());
-  private Set<Integer> installedQueries = new HashSet<>();
+  private RepositoryQuery query;
+  private Class<?> domainType;
+  private EntityManager em;
   private JpaSpecProvider<Object> jpaSpecProvider;
+  private Method method;
 
-  public JpaQuerySpecInstaller(JpaSpecProvider<Object> jpaSpecProvider) {
+  public AclJpaQuery(Method method, RepositoryQuery query, Class<?> domainType, EntityManager em,
+      JpaSpecProvider<Object> jpaSpecProvider) {
+    this.method = method;
+    this.query = query;
+    this.domainType = domainType;
+    this.em = em;
     this.jpaSpecProvider = jpaSpecProvider;
   }
 
-  public void installAclSpec(Method method, RepositoryQuery query, Class<?> domainType,
-      EntityManager em) {
-    if (!(query instanceof PartTreeJpaQuery)) {
-      logger.warn(
-          "Unsupported query type for method '{}' > ACL Jpa Specification not installed: {}",
-          method, query.getClass());
-    } else if (isAlreadyInstalled(query)) {
-      logger.debug("ACL Jpa Specification already installed for method '{}' and query {}", method,
-          query);
-    } else {
-      doInstall(method, query, domainType, em);
+  @Override
+  public synchronized Object execute(Object[] parameters) {
+    Predicate predicate = installAclSpec();
+    try {
+      return query.execute(parameters);
+    } finally {
+      uninstallAclSpec(predicate);
     }
   }
 
-  private void doInstall(Method method, RepositoryQuery query, Class<?> domainType,
-      EntityManager em) {
+  private void uninstallAclSpec(Predicate predicate) {
     try {
-      Object queryPreparer = getField(PartTreeJpaQuery.class, query, "query");
-      CriteriaQuery<?> criteriaQuery =
-          getField(queryPreparer.getClass(), queryPreparer, "cachedCriteriaQuery");
+      CriteriaQuery<?> criteriaQuery = criteriaQuery();
+      criteriaQuery.where(predicate);
+      logger.debug("ACL Jpa Specification uninstalled from method '{}' and query {}", method,
+          query);
+    } catch (Exception e) {
+      logger.warn("Unable to uninstall ACL Jpa Specification from method '" + method
+          + "' and query: " + query, e);
+    }
+  }
+
+  private Predicate installAclSpec() {
+    try {
+      CriteriaQuery<?> criteriaQuery = criteriaQuery();
+      Predicate restriction = criteriaQuery.getRestriction();
       Specification<Object> jpaSpec = jpaSpecProvider.jpaSpecFor(domainType);
-      Predicate predicate =
+      Predicate aclPredicate =
           jpaSpec.toPredicate(root(criteriaQuery), criteriaQuery, em.getCriteriaBuilder());
-      criteriaQuery.where(criteriaQuery.getRestriction(), predicate);
-      installedQuery(query);
+      criteriaQuery.where(restriction, aclPredicate);
       logger.debug("ACL Jpa Specification installed for method '{}' and query {}: {}", method,
           query, jpaSpec);
+      return restriction;
     } catch (Exception e) {
       logger.warn(
           "Unable to install ACL Jpa Specification for method '" + method + "' and query: " + query,
           e);
+      return null;
     }
   }
 
-  private void installedQuery(RepositoryQuery query) {
-    installedQueries.add(query.hashCode());
+  @Override
+  public QueryMethod getQueryMethod() {
+    return query.getQueryMethod();
   }
 
-  private boolean isAlreadyInstalled(RepositoryQuery query) {
-    return installedQueries.contains(query.hashCode());
+  private CriteriaQuery<?> criteriaQuery() {
+    Object queryPreparer = getField(PartTreeJpaQuery.class, query, "query");
+    CriteriaQuery<?> criteriaQuery =
+        getField(queryPreparer.getClass(), queryPreparer, "cachedCriteriaQuery");
+    return criteriaQuery;
   }
 
   @SuppressWarnings("unchecked")
@@ -92,7 +111,7 @@ public class JpaQuerySpecInstaller {
   }
 
   @SuppressWarnings("unchecked")
-  private <T> T getField(Class<?> type, Object object, String fieldName) {
+  private static <T> T getField(Class<?> type, Object object, String fieldName) {
     Field field = ReflectionUtils.findField(type, fieldName);
     field.setAccessible(true);
     Object property = ReflectionUtils.getField(field, object);

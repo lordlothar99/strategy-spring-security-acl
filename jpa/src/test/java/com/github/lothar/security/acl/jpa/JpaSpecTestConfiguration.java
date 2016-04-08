@@ -15,14 +15,9 @@ package com.github.lothar.security.acl.jpa;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import com.github.lothar.security.acl.AclStrategy;
@@ -30,6 +25,7 @@ import com.github.lothar.security.acl.SimpleAclStrategy;
 import com.github.lothar.security.acl.jpa.domain.Customer;
 import com.github.lothar.security.acl.jpa.repository.AclJpaRepositoryFactoryBean;
 import com.github.lothar.security.acl.jpa.spec.AllowAllSpecification;
+import com.github.lothar.security.acl.jpa.spec.CustomerSpecification;
 
 @SpringBootApplication
 @EnableJpaRepositories(value = "com.github.lothar.security.acl.jpa.repository",
@@ -43,13 +39,7 @@ public class JpaSpecTestConfiguration {
   @Resource
   private JpaSpecFeature<Customer> jpaSpecFeature;
   private SimpleAclStrategy customerStrategy = new SimpleAclStrategy();
-  private Specification<Customer> smithFamilySpec = new Specification<Customer>() {
-    @Override
-    public Predicate toPredicate(Root<Customer> root, CriteriaQuery<?> query,
-        CriteriaBuilder cb) {
-      return cb.equal(root.get("lastName"), "Smith");
-    }
-  };
+  private CustomerSpecification smithFamilySpec = new CustomerSpecification("Smith");
 
   @Bean
   public AclStrategy withoutHandlerStrategy() {
@@ -62,7 +52,7 @@ public class JpaSpecTestConfiguration {
   }
 
   @Bean
-  public Specification<Customer> smithFamilySpec() {
+  public CustomerSpecification smithFamilySpec() {
     return smithFamilySpec;
   }
 

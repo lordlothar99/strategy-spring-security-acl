@@ -20,6 +20,7 @@ import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.jpa.repository.query.PartTreeJpaQuery;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean;
@@ -36,15 +37,13 @@ import org.springframework.data.repository.query.RepositoryQuery;
 
 import com.github.lothar.security.acl.Acl;
 import com.github.lothar.security.acl.jpa.JpaSpecProvider;
-import com.github.lothar.security.acl.jpa.query.JpaQuerySpecInstaller;
+import com.github.lothar.security.acl.jpa.query.AclJpaQuery;
 
 public class AclJpaRepositoryFactoryBean<T extends Repository<S, ID>, S, ID extends Serializable>
     extends JpaRepositoryFactoryBean<T, S, ID> {
 
   @Resource
   private JpaSpecProvider<Object> jpaSpecProvider;
-  @Resource
-  private JpaQuerySpecInstaller jpaQuerySpecInstaller;
 
   protected RepositoryFactorySupport createRepositoryFactory(EntityManager entityManager) {
     return new Factory(entityManager);
@@ -111,7 +110,14 @@ public class AclJpaRepositoryFactoryBean<T extends Repository<S, ID>, S, ID exte
         QueryLookupStrategy queryLookupStrategy =
             Factory.super.getQueryLookupStrategy(key, evaluationContextProvider);
         RepositoryQuery query = queryLookupStrategy.resolveQuery(method, metadata, namedQueries);
-        jpaQuerySpecInstaller.installAclSpec(method, query, metadata.getDomainType(), em);
+
+        if (query instanceof PartTreeJpaQuery) {
+          query = new AclJpaQuery(method, query, metadata.getDomainType(), em, jpaSpecProvider);
+        } else {
+          logger.warn(
+              "Unsupported query type for method '{}' > ACL Jpa Specification not installed: {}",
+              method, query.getClass());
+        }
         return query;
       }
     }
