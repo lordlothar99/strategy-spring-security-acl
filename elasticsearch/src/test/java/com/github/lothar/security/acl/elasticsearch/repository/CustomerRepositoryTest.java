@@ -116,7 +116,6 @@ public class CustomerRepositoryTest {
 
   // search
 
-  @Ignore("Fix me")
   @Test
   public void should_search_authorized_customers_only_when_strategy_applied() {
     assertThat(repository.search(matchAllQuery())).hasSize(2);
