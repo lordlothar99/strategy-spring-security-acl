@@ -111,11 +111,11 @@ public class AclElasticsearchRepository<T, ID extends Serializable>
 
   @Override
   public FacetedPage<T> search(SearchQuery query) {
-    // TODO apply filter
-    // SearchQuery searchQuery = new NativeSearchQueryBuilder() //
-    // .withFilter(filter()) //
-    // .withQuery(query) //
-    // .build();
+//    // TODO apply filter
+//     SearchQuery searchQuery = new NativeSearchQueryBuilder() //
+//     .withFilter(filter()) //
+//     .withQuery(query) //
+//     .build();
     return elasticsearchOperations.queryForPage(query, getEntityClass());
   }
 

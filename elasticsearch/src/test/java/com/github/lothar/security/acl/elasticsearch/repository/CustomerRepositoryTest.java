@@ -28,7 +28,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 import com.github.lothar.security.acl.SimpleAclStrategy;
 import com.github.lothar.security.acl.elasticsearch.ElasticSearchFeature;
 import com.github.lothar.security.acl.elasticsearch.ElasticSearchTestConfiguration;
@@ -117,8 +119,24 @@ public class CustomerRepositoryTest {
   // search
 
   @Test
-  public void should_search_authorized_customers_only_when_strategy_applied() {
+  public void should_searchQuery_retrieve_authorized_customers_only_when_strategy_applied() {
     assertThat(repository.search(matchAllQuery())).hasSize(2);
+  }
+
+  @Test
+  public void should_searchQuery_retrieve_all_customers_only_when_strategy_not_applied() {
+    doWithoutCustomerFilter(new Runnable() {
+      @Override
+      public void run() {
+        assertThat(repository.search(matchAllQuery())).hasSize(4);
+      }
+    });
+  }
+
+  @Ignore("Fix me")
+  @Test
+  public void should_search_authorized_customers_only_when_strategy_applied() {
+    assertThat(repository.search(new NativeSearchQuery(matchAllQuery()))).hasSize(2);
   }
 
   @Test
@@ -126,7 +144,7 @@ public class CustomerRepositoryTest {
     doWithoutCustomerFilter(new Runnable() {
       @Override
       public void run() {
-        assertThat(repository.search(matchAllQuery())).hasSize(4);
+        assertThat(repository.search(new NativeSearchQuery(matchAllQuery()))).hasSize(4);
       }
     });
   }
