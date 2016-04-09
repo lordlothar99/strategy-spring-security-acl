@@ -68,15 +68,18 @@ public class AclElasticsearchRepository<T, ID extends Serializable>
 
   @Override
   public Iterable<T> findAll() {
-    // TODO apply filter
+    // redirects to #findAll(Pageable)
     return super.findAll();
   }
 
   @Override
   public Page<T> findAll(Pageable pageable) {
-    // TODO apply filter
-    return super.findAll(pageable);
-  }
+    SearchQuery query = new NativeSearchQueryBuilder() //
+        .withQuery(filteredQuery(matchAllQuery(), filter())) //
+        .withPageable(pageable) //
+        .build();
+    return elasticsearchOperations.queryForPage(query, getEntityClass());
+}
 
   @Override
   public Iterable<T> findAll(Sort sort) {

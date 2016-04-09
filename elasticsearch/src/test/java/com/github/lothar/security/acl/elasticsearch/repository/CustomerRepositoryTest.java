@@ -99,7 +99,6 @@ public class CustomerRepositoryTest {
 
   // findall
 
-  @Ignore("Fix me")
   @Test
   public void should_find_authorized_customers_only_when_strategy_applied() {
     assertThat(repository.findAll()).hasSize(2);
