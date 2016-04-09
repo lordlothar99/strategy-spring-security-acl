@@ -81,7 +81,7 @@ public class CustomerRepositoryTest {
 
   // count
 
-  @Ignore("Fix me")
+//  @Ignore("Fix me")
   @Test
   public void should_count_authorized_customers_only_when_strategy_applied() {
     assertThat(repository.count()).isEqualTo(2);

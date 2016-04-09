@@ -136,8 +136,7 @@ public class AclElasticsearchRepository<T, ID extends Serializable>
   @Override
   public long count() {
     SearchQuery query = new NativeSearchQueryBuilder() //
-        // .withQuery(filteredQuery(matchAllQuery(), filter())) //
-        .withQuery(matchAllQuery()) //
+         .withQuery(filteredQuery(matchAllQuery(), filter())) //
         .build();
     return elasticsearchOperations.count(query, getEntityClass());
   }
