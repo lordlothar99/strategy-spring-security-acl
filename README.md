@@ -18,9 +18,7 @@ Dealing with Access Control List is not a PermissionEvaluator-only concern. Let'
 - performance : some useless objects are retrieved but evicted
 - pagination : let's say user ask for a 10 items page ; repository finds those, but 4 of them are evicted... either developper implemented some retry-til-page-is-complete behavior (ugly pattern, and downgraded performance expected...), either client will get only 6 objects, and therefore ask himself where the 4 others went !! too bad...
 
-## Ok, what's the proposal then ??
-
-Strategy-spring-security-acl relies on several principles :
+For read-like methods in JPA and ElasticSearch repositories, Strategy-spring-security-acl provides features able to inject ACL restriction criterias directly inside the repositories.
 
 ### Auto-configured
 
