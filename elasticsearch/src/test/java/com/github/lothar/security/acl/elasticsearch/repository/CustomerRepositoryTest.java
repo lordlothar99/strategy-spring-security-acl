@@ -49,14 +49,18 @@ public class CustomerRepositoryTest {
   private ElasticSearchFeature elasticSearchFeature;
   @Resource
   private ElasticsearchTemplate elasticsearchTemplate;
+  private Customer aliceSmith;
+  private Customer bobSmith;
+  private Customer johnDoe;
+  private Customer aliceDoe;
 
   @Before
   public void init() {
     repository.deleteAll();
-    repository.save(new Customer("1", "Alice", "The Smith family"));
-    repository.save(new Customer("2", "Bob", "The Smith family"));
-    repository.save(new Customer("3", "John", "The Doe family"));
-    repository.save(new Customer("4", "Alice", "The Doe family"));
+    aliceSmith = repository.save(new Customer("1", "Alice", "The Smith family"));
+    bobSmith = repository.save(new Customer("2", "Bob", "The Smith family"));
+    johnDoe = repository.save(new Customer("3", "John", "The Doe family"));
+    aliceDoe = repository.save(new Customer("4", "Alice", "The Doe family"));
     logger.info("Customer strategy : {}", customerStrategy);
   }
 
@@ -72,18 +76,17 @@ public class CustomerRepositoryTest {
 
   @Test
   public void test_findOne() {
-    assertThat(repository.findOne("1")).isNotNull();
+    assertThat(repository.findOne(aliceSmith.getId())).isEqualToComparingFieldByField(aliceSmith);
   }
 
   @Ignore("Fix me")
   @Test
   public void test_findOne_blocked() {
-    assertThat(repository.findOne("3")).isNull();
+    assertThat(repository.findOne(johnDoe.getId())).isNull();
   }
 
   // count
 
-//  @Ignore("Fix me")
   @Test
   public void should_count_authorized_customers_only_when_strategy_applied() {
     assertThat(repository.count()).isEqualTo(2);
@@ -99,11 +102,22 @@ public class CustomerRepositoryTest {
     });
   }
 
+  @Ignore("Fix me")
+  @Test
+  public void should_not_count_members_of_Doe_family_with_method_query() {
+    assertThat(repository.countByLastName("Doe")).isEqualTo(0);
+  }
+
+  @Test
+  public void should_count_members_of_Smith_family_with_method_query() {
+    assertThat(repository.countByLastName("Smith")).isEqualTo(2);
+  }
+
   // findall
 
   @Test
   public void should_find_authorized_customers_only_when_strategy_applied() {
-    assertThat(repository.findAll()).hasSize(2);
+    assertThat(repository.findAll()).contains(aliceSmith, bobSmith);
   }
 
   @Test
@@ -111,7 +125,7 @@ public class CustomerRepositoryTest {
     doWithoutCustomerFilter(new Runnable() {
       @Override
       public void run() {
-        assertThat(repository.findAll()).hasSize(4);
+        assertThat(repository.findAll()).contains(aliceSmith, bobSmith, johnDoe, aliceDoe);
       }
     });
   }
@@ -120,7 +134,7 @@ public class CustomerRepositoryTest {
 
   @Test
   public void should_searchQuery_retrieve_authorized_customers_only_when_strategy_applied() {
-    assertThat(repository.search(matchAllQuery())).hasSize(2);
+    assertThat(repository.search(matchAllQuery())).contains(aliceSmith, bobSmith);
   }
 
   @Test
@@ -128,7 +142,7 @@ public class CustomerRepositoryTest {
     doWithoutCustomerFilter(new Runnable() {
       @Override
       public void run() {
-        assertThat(repository.search(matchAllQuery())).hasSize(4);
+        assertThat(repository.search(matchAllQuery())).contains(aliceSmith, bobSmith, johnDoe, aliceDoe);
       }
     });
   }
@@ -136,7 +150,7 @@ public class CustomerRepositoryTest {
   @Ignore("Fix me")
   @Test
   public void should_search_authorized_customers_only_when_strategy_applied() {
-    assertThat(repository.search(new NativeSearchQuery(matchAllQuery()))).hasSize(2);
+    assertThat(repository.search(new NativeSearchQuery(matchAllQuery()))).contains(aliceSmith, bobSmith);
   }
 
   @Test
@@ -144,7 +158,7 @@ public class CustomerRepositoryTest {
     doWithoutCustomerFilter(new Runnable() {
       @Override
       public void run() {
-        assertThat(repository.search(new NativeSearchQuery(matchAllQuery()))).hasSize(4);
+        assertThat(repository.search(new NativeSearchQuery(matchAllQuery()))).contains(aliceSmith, bobSmith, johnDoe, aliceDoe);
       }
     });
   }
@@ -153,7 +167,7 @@ public class CustomerRepositoryTest {
 
   @Test
   public void should_search_specific_customers_when_strategy_applied() {
-    assertThat(repository.search(matchQuery("firstName", "Alice"))).hasSize(1);
+    assertThat(repository.search(matchQuery("firstName", "Alice"))).contains(aliceSmith);
   }
 
   @Test
@@ -161,7 +175,7 @@ public class CustomerRepositoryTest {
     doWithoutCustomerFilter(new Runnable() {
       @Override
       public void run() {
-        assertThat(repository.search(matchQuery("firstName", "Alice"))).hasSize(2);
+        assertThat(repository.search(matchQuery("firstName", "Alice"))).contains(aliceSmith, aliceDoe);
       }
     });
   }
@@ -174,18 +188,7 @@ public class CustomerRepositoryTest {
 
   @Test
   public void should_find_members_of_Smith_family_with_method_query() {
-    assertThat(repository.findByLastName("Smith")).hasSize(2);
-  }
-
-  @Ignore("Fix me")
-  @Test
-  public void should_not_count_members_of_Doe_family_with_method_query() {
-    assertThat(repository.countByLastName("Doe")).isEqualTo(0);
-  }
-
-  @Test
-  public void should_count_members_of_Smith_family_with_method_query() {
-    assertThat(repository.countByLastName("Smith")).isEqualTo(2);
+    assertThat(repository.findByLastName("Smith")).contains(aliceSmith, bobSmith);
   }
 
   private void doWithoutCustomerFilter(Runnable runnable) {
