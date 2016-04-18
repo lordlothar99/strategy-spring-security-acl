@@ -13,6 +13,7 @@
  *******************************************************************************/
 package com.github.lothar.security.acl.jpa.repository;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
@@ -51,12 +52,15 @@ public class CustomerRepositoryTest {
   private JpaSpecFeature<Customer> jpaSpecFeature;
   @Resource
   private CustomerSpecification customerSpec;
+  private Customer aliceSmith;
+  private Customer bobSmith;
+  private Customer johnDoe;
 
   @Before
   public void init() {
-    repository.save(new Customer("Alice", "Smith"));
-    repository.save(new Customer("Bob", "Smith"));
-    repository.save(new Customer("John", "Doe"));
+    aliceSmith = repository.save(new Customer("Alice", "Smith"));
+    bobSmith = repository.save(new Customer("Bob", "Smith"));
+    johnDoe = repository.save(new Customer("John", "Doe"));
     logger.info("Customer strategy : {}", customerStrategy);
   }
 
@@ -67,6 +71,8 @@ public class CustomerRepositoryTest {
         .as("Customer ACL JPA specification not registered") //
         .isNotNull();
   }
+
+  // count
 
   @Test
   public void should_count_authorized_customers_only_when_strategy_applied() {
@@ -84,6 +90,30 @@ public class CustomerRepositoryTest {
   }
 
   @Test
+  public void should_not_count_members_of_Doe_family_with_method_query() {
+    assertThat(repository.countByLastName("Doe")).isEqualTo(0);
+  }
+
+  @Test
+  public void should_count_members_of_Smith_family_with_method_query() {
+    assertThat(repository.countByLastName("Smith")).isEqualTo(2);
+  }
+
+  // exist
+
+  @Test
+  public void should_not_say_exist_members_of_Doe_family_with_method_query() {
+    assertThat(repository.exists(johnDoe.getId())).isFalse();
+  }
+
+  @Test
+  public void should_say_exist_members_of_Smith_family_with_method_query() {
+    assertThat(repository.exists(aliceSmith.getId())).isTrue();
+  }
+
+  // findAll
+
+  @Test
   public void should_find_authorized_customers_only_when_strategy_applied() {
     assertThat(repository.findAll()).hasSize(2);
   }
@@ -99,6 +129,27 @@ public class CustomerRepositoryTest {
   }
 
   @Test
+  public void should_find_authorized_customers_using_specific_ids_only_when_strategy_applied() {
+    assertThat(repository.findAll(customerIds())).hasSize(2);
+  }
+
+  @Test
+  public void should_find_all_customers_using_specific_ids_only_when_strategy_not_applied() {
+    doWithoutCustomerSpec(new Runnable() {
+      @Override
+      public void run() {
+        assertThat(repository.findAll(customerIds())).hasSize(3);
+      }
+    });
+  }
+
+  private Iterable<String> customerIds() {
+    return asList(aliceSmith.getId(), bobSmith.getId(), johnDoe.getId());
+  }
+
+  // findByLastName
+
+  @Test
   public void should_not_find_members_of_Doe_family_with_method_query() {
     assertThat(repository.findByLastName("Doe")).isEmpty();
   }
@@ -108,15 +159,19 @@ public class CustomerRepositoryTest {
     assertThat(repository.findByLastName("Smith")).hasSize(2);
   }
 
+  // findOne
+
   @Test
-  public void should_not_count_members_of_Doe_family_with_method_query() {
-    assertThat(repository.countByLastName("Doe")).isEqualTo(0);
+  public void should_not_findOne_member_of_Doe_family_with_method_query() {
+    assertThat(repository.findOne(johnDoe.getId())).isNull();
   }
 
   @Test
-  public void should_count_members_of_Smith_family_with_method_query() {
-    assertThat(repository.countByLastName("Smith")).isEqualTo(2);
+  public void should_findOne_member_of_Smith_family_with_method_query() {
+    assertThat(repository.exists(aliceSmith.getId())).isNotNull();
   }
+
+  // utils
 
   private void doWithoutCustomerSpec(Runnable runnable) {
     Specification<Customer> customerSpec = customerStrategy.uninstall(jpaSpecFeature);

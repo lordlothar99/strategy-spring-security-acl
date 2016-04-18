@@ -15,6 +15,7 @@
  *******************************************************************************/
 package com.github.lothar.security.acl.jpa.repository;
 
+import static com.github.lothar.security.acl.jpa.spec.AclJpaSpecifications.idEqualTo;
 import static org.springframework.data.jpa.domain.Specifications.where;
 
 import java.io.Serializable;
@@ -55,6 +56,16 @@ public class AclJpaRepository<T, ID extends Serializable> extends SimpleJpaRepos
   @Override
   public long count() {
     return super.count(null);
+  }
+
+  @Override
+  public boolean exists(ID id) {
+    return findOne(id) != null;
+  }
+
+  @Override
+  public T findOne(ID id) {
+    return super.findOne(aclJpaSpec().and(idEqualTo(id)));
   }
 
   @Override
