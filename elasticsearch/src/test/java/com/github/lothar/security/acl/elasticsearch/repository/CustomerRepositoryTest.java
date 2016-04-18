@@ -13,6 +13,7 @@
  *******************************************************************************/
 package com.github.lothar.security.acl.elasticsearch.repository;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
@@ -146,6 +147,21 @@ public class CustomerRepositoryTest {
     });
   }
 
+  @Test
+  public void should_find_by_ids_authorized_customers_only_when_strategy_applied() {
+    assertThat(repository.findAll(customerIds())).contains(aliceSmith, bobSmith);
+  }
+
+  @Test
+  public void should_find_by_ids_all_customers_only_when_strategy_not_applied() {
+    doWithoutCustomerFilter(new Runnable() {
+      @Override
+      public void run() {
+        assertThat(repository.findAll(customerIds())).contains(aliceSmith, bobSmith, johnDoe, aliceDoe);
+      }
+    });
+  }
+
   // search
 
   @Test
@@ -214,6 +230,10 @@ public class CustomerRepositoryTest {
     } finally {
       customerStrategy.install(elasticSearchFeature, customerFilter);
     }
+  }
+
+  private Iterable<String> customerIds() {
+    return asList(aliceSmith.getId(), bobSmith.getId(), johnDoe.getId(), aliceDoe.getId());
   }
 
 }
