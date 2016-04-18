@@ -19,7 +19,9 @@ import static com.github.lothar.security.acl.jpa.spec.AclJpaSpecifications.idEqu
 import static org.springframework.data.jpa.domain.Specifications.where;
 
 import java.io.Serializable;
+
 import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.TypedQuery;
 
 import org.slf4j.Logger;
@@ -66,6 +68,15 @@ public class AclJpaRepository<T, ID extends Serializable> extends SimpleJpaRepos
   @Override
   public T findOne(ID id) {
     return super.findOne(aclJpaSpec().and(idEqualTo(id)));
+  }
+
+  @Override
+  public T getOne(ID id) {
+    T entity = this.findOne(id);
+    if (entity == null) {
+      throw new EntityNotFoundException("Unable to find " + getDomainClass().getName() + " with id " + id);
+    }
+    return entity;
   }
 
   @Override

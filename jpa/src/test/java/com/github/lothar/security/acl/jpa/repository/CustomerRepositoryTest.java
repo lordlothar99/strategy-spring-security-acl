@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -115,7 +116,7 @@ public class CustomerRepositoryTest {
 
   @Test
   public void should_find_authorized_customers_only_when_strategy_applied() {
-    assertThat(repository.findAll()).hasSize(2);
+    assertThat(repository.findAll()).contains(aliceSmith, bobSmith);
   }
 
   @Test
@@ -123,14 +124,14 @@ public class CustomerRepositoryTest {
     doWithoutCustomerSpec(new Runnable() {
       @Override
       public void run() {
-        assertThat(repository.findAll()).hasSize(3);
+        assertThat(repository.findAll()).contains(aliceSmith, bobSmith, johnDoe);
       }
     });
   }
 
   @Test
   public void should_find_authorized_customers_using_specific_ids_only_when_strategy_applied() {
-    assertThat(repository.findAll(customerIds())).hasSize(2);
+    assertThat(repository.findAll(customerIds())).contains(aliceSmith, bobSmith);
   }
 
   @Test
@@ -138,13 +139,9 @@ public class CustomerRepositoryTest {
     doWithoutCustomerSpec(new Runnable() {
       @Override
       public void run() {
-        assertThat(repository.findAll(customerIds())).hasSize(3);
+        assertThat(repository.findAll(customerIds())).contains(aliceSmith, bobSmith, johnDoe);
       }
     });
-  }
-
-  private Iterable<String> customerIds() {
-    return asList(aliceSmith.getId(), bobSmith.getId(), johnDoe.getId());
   }
 
   // findByLastName
@@ -156,7 +153,19 @@ public class CustomerRepositoryTest {
 
   @Test
   public void should_find_members_of_Smith_family_with_method_query() {
-    assertThat(repository.findByLastName("Smith")).hasSize(2);
+    assertThat(repository.findByLastName("Smith")).contains(aliceSmith, bobSmith);
+  }
+
+  // findByFirstName
+
+  @Test
+  public void should_not_find_members_of_Doe_family_by_first_name_with_method_query() {
+    assertThat(repository.findByFirstName("John")).isNull();
+  }
+
+  @Test
+  public void should_find_members_of_Smith_family_by_first_name_with_method_query() {
+    assertThat(repository.findByFirstName("Bob")).isSameAs(bobSmith);
   }
 
   // findOne
@@ -168,18 +177,19 @@ public class CustomerRepositoryTest {
 
   @Test
   public void should_findOne_member_of_Smith_family_with_method_query() {
-    assertThat(repository.exists(aliceSmith.getId())).isNotNull();
+    assertThat(repository.findOne(aliceSmith.getId())).isSameAs(aliceSmith);
   }
 
-  // utils
+  // getOne
 
-  private void doWithoutCustomerSpec(Runnable runnable) {
-    Specification<Customer> customerSpec = customerStrategy.uninstall(jpaSpecFeature);
-    try {
-      runnable.run();
-    } finally {
-      customerStrategy.install(jpaSpecFeature, customerSpec);
-    }
+  @Test(expected = JpaObjectRetrievalFailureException.class)
+  public void should_not_getOne_member_of_Doe_family_with_method_query() {
+    assertThat(repository.getOne(johnDoe.getId())).isNull();
+  }
+
+  @Test
+  public void should_getOne_member_of_Smith_family_with_method_query() {
+    assertThat(repository.getOne(aliceSmith.getId())).isSameAs(aliceSmith);
   }
 
   @Test
@@ -208,6 +218,21 @@ public class CustomerRepositoryTest {
     } finally {
       customerSpec.setLastName("Smith");
     }
+  }
+
+  // utils
+
+  private void doWithoutCustomerSpec(Runnable runnable) {
+    Specification<Customer> customerSpec = customerStrategy.uninstall(jpaSpecFeature);
+    try {
+      runnable.run();
+    } finally {
+      customerStrategy.install(jpaSpecFeature, customerSpec);
+    }
+  }
+
+  private Iterable<String> customerIds() {
+    return asList(aliceSmith.getId(), bobSmith.getId(), johnDoe.getId());
   }
 
 }
