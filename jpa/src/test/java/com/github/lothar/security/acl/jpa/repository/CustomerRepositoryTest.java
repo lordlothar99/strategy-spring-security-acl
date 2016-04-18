@@ -116,7 +116,7 @@ public class CustomerRepositoryTest {
 
   @Test
   public void should_find_authorized_customers_only_when_strategy_applied() {
-    assertThat(repository.findAll()).contains(aliceSmith, bobSmith);
+    assertThat(repository.findAll()).containsOnly(aliceSmith, bobSmith);
   }
 
   @Test
@@ -124,14 +124,14 @@ public class CustomerRepositoryTest {
     doWithoutCustomerSpec(new Runnable() {
       @Override
       public void run() {
-        assertThat(repository.findAll()).contains(aliceSmith, bobSmith, johnDoe);
+        assertThat(repository.findAll()).containsOnly(aliceSmith, bobSmith, johnDoe);
       }
     });
   }
 
   @Test
   public void should_find_authorized_customers_using_specific_ids_only_when_strategy_applied() {
-    assertThat(repository.findAll(customerIds())).contains(aliceSmith, bobSmith);
+    assertThat(repository.findAll(customerIds())).containsOnly(aliceSmith, bobSmith);
   }
 
   @Test
@@ -139,7 +139,7 @@ public class CustomerRepositoryTest {
     doWithoutCustomerSpec(new Runnable() {
       @Override
       public void run() {
-        assertThat(repository.findAll(customerIds())).contains(aliceSmith, bobSmith, johnDoe);
+        assertThat(repository.findAll(customerIds())).containsOnly(aliceSmith, bobSmith, johnDoe);
       }
     });
   }
@@ -153,7 +153,7 @@ public class CustomerRepositoryTest {
 
   @Test
   public void should_find_members_of_Smith_family_with_method_query() {
-    assertThat(repository.findByLastName("Smith")).contains(aliceSmith, bobSmith);
+    assertThat(repository.findByLastName("Smith")).containsOnly(aliceSmith, bobSmith);
   }
 
   // findByFirstName
