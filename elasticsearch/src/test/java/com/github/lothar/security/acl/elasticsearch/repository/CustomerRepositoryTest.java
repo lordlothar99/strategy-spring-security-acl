@@ -27,6 +27,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -72,19 +73,6 @@ public class CustomerRepositoryTest {
         .isNotNull();
   }
 
-  // findOne
-
-  @Test
-  public void test_findOne() {
-    assertThat(repository.findOne(aliceSmith.getId())).isEqualToComparingFieldByField(aliceSmith);
-  }
-
-  @Ignore("Fix me")
-  @Test
-  public void test_findOne_blocked() {
-    assertThat(repository.findOne(johnDoe.getId())).isNull();
-  }
-
   // count
 
   @Test
@@ -113,7 +101,20 @@ public class CustomerRepositoryTest {
     assertThat(repository.countByLastName("Smith")).isEqualTo(2);
   }
 
-  // findall
+  // findOne
+
+  @Test
+  public void test_findOne() {
+    assertThat(repository.findOne(aliceSmith.getId())).isEqualToComparingFieldByField(aliceSmith);
+  }
+
+  @Ignore("Fix me")
+  @Test
+  public void test_findOne_blocked() {
+    assertThat(repository.findOne(johnDoe.getId())).isNull();
+  }
+
+  // findAll
 
   @Test
   public void should_find_authorized_customers_only_when_strategy_applied() {
@@ -126,6 +127,21 @@ public class CustomerRepositoryTest {
       @Override
       public void run() {
         assertThat(repository.findAll()).contains(aliceSmith, bobSmith, johnDoe, aliceDoe);
+      }
+    });
+  }
+
+  @Test
+  public void should_find_sorted_authorized_customers_only_when_strategy_applied() {
+    assertThat(repository.findAll(new Sort("firstName"))).contains(aliceSmith, bobSmith);
+  }
+
+  @Test
+  public void should_find_sorted_all_customers_only_when_strategy_not_applied() {
+    doWithoutCustomerFilter(new Runnable() {
+      @Override
+      public void run() {
+        assertThat(repository.findAll(new Sort("firstName"))).containsExactly(aliceDoe, aliceSmith, bobSmith, johnDoe);
       }
     });
   }

@@ -17,11 +17,15 @@ import static org.elasticsearch.index.query.QueryBuilders.filteredQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 
 import java.io.Serializable;
+import java.util.Collections;
+
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
@@ -75,16 +79,23 @@ public class AclElasticsearchRepository<T, ID extends Serializable>
   @Override
   public Page<T> findAll(Pageable pageable) {
     SearchQuery query = new NativeSearchQueryBuilder() //
-        .withQuery(filteredQuery(matchAllQuery(), filter())) //
+        .withQuery(filteredQuery(matchAllQuery(), aclFilter())) //
         .withPageable(pageable) //
         .build();
     return elasticsearchOperations.queryForPage(query, getEntityClass());
-}
+  }
 
   @Override
   public Iterable<T> findAll(Sort sort) {
-    // TODO apply filter
-    return super.findAll(sort);
+    int itemCount = (int) this.count();
+    if (itemCount == 0) {
+      return new PageImpl<T>(Collections.<T>emptyList());
+    }
+    SearchQuery query = new NativeSearchQueryBuilder() //
+        .withQuery(filteredQuery(matchAllQuery(), aclFilter())) //
+        .withPageable(new PageRequest(0, itemCount, sort)) //
+        .build();
+    return elasticsearchOperations.queryForPage(query, getEntityClass());
   }
 
   @Override
@@ -101,21 +112,21 @@ public class AclElasticsearchRepository<T, ID extends Serializable>
 
   @Override
   public Iterable<T> search(QueryBuilder query) {
-    return super.search(filteredQuery(query, filter()));
+    return super.search(filteredQuery(query, aclFilter()));
   }
 
   @Override
   public FacetedPage<T> search(QueryBuilder query, Pageable pageable) {
-    return super.search(filteredQuery(query, filter()), pageable);
+    return super.search(filteredQuery(query, aclFilter()), pageable);
   }
 
   @Override
   public FacetedPage<T> search(SearchQuery query) {
-//    // TODO apply filter
-//     SearchQuery searchQuery = new NativeSearchQueryBuilder() //
-//     .withFilter(filter()) //
-//     .withQuery(query) //
-//     .build();
+    // // TODO apply filter
+    // SearchQuery searchQuery = new NativeSearchQueryBuilder() //
+    // .withFilter(filter()) //
+    // .withQuery(query) //
+    // .build();
     return elasticsearchOperations.queryForPage(query, getEntityClass());
   }
 
@@ -136,12 +147,12 @@ public class AclElasticsearchRepository<T, ID extends Serializable>
   @Override
   public long count() {
     SearchQuery query = new NativeSearchQueryBuilder() //
-         .withQuery(filteredQuery(matchAllQuery(), filter())) //
+        .withQuery(filteredQuery(matchAllQuery(), aclFilter())) //
         .build();
     return elasticsearchOperations.count(query, getEntityClass());
   }
 
-  private FilterBuilder filter() {
+  private FilterBuilder aclFilter() {
     FilterBuilder filterBuilder = filterProvider.filterFor(entityClass);
     logger.debug("Using ACL filter for objects {}: {}", getEntityClass().getSimpleName(),
         filterBuilder);
