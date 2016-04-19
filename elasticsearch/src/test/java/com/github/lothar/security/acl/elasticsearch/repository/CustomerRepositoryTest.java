@@ -28,6 +28,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
@@ -118,12 +119,12 @@ public class CustomerRepositoryTest {
   // findAll
 
   @Test
-  public void should_find_authorized_customers_only_when_strategy_applied() {
+  public void should_findAll_retrieve_authorized_customers_only_when_strategy_applied() {
     assertThat(repository.findAll()).containsOnly(aliceSmith, bobSmith);
   }
 
   @Test
-  public void should_find_all_customers_only_when_strategy_not_applied() {
+  public void should_findAll_retrieve_all_customers_only_when_strategy_not_applied() {
     doWithoutCustomerFilter(new Runnable() {
       @Override
       public void run() {
@@ -133,12 +134,12 @@ public class CustomerRepositoryTest {
   }
 
   @Test
-  public void should_find_sorted_authorized_customers_only_when_strategy_applied() {
+  public void should_find_sorted_retrieve_authorized_customers_only_when_strategy_applied() {
     assertThat(repository.findAll(new Sort("firstName"))).containsOnly(aliceSmith, bobSmith);
   }
 
   @Test
-  public void should_find_sorted_all_customers_only_when_strategy_not_applied() {
+  public void should_find_sorted_retrieve_all_customers_only_when_strategy_not_applied() {
     doWithoutCustomerFilter(new Runnable() {
       @Override
       public void run() {
@@ -148,12 +149,27 @@ public class CustomerRepositoryTest {
   }
 
   @Test
-  public void should_find_by_ids_authorized_customers_only_when_strategy_applied() {
+  public void should_findPageable_retrieve_authorized_customers_only_when_strategy_applied() {
+    assertThat(repository.findAll(new PageRequest(0, 4))).containsOnly(aliceSmith, bobSmith);
+  }
+
+  @Test
+  public void should_findPageable_retrieve__all_customers_only_when_strategy_not_applied() {
+    doWithoutCustomerFilter(new Runnable() {
+      @Override
+      public void run() {
+        assertThat(repository.findAll(new PageRequest(0, 4))).contains(aliceSmith, bobSmith, johnDoe, aliceDoe);
+      }
+    });
+  }
+
+  @Test
+  public void should_find_by_ids_retrieve_authorized_customers_only_when_strategy_applied() {
     assertThat(repository.findAll(customerIds())).containsOnly(aliceSmith, bobSmith);
   }
 
   @Test
-  public void should_find_by_ids_all_customers_only_when_strategy_not_applied() {
+  public void should_find_by_ids_retrieve_all_customers_only_when_strategy_not_applied() {
     doWithoutCustomerFilter(new Runnable() {
       @Override
       public void run() {
