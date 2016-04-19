@@ -13,11 +13,15 @@
  *******************************************************************************/
 package com.github.lothar.security.acl.elasticsearch.repository;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.StreamSupport.stream;
 import static org.elasticsearch.index.query.QueryBuilders.filteredQuery;
+import static org.elasticsearch.index.query.QueryBuilders.idsQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.List;
 
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -100,8 +104,12 @@ public class AclElasticsearchRepository<T, ID extends Serializable>
 
   @Override
   public Iterable<T> findAll(Iterable<ID> ids) {
-    // TODO apply filter
-    return super.findAll(ids);
+    Assert.notNull(ids, "ids can't be null.");
+
+    SearchQuery query = new NativeSearchQueryBuilder() //
+        .withQuery(filteredQuery(idsQuery().ids(idsArray(ids)), aclFilter())) //
+        .build();
+    return elasticsearchOperations.queryForList(query, getEntityClass());
   }
 
   @Override
@@ -162,6 +170,18 @@ public class AclElasticsearchRepository<T, ID extends Serializable>
   @Override
   public String toString() {
     return getClass().getSimpleName() + "<" + getEntityClass().getSimpleName() + ">";
+  }
+
+  private String[] idsArray(Iterable<ID> ids) {
+    List<String> idsString = stringIdsRepresentation(ids);
+    return idsString.toArray(new String[idsString.size()]);
+  }
+
+  private List<String> stringIdsRepresentation(Iterable<ID> ids) {
+    Assert.notNull(ids, "ids can't be null.");
+    return stream(ids.spliterator(), false) //
+        .map(id -> stringIdRepresentation(id)) //
+        .collect(toList());
   }
 
 }
