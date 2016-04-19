@@ -103,19 +103,6 @@ public class CustomerRepositoryTest {
     assertThat(repository.countByLastName("Smith")).isEqualTo(2);
   }
 
-  // findOne
-
-  @Test
-  public void test_findOne() {
-    assertThat(repository.findOne(aliceSmith.getId())).isEqualToComparingFieldByField(aliceSmith);
-  }
-
-  @Ignore("Fix me")
-  @Test
-  public void test_findOne_blocked() {
-    assertThat(repository.findOne(johnDoe.getId())).isNull();
-  }
-
   // findAll
 
   @Test
@@ -178,6 +165,19 @@ public class CustomerRepositoryTest {
     });
   }
 
+  // findOne
+
+  @Test
+  public void test_findOne() {
+    assertThat(repository.findOne(aliceSmith.getId())).isEqualToComparingFieldByField(aliceSmith);
+  }
+
+  @Ignore("Fix me")
+  @Test
+  public void test_findOne_blocked() {
+    assertThat(repository.findOne(johnDoe.getId())).isNull();
+  }
+
   // search
 
   @Test
@@ -191,6 +191,51 @@ public class CustomerRepositoryTest {
       @Override
       public void run() {
         assertThat(repository.search(matchAllQuery())).containsOnly(aliceSmith, bobSmith, johnDoe, aliceDoe);
+      }
+    });
+  }
+
+  @Test
+  public void should_search_specific_customers_when_strategy_applied() {
+    assertThat(repository.search(matchQuery("firstName", "Alice"))).containsOnly(aliceSmith);
+  }
+
+  @Test
+  public void should_search_specific_customers_when_strategy_not_applied() {
+    doWithoutCustomerFilter(new Runnable() {
+      @Override
+      public void run() {
+        assertThat(repository.search(matchQuery("firstName", "Alice"))).containsOnly(aliceSmith, aliceDoe);
+      }
+    });
+  }
+
+  @Test
+  public void should_searchQueryPageable_retrieve_authorized_customers_only_when_strategy_applied() {
+    assertThat(repository.search(matchAllQuery(), new PageRequest(0,  4))).containsOnly(aliceSmith, bobSmith);
+  }
+
+  @Test
+  public void should_searchQueryPageable_retrieve_all_customers_only_when_strategy_not_applied() {
+    doWithoutCustomerFilter(new Runnable() {
+      @Override
+      public void run() {
+        assertThat(repository.search(matchAllQuery(), new PageRequest(0,  4))).containsOnly(aliceSmith, bobSmith, johnDoe, aliceDoe);
+      }
+    });
+  }
+
+  @Test
+  public void should_searchPageable_specific_customers_when_strategy_applied() {
+    assertThat(repository.search(matchQuery("firstName", "Alice"), new PageRequest(0,  4))).containsOnly(aliceSmith);
+  }
+
+  @Test
+  public void should_searchPageable_specific_customers_when_strategy_not_applied() {
+    doWithoutCustomerFilter(new Runnable() {
+      @Override
+      public void run() {
+        assertThat(repository.search(matchQuery("firstName", "Alice"), new PageRequest(0,  4))).containsOnly(aliceSmith, aliceDoe);
       }
     });
   }
@@ -211,22 +256,7 @@ public class CustomerRepositoryTest {
     });
   }
 
-  // search match
-
-  @Test
-  public void should_search_specific_customers_when_strategy_applied() {
-    assertThat(repository.search(matchQuery("firstName", "Alice"))).containsOnly(aliceSmith);
-  }
-
-  @Test
-  public void should_search_specific_customers_when_strategy_not_applied() {
-    doWithoutCustomerFilter(new Runnable() {
-      @Override
-      public void run() {
-        assertThat(repository.search(matchQuery("firstName", "Alice"))).containsOnly(aliceSmith, aliceDoe);
-      }
-    });
-  }
+  // findByLastName
 
   @Ignore("Fix me")
   @Test
