@@ -1,6 +1,6 @@
 ---
 language: java
-script: mvn verify
+script: mvn verify -Dcoveralls.repoToken=$COVERALLS_REPO_TOKEN
 jdk:
   - oraclejdk8
 
