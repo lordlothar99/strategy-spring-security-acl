@@ -27,6 +27,7 @@ import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -35,12 +36,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.FacetedPage;
 import org.springframework.data.elasticsearch.core.query.MoreLikeThisQuery;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.data.elasticsearch.repository.support.AbstractElasticsearchRepository;
 import org.springframework.data.elasticsearch.repository.support.ElasticsearchEntityInformation;
 import org.springframework.util.Assert;
-
 import com.github.lothar.security.acl.elasticsearch.AclFilterProvider;
 
 public class AclElasticsearchRepository<T, ID extends Serializable>
@@ -130,12 +131,10 @@ public class AclElasticsearchRepository<T, ID extends Serializable>
 
   @Override
   public FacetedPage<T> search(SearchQuery query) {
-    // // TODO apply filter
-    // SearchQuery searchQuery = new NativeSearchQueryBuilder() //
-    // .withFilter(filter()) //
-    // .withQuery(query) //
-    // .build();
-    return elasticsearchOperations.queryForPage(query, getEntityClass());
+    Assert.isInstanceOf(NativeSearchQuery.class, query, "NativeSearchQuery only are supported :(");
+    NativeSearchQuery searchQuery = new NativeSearchQuery(filteredQuery(query.getQuery(), aclFilter()));
+    BeanUtils.copyProperties(query, searchQuery, "query");
+    return elasticsearchOperations.queryForPage(searchQuery, getEntityClass());
   }
 
   @Override

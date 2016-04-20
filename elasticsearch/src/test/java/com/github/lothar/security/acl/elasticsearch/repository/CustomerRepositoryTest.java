@@ -240,7 +240,6 @@ public class CustomerRepositoryTest {
     });
   }
 
-  @Ignore("Fix me")
   @Test
   public void should_search_authorized_customers_only_when_strategy_applied() {
     assertThat(repository.search(new NativeSearchQuery(matchAllQuery()))).containsOnly(aliceSmith, bobSmith);
