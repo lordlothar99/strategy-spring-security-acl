@@ -105,7 +105,6 @@ public class CustomerRepositoryTest {
 
   // exist
 
-  @Ignore("Fix findOne first")
   @Test
   public void should_exists_consider_authorized_customers_only_when_strategy_applied() {
     assertThat(repository.exists(aliceDoe.getId())).isFalse();
