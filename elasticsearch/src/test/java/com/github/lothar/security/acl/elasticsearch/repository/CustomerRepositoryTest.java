@@ -255,6 +255,25 @@ public class CustomerRepositoryTest {
     });
   }
 
+  // searchSimilar
+
+  @Ignore("fix me")
+  @Test
+  public void should_searchSimilar_retrieve_authorized_customers_only_when_strategy_applied() {
+    assertThat(repository.searchSimilar(aliceSmith, new String[]{ "firstName" }, new PageRequest(0, 4))).containsOnly(aliceSmith);
+  }
+
+  @Ignore("doesn't work... I don't get it :(")
+  @Test
+  public void should_searchSimilar_retrieve_all_customers_only_when_strategy_not_applied() {
+    doWithoutCustomerFilter(new Runnable() {
+      @Override
+      public void run() {
+        assertThat(repository.searchSimilar(aliceSmith, new String[]{ "firstName" }, new PageRequest(0, 4))).containsOnly(aliceSmith, aliceDoe);
+      }
+    });
+  }
+
   // findByLastName
 
   @Ignore("Fix me")
