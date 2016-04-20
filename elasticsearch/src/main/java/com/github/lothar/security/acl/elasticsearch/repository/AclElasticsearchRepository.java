@@ -35,7 +35,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.FacetedPage;
-import org.springframework.data.elasticsearch.core.query.MoreLikeThisQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
@@ -71,14 +70,11 @@ public class AclElasticsearchRepository<T, ID extends Serializable>
 
   @Override
   public T findOne(ID id) {
-    // TODO apply filter
-    return super.findOne(id);
-  }
-
-  @Override
-  public Iterable<T> findAll() {
-    // redirects to #findAll(Pageable)
-    return super.findAll();
+    SearchQuery query = new NativeSearchQueryBuilder() //
+        .withQuery(filteredQuery(idsQuery().ids(stringIdRepresentation(id)), aclFilter())) //
+        .build();
+    List<T> list = elasticsearchOperations.queryForList(query, getEntityClass());
+    return list.isEmpty() ? null : list.get(0);
   }
 
   @Override
@@ -139,16 +135,7 @@ public class AclElasticsearchRepository<T, ID extends Serializable>
 
   @Override
   public Page<T> searchSimilar(T entity, String[] fields, Pageable pageable) {
-    // TODO apply filter
-    Assert.notNull(entity, "Cannot search similar records for 'null'.");
-    Assert.notNull(pageable, "'pageable' cannot be 'null'");
-    MoreLikeThisQuery query = new MoreLikeThisQuery();
-    query.setId(stringIdRepresentation(extractIdFromBean(entity)));
-    query.setPageable(pageable);
-    if (fields != null) {
-      query.addFields(fields);
-    }
-    return elasticsearchOperations.moreLikeThis(query, getEntityClass());
+    return super.searchSimilar(entity, fields, pageable);
   }
 
   @Override

@@ -83,7 +83,7 @@ public class CustomerRepositoryTest {
   }
 
   @Test
-  public void should_count_all_customers_only_when_strategy_not_applied() {
+  public void should_count_all_customers_when_strategy_not_applied() {
     doWithoutCustomerFilter(new Runnable() {
       @Override
       public void run() {
@@ -103,6 +103,24 @@ public class CustomerRepositoryTest {
     assertThat(repository.countByLastName("Smith")).isEqualTo(2);
   }
 
+  // exist
+
+  @Ignore("Fix findOne first")
+  @Test
+  public void should_exists_consider_authorized_customers_only_when_strategy_applied() {
+    assertThat(repository.exists(aliceDoe.getId())).isFalse();
+  }
+
+  @Test
+  public void should_exists_consider_all_customers_when_strategy_not_applied() {
+    doWithoutCustomerFilter(new Runnable() {
+      @Override
+      public void run() {
+        assertThat(repository.exists(aliceDoe.getId())).isTrue();
+      }
+    });
+  }
+
   // findAll
 
   @Test
@@ -111,7 +129,7 @@ public class CustomerRepositoryTest {
   }
 
   @Test
-  public void should_findAll_retrieve_all_customers_only_when_strategy_not_applied() {
+  public void should_findAll_retrieve_all_customers_when_strategy_not_applied() {
     doWithoutCustomerFilter(new Runnable() {
       @Override
       public void run() {
@@ -126,7 +144,7 @@ public class CustomerRepositoryTest {
   }
 
   @Test
-  public void should_find_sorted_retrieve_all_customers_only_when_strategy_not_applied() {
+  public void should_find_sorted_retrieve_all_customers_when_strategy_not_applied() {
     doWithoutCustomerFilter(new Runnable() {
       @Override
       public void run() {
@@ -141,7 +159,7 @@ public class CustomerRepositoryTest {
   }
 
   @Test
-  public void should_findPageable_retrieve__all_customers_only_when_strategy_not_applied() {
+  public void should_findPageable_retrieve__all_customers_when_strategy_not_applied() {
     doWithoutCustomerFilter(new Runnable() {
       @Override
       public void run() {
@@ -156,7 +174,7 @@ public class CustomerRepositoryTest {
   }
 
   @Test
-  public void should_find_by_ids_retrieve_all_customers_only_when_strategy_not_applied() {
+  public void should_find_by_ids_retrieve_all_customers_when_strategy_not_applied() {
     doWithoutCustomerFilter(new Runnable() {
       @Override
       public void run() {
@@ -165,16 +183,28 @@ public class CustomerRepositoryTest {
     });
   }
 
-  // findOne
-
-  @Test
-  public void test_findOne() {
-    assertThat(repository.findOne(aliceSmith.getId())).isEqualToComparingFieldByField(aliceSmith);
-  }
+  // findByLastName
 
   @Ignore("Fix me")
   @Test
-  public void test_findOne_blocked() {
+  public void should_not_find_members_of_Doe_family_with_method_query() {
+    assertThat(repository.findByLastName("Doe")).isEmpty();
+  }
+
+  @Test
+  public void should_find_members_of_Smith_family_with_method_query() {
+    assertThat(repository.findByLastName("Smith")).containsOnly(aliceSmith, bobSmith);
+  }
+
+  // findOne
+
+  @Test
+  public void should_findOne_consider_authorized_customers_only_when_strategy_applied() {
+    assertThat(repository.findOne(aliceSmith.getId())).isEqualToComparingFieldByField(aliceSmith);
+  }
+
+  @Test
+  public void should_findOne_consider_all_customers_when_strategy_not_applied() {
     assertThat(repository.findOne(johnDoe.getId())).isNull();
   }
 
@@ -186,7 +216,7 @@ public class CustomerRepositoryTest {
   }
 
   @Test
-  public void should_searchQuery_retrieve_all_customers_only_when_strategy_not_applied() {
+  public void should_searchQuery_retrieve_all_customers_when_strategy_not_applied() {
     doWithoutCustomerFilter(new Runnable() {
       @Override
       public void run() {
@@ -216,7 +246,7 @@ public class CustomerRepositoryTest {
   }
 
   @Test
-  public void should_searchQueryPageable_retrieve_all_customers_only_when_strategy_not_applied() {
+  public void should_searchQueryPageable_retrieve_all_customers_when_strategy_not_applied() {
     doWithoutCustomerFilter(new Runnable() {
       @Override
       public void run() {
@@ -246,7 +276,7 @@ public class CustomerRepositoryTest {
   }
 
   @Test
-  public void should_search_all_customers_only_when_strategy_not_applied() {
+  public void should_search_all_customers_when_strategy_not_applied() {
     doWithoutCustomerFilter(new Runnable() {
       @Override
       public void run() {
@@ -265,26 +295,13 @@ public class CustomerRepositoryTest {
 
   @Ignore("doesn't work... I don't get it :(")
   @Test
-  public void should_searchSimilar_retrieve_all_customers_only_when_strategy_not_applied() {
+  public void should_searchSimilar_retrieve_all_customers_when_strategy_not_applied() {
     doWithoutCustomerFilter(new Runnable() {
       @Override
       public void run() {
         assertThat(repository.searchSimilar(aliceSmith, new String[]{ "firstName" }, new PageRequest(0, 4))).containsOnly(aliceSmith, aliceDoe);
       }
     });
-  }
-
-  // findByLastName
-
-  @Ignore("Fix me")
-  @Test
-  public void should_not_find_members_of_Doe_family_with_method_query() {
-    assertThat(repository.findByLastName("Doe")).isEmpty();
-  }
-
-  @Test
-  public void should_find_members_of_Smith_family_with_method_query() {
-    assertThat(repository.findByLastName("Smith")).containsOnly(aliceSmith, bobSmith);
   }
 
   private void doWithoutCustomerFilter(Runnable runnable) {
