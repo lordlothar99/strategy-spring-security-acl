@@ -1,7 +1,10 @@
 ---
 language: java
-script: mvn verify -Dcoveralls.repoToken=$COVERALLS_REPO_TOKEN
 jdk:
   - oraclejdk8
+
+script: mvn verify
+
+after_success: mvn coveralls:report -Dcoveralls.repoToken=$COVERALLS_REPO_TOKEN
 
 sudo: false
