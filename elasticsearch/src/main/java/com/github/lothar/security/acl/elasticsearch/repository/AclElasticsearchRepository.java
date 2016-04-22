@@ -110,12 +110,6 @@ public class AclElasticsearchRepository<T, ID extends Serializable>
   }
 
   @Override
-  public boolean exists(ID id) {
-    // TODO apply filter
-    return super.exists(id);
-  }
-
-  @Override
   public Iterable<T> search(QueryBuilder query) {
     return super.search(filteredQuery(query, aclFilter()));
   }
