@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-
+import com.github.lothar.security.acl.activation.AclSecurityActivator;
 import com.github.lothar.security.acl.config.AclProperties;
 
 public class AclStrategyProviderImpl implements BeanFactoryAware, AclStrategyProvider {
@@ -29,11 +29,16 @@ public class AclStrategyProviderImpl implements BeanFactoryAware, AclStrategyPro
   private AclStrategy defaultStrategy;
   private BeanFactory beanFactory;
   private AclProperties properties;
+  private AclSecurityActivator activator;
+  private AclStrategy allowAllStrategy;
 
-  public AclStrategyProviderImpl(AclStrategy defaultStrategy, AclProperties properties) {
-    this.properties = properties;
+  public AclStrategyProviderImpl(AclStrategy defaultStrategy, AclProperties properties,
+      AclSecurityActivator activator, AclStrategy allowAllStrategy) {
     notNull(defaultStrategy, "Default ACL strategy can't be null");
     this.defaultStrategy = defaultStrategy;
+    this.properties = properties;
+    this.activator = activator;
+    this.allowAllStrategy = allowAllStrategy;
   }
 
   @Override
@@ -44,8 +49,15 @@ public class AclStrategyProviderImpl implements BeanFactoryAware, AclStrategyPro
   @Override
   public AclStrategy strategyFor(Class<?> entityClass) {
 
-    String strategyBeanName = strategyBeanName(entityClass);
-    AclStrategy strategy = loadStrategyBean(strategyBeanName);
+    AclStrategy strategy = defaultStrategy;
+
+    if (activator.isDisabled()) {
+      logger.debug("ACL disabled");
+      strategy = allowAllStrategy;
+    } else {
+      String strategyBeanName = strategyBeanName(entityClass);
+      strategy = useIfPresent(loadStrategyBean(strategyBeanName));
+    }
     logger.debug("Using acl strategy on '{}' : {}", entityClass.getSimpleName(), strategy);
     return strategy;
   }
@@ -70,16 +82,18 @@ public class AclStrategyProviderImpl implements BeanFactoryAware, AclStrategyPro
   }
 
   private AclStrategy loadStrategyBean(String strategyBeanName) {
-    AclStrategy strategy = defaultStrategy;
     if (strategyBeanName != null) {
       try {
-        strategy = beanFactory.getBean(strategyBeanName, AclStrategy.class);
+        return beanFactory.getBean(strategyBeanName, AclStrategy.class);
       } catch (NoSuchBeanDefinitionException e) {
-        logger.warn("Unable to find {} bean with name '{}' > fall back on default strategy", AclStrategy.class.getName(),
-            strategyBeanName);
-      } 
+        logger.warn("Unable to find {} bean with name '{}' > fall back on default strategy",
+            AclStrategy.class.getName(), strategyBeanName);
+      }
     }
-    return strategy;
+    return null;
   }
 
+  private AclStrategy useIfPresent(AclStrategy strategy) {
+    return strategy != null ? strategy : defaultStrategy;
+  }
 }

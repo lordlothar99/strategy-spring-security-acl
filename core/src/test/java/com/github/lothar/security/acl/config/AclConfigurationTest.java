@@ -24,11 +24,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.lothar.security.acl.AclStrategy;
 import com.github.lothar.security.acl.AclStrategyProvider;
-import com.github.lothar.security.acl.domain.AllowedToAllObject;
-import com.github.lothar.security.acl.domain.DeniedToAllObject;
-import com.github.lothar.security.acl.domain.NoAclObject;
-import com.github.lothar.security.acl.domain.NoStrategyObject;
-import com.github.lothar.security.acl.domain.UnknownStrategyObject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(AclConfiguration.class)
@@ -53,41 +48,5 @@ public class AclConfigurationTest {
   @Test
   public void should_denyAll_and_allowAll_be_different() {
     assertThat(denyAllStrategy).isNotSameAs(allowAllStrategy);
-  }
-
-  @Test
-  public void test_provider_for_allowAllStrategy() {
-    assertThat(strategyProvider.strategyFor(AllowedToAllObject.class)).isSameAs(allowAllStrategy);
-  }
-
-  @Test
-  public void test_provider_for_denyAllStrategy() {
-    assertThat(strategyProvider.strategyFor(DeniedToAllObject.class)).isSameAs(denyAllStrategy);
-  }
-
-  @Test
-  public void should_provider_return_defaultStrategy_when_no_strategy() {
-    assertThat(strategyProvider.strategyFor(NoStrategyObject.class)).isSameAs(defaultAclStrategy);
-  }
-
-  @Test
-  public void should_provider_return_defaultStrategy_when_no_acl_annotation() {
-    assertThat(strategyProvider.strategyFor(NoAclObject.class)).isSameAs(defaultAclStrategy);
-  }
-
-  @Test
-  public void should_provider_return_defaultStrategy_when_unknown_strategy() {
-    assertThat(strategyProvider.strategyFor(UnknownStrategyObject.class)).isSameAs(defaultAclStrategy);
-  }
-
-  @Test
-  public void should_use_specified_strategy_when_override_set() {
-    assertThat(properties.getOverrideStrategy()).isNull();
-    properties.setOverrideStrategy("denyAllStrategy");
-    try {
-      assertThat(strategyProvider.strategyFor(UnknownStrategyObject.class)).isSameAs(denyAllStrategy);
-    } finally {
-      properties.setOverrideStrategy(null);
-    }
   }
 }

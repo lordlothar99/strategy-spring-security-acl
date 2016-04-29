@@ -31,6 +31,7 @@ import com.github.lothar.security.acl.AclStrategy;
 import com.github.lothar.security.acl.AclStrategyProvider;
 import com.github.lothar.security.acl.AclStrategyProviderImpl;
 import com.github.lothar.security.acl.SimpleAclStrategy;
+import com.github.lothar.security.acl.activation.AclSecurityActivator;
 import com.github.lothar.security.acl.compound.AclComposersRegistry;
 import com.github.lothar.security.acl.compound.AclStrategyComposer;
 import com.github.lothar.security.acl.compound.AclStrategyComposerProvider;
@@ -58,8 +59,9 @@ public class AclConfiguration {
 
   @Bean
   @ConditionalOnMissingBean(AclStrategyProvider.class)
-  public AclStrategyProvider aclStrategyProvider(AclProperties properties) {
-    return new AclStrategyProviderImpl(allowAllStrategy, properties);
+  public AclStrategyProvider aclStrategyProvider(AclStrategy defaultAclStrategy,
+      AclProperties properties, AclSecurityActivator aclSecurityActivator, AclStrategy allowAllStrategy) {
+    return new AclStrategyProviderImpl(defaultAclStrategy, properties, aclSecurityActivator, allowAllStrategy);
   }
 
   @Bean(name = {"allowAllStrategy", "defaultAclStrategy"})
@@ -79,5 +81,10 @@ public class AclConfiguration {
       strategies.entrySet().stream() //
           .forEach(e -> logger.debug("Strategy {}: {}", e.getKey(), e.getValue()));
     }
+  }
+
+  @Bean
+  public AclSecurityActivator aclSecurityActivator() {
+    return new AclSecurityActivator();
   }
 }
