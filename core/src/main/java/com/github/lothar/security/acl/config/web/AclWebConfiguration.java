@@ -13,28 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.github.lothar.security.acl.activation.test;
+package com.github.lothar.security.acl.config.web;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import javax.annotation.Resource;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import javax.servlet.Servlet;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import com.github.lothar.security.acl.activation.AclSecurityActivator;
-import com.github.lothar.security.acl.config.AclConfiguration;
+import com.github.lothar.security.acl.activation.web.AclActivatorFilter;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(AclConfiguration.class)
-public class WithoutAclTestExecutionListenerTest {
+@Configuration
+@ConditionalOnClass({Servlet.class})
+public class AclWebConfiguration {
 
-  @Resource
-  private AclSecurityActivator aclSecurityActivator;
-
-  @Test
-  public void should_acl_security_be_enabled_when_listener_is_not_installed() {
-    assertThat(aclSecurityActivator.isEnabled()).isTrue();
+  @Bean
+  public AclActivatorFilter aclActivatorFilter(AclSecurityActivator aclSecurityActivator) {
+    return new AclActivatorFilter(aclSecurityActivator);
   }
 }

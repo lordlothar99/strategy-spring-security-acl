@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.github.lothar.security.acl.activation;
+package com.github.lothar.security.acl.config;
 
-public enum AclStatus {
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
-  ENABLED(true), DISABLED(false);
-  private boolean value;
+import com.github.lothar.security.acl.AclStrategy;
 
-  private AclStatus(boolean value) {
-    this.value = value;
-  }
+@Configuration
+@Import(AclConfiguration.class)
+public class DenyAllDefaultConfiguration {
 
-  boolean value() {
-    return value;
+  @Bean
+  public AclStrategy defaultAclStrategy(AclStrategy denyAllStrategy) {
+    return denyAllStrategy;
   }
 }

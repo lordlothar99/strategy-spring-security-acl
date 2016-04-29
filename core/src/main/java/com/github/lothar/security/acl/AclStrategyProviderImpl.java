@@ -13,8 +13,6 @@
  *******************************************************************************/
 package com.github.lothar.security.acl;
 
-import static org.springframework.util.Assert.notNull;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
@@ -32,10 +30,8 @@ public class AclStrategyProviderImpl implements BeanFactoryAware, AclStrategyPro
   private AclSecurityActivator activator;
   private AclStrategy allowAllStrategy;
 
-  public AclStrategyProviderImpl(AclStrategy defaultStrategy, AclProperties properties,
-      AclSecurityActivator activator, AclStrategy allowAllStrategy) {
-    notNull(defaultStrategy, "Default ACL strategy can't be null");
-    this.defaultStrategy = defaultStrategy;
+  public AclStrategyProviderImpl(AclProperties properties, AclSecurityActivator activator,
+      AclStrategy allowAllStrategy) {
     this.properties = properties;
     this.activator = activator;
     this.allowAllStrategy = allowAllStrategy;
@@ -44,6 +40,11 @@ public class AclStrategyProviderImpl implements BeanFactoryAware, AclStrategyPro
   @Override
   public void setBeanFactory(BeanFactory beanFactory) {
     this.beanFactory = beanFactory;
+  }
+
+  @Override
+  public void setDefaultStrategy(AclStrategy strategy) {
+    defaultStrategy = strategy;
   }
 
   @Override

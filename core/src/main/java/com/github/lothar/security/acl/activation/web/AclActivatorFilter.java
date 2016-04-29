@@ -17,17 +17,17 @@ import static com.github.lothar.security.acl.activation.AclStatus.ENABLED;
 
 import java.io.IOException;
 
+import javax.servlet.Filter;
 import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import org.springframework.web.filter.GenericFilterBean;
-
 import com.github.lothar.security.acl.activation.AclSecurityActivator;
 import com.github.lothar.security.acl.activation.AclStatus;
 
-public class AclActivatorFilter extends GenericFilterBean {
+public class AclActivatorFilter implements Filter {
 
   private AclStatus statusDuringTest;
   private AclSecurityActivator aclSecurityActivator;
@@ -43,6 +43,9 @@ public class AclActivatorFilter extends GenericFilterBean {
   }
 
   @Override
+  public void init(FilterConfig filterConfig) throws ServletException {}
+
+  @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
       throws IOException, ServletException {
     AclStatus status = aclSecurityActivator.getStatus();
@@ -53,4 +56,7 @@ public class AclActivatorFilter extends GenericFilterBean {
       aclSecurityActivator.setStatus(status);
     }
   }
+
+  @Override
+  public void destroy() {}
 }

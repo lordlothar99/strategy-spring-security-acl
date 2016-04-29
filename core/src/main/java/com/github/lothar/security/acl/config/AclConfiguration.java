@@ -16,17 +16,18 @@ package com.github.lothar.security.acl.config;
 import java.util.Map;
 
 import javax.annotation.Resource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
-
 import com.github.lothar.security.acl.AclStrategy;
 import com.github.lothar.security.acl.AclStrategyProvider;
 import com.github.lothar.security.acl.AclStrategyProviderImpl;
@@ -35,8 +36,10 @@ import com.github.lothar.security.acl.activation.AclSecurityActivator;
 import com.github.lothar.security.acl.compound.AclComposersRegistry;
 import com.github.lothar.security.acl.compound.AclStrategyComposer;
 import com.github.lothar.security.acl.compound.AclStrategyComposerProvider;
+import com.github.lothar.security.acl.config.web.AclWebConfiguration;
 
 @Configuration
+@Import(AclWebConfiguration.class)
 @EnableConfigurationProperties(AclProperties.class)
 public class AclConfiguration {
 
@@ -59,13 +62,41 @@ public class AclConfiguration {
 
   @Bean
   @ConditionalOnMissingBean(AclStrategyProvider.class)
-  public AclStrategyProvider aclStrategyProvider(AclStrategy defaultAclStrategy,
-      AclProperties properties, AclSecurityActivator aclSecurityActivator, AclStrategy allowAllStrategy) {
-    return new AclStrategyProviderImpl(defaultAclStrategy, properties, aclSecurityActivator, allowAllStrategy);
+  public AclStrategyProvider aclStrategyProvider(AclProperties properties,
+      AclSecurityActivator aclSecurityActivator) {
+    return new AclStrategyProviderImpl(properties, aclSecurityActivator, allowAllStrategy);
   }
 
-  @Bean(name = {"allowAllStrategy", "defaultAclStrategy"})
+  @Bean
+  public BeanPostProcessor aclStrategyPostProcessor(AclStrategy defaultAclStrategy) {
+    return new BeanPostProcessor() {
+      @Override
+      public Object postProcessBeforeInitialization(Object bean, String beanName)
+          throws BeansException {
+        if (bean instanceof AclStrategyProvider) {
+          AclStrategyProvider aclStrategyProvider = (AclStrategyProvider) bean;
+          aclStrategyProvider.setDefaultStrategy(defaultAclStrategy);
+          logger.debug("Set defaultAclStrategy : {}", defaultAclStrategy);
+        }
+        return bean;
+      }
+
+      @Override
+      public Object postProcessAfterInitialization(Object bean, String beanName)
+          throws BeansException {
+        return bean;
+      }
+    };
+  }
+
+  @Bean
   public SimpleAclStrategy allowAllStrategy() {
+    return allowAllStrategy;
+  }
+
+  @Bean
+  @ConditionalOnMissingBean(name = "defaultAclStrategy")
+  public SimpleAclStrategy defaultAclStrategy() {
     return allowAllStrategy;
   }
 

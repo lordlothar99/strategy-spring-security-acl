@@ -25,8 +25,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.github.lothar.security.acl.AclStrategy;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(AclConfiguration.class)
-public class AclConfigurationTest {
+@SpringApplicationConfiguration(DenyAllDefaultConfiguration.class)
+public class DefaultStrategyOverrideTest {
 
   @Resource
   private AclStrategy defaultAclStrategy;
@@ -36,12 +36,12 @@ public class AclConfigurationTest {
   private AclStrategy denyAllStrategy;
 
   @Test
-  public void should_default_and_allowAll_be_the_same() {
-    assertThat(defaultAclStrategy).isSameAs(allowAllStrategy);
+  public void should_default_and_denyAll_be_the_same() {
+    assertThat(defaultAclStrategy).isSameAs(denyAllStrategy);
   }
 
   @Test
-  public void should_denyAll_and_allowAll_be_different() {
-    assertThat(denyAllStrategy).isNotSameAs(allowAllStrategy);
+  public void should_default_and_allowAll_be_different() {
+    assertThat(defaultAclStrategy).isNotSameAs(allowAllStrategy);
   }
 }
