@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import javax.annotation.Resource;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -88,7 +87,6 @@ public class CustomerRepositoryTest {
     }
   }
 
-  @Ignore("Not implemented yet")
   @Test
   public void should_not_find_members_of_Doe_family_when_strategy_applied() {
     assertThat(repository.findByLastName("Doe")).isEmpty();
