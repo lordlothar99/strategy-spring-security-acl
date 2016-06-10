@@ -208,4 +208,4 @@ Have a look at our samples !!
 
 ### Using JDK 7 ?
 
-Projects using JDK 7 can use artifacts with classifier "jdk7"
+Projects using JDK 7 can use artifacts version with suffix "jdk7"
