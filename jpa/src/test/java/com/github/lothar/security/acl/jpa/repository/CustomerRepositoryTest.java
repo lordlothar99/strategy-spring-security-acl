@@ -20,6 +20,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import javax.annotation.Resource;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -201,7 +204,7 @@ public class CustomerRepositoryTest {
       repository.countByLastName("Smith");
       repository.findByFirstName("John");
       repository.findByLastName("Smith");
-      verify(spy, times(3)).toPredicate(any(), any(), any());
+      verify(spy, times(3)).toPredicate(any(Root.class), any(CriteriaQuery.class), any(CriteriaBuilder.class));
     } finally {
       customerStrategy.install(jpaSpecFeature, customerSpec);
     }

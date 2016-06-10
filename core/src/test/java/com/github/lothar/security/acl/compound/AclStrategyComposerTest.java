@@ -15,8 +15,6 @@ package com.github.lothar.security.acl.compound;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.function.Function;
-
 import javax.annotation.Resource;
 
 import org.junit.Before;
@@ -30,6 +28,7 @@ import com.github.lothar.security.acl.AclTestConfiguration;
 import com.github.lothar.security.acl.SimpleAclStrategy;
 import com.github.lothar.security.acl.StringTesterFeature;
 import com.github.lothar.security.acl.compound.AclStrategyComposer;
+import com.github.lothar.security.acl.jdk8.Function;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(AclTestConfiguration.class)
@@ -45,9 +44,9 @@ public class AclStrategyComposerTest {
   @Before
   public void init() {
     containsA = new SimpleAclStrategy();
-    containsA.install(stringTesterFeature, s -> s.contains("A"));
+    containsA.install(stringTesterFeature, new ContainsFunction("A"));
     containsB = new SimpleAclStrategy();
-    containsB.install(stringTesterFeature, s -> s.contains("B"));
+    containsB.install(stringTesterFeature, new ContainsFunction("B"));
   }
 
   @Test
@@ -76,4 +75,14 @@ public class AclStrategyComposerTest {
     assertThat(stringTester.apply("BC")).isTrue();
   }
 
+  private static class ContainsFunction implements Function<String, Boolean> {
+    private String string;
+    public ContainsFunction(String string) {
+      this.string = string;
+    }
+    
+    public Boolean apply(String string) {
+      return string.contains(this.string);
+    }
+  }
 }

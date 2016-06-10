@@ -13,8 +13,7 @@
  *******************************************************************************/
 package com.github.lothar.security.acl;
 
-import java.util.function.Function;
-
+import com.github.lothar.security.acl.jdk8.Function;
 import com.github.lothar.security.acl.named.NamedBean;
 
 public class StringTesterFeature extends NamedBean

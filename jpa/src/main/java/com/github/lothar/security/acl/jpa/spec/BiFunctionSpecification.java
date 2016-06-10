@@ -15,14 +15,14 @@
  *******************************************************************************/
 package com.github.lothar.security.acl.jpa.spec;
 
-import java.util.function.BiFunction;
-
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.springframework.data.jpa.domain.Specification;
+
+import com.github.lothar.security.acl.jdk8.BiFunction;
 
 public class BiFunctionSpecification<T> implements Specification<T> {
 

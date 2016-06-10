@@ -67,5 +67,9 @@ public class AclStrategyComposer implements AclComposer<AclStrategy> {
     };
 
     abstract <Handler> Handler apply(AclComposer<Handler> composer, Handler lhs, Handler rhs);
+
+    public String toString(AclStrategy lhs, AclStrategy rhs) {
+      return "(" + lhs + " " + toString() + " " + rhs + ")";
+    }
   }
 }

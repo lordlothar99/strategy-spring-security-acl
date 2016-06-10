@@ -17,7 +17,5 @@ package com.github.lothar.security.acl.compound;
 
 public interface Operator<T> {
 
-  default String toString(T lhs, T rhs) {
-    return "(" + lhs + " " + toString() + " " + rhs + ")";
-  }
+  String toString(T lhs, T rhs);
 }

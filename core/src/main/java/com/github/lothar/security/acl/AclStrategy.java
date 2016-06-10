@@ -13,7 +13,6 @@
  *******************************************************************************/
 package com.github.lothar.security.acl;
 
-@FunctionalInterface
 public interface AclStrategy {
 
   <Handler> Handler handlerFor(AclFeature<Handler> feature);

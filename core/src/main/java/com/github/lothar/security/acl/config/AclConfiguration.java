@@ -67,7 +67,7 @@ public class AclConfiguration {
   }
 
   @Bean
-  public BeanPostProcessor aclStrategyPostProcessor(AclStrategy defaultAclStrategy) {
+  public BeanPostProcessor aclStrategyPostProcessor(final AclStrategy defaultAclStrategy) {
     return new BeanPostProcessor() {
       @Override
       public Object postProcessBeforeInitialization(Object bean, String beanName)
@@ -108,8 +108,9 @@ public class AclConfiguration {
   public void logStrategies() {
     if (logger.isDebugEnabled()) {
       Map<String, AclStrategy> strategies = applicationContext.getBeansOfType(AclStrategy.class);
-      strategies.entrySet().stream() //
-          .forEach(e -> logger.debug("Strategy {}: {}", e.getKey(), e.getValue()));
+      for (Map.Entry<String, AclStrategy> e : strategies.entrySet()) {
+        logger.debug("Strategy {}: {}", e.getKey(), e.getValue());
+      }
     }
   }
 

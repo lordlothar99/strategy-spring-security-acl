@@ -15,6 +15,7 @@ package com.github.lothar.security.acl.sample.grant;
 
 import static com.github.lothar.security.acl.jpa.spec.AclJpaSpecifications.idEqualTo;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 
 import com.github.lothar.security.acl.sample.domain.Customer;
@@ -39,7 +40,8 @@ public class CustomerGrantEvaluator extends AbstractGrantEvaluator<Customer, Str
   public boolean isGranted(Permission permission, Authentication authentication, String targetId,
       Class<? extends Customer> targetType) {
     // thanks to JpaSpecFeature, repository will count only authorized customers !
-    return repository.count(idEqualTo(targetId)) == 1;
+    Specification<Customer> idEqualTo = idEqualTo(targetId);
+    return repository.count(idEqualTo) == 1;
     // if Jpa feature was not enabled, we would use
     // return repository.countByLastName("Smith")
   }

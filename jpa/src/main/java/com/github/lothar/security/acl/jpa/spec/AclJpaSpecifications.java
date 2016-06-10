@@ -15,31 +15,52 @@
  *******************************************************************************/
 package com.github.lothar.security.acl.jpa.spec;
 
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.StreamSupport.stream;
-
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.springframework.data.jpa.domain.Specification;
+
+import com.github.lothar.security.acl.jdk8.BiFunction;
 
 public class AclJpaSpecifications {
 
   private AclJpaSpecifications() {}
 
-  public static <T, ID extends Serializable> Specification<T> idsIn(Iterable<ID> ids) {
-    return new BiFunctionSpecification<>((root, cb) -> root.get("ids").in(collection(ids)));
+  public static <T, ID extends Serializable> Specification<T> idsIn(final Iterable<ID> ids) {
+    BiFunction<Root<T>, CriteriaBuilder, Predicate> function = new BiFunction<Root<T>, CriteriaBuilder, Predicate>() {
+      @Override
+      public Predicate apply(Root<T> root, CriteriaBuilder cb) {
+        return root.get("ids").in(collection(ids));
+      }
+    };
+    return new BiFunctionSpecification<>(function);
   }
 
-  public static <T, ID extends Serializable> Specification<T> idEqualTo(ID id) {
-    return new BiFunctionSpecification<>((root, cb) -> cb.equal(root.get("id"), id));
+  public static <T, ID extends Serializable> Specification<T> idEqualTo(final ID id) {
+    BiFunction<Root<T>, CriteriaBuilder, Predicate> function = new BiFunction<Root<T>, CriteriaBuilder, Predicate>() {
+      @Override
+      public Predicate apply(Root<T> root, CriteriaBuilder cb) {
+        return cb.equal(root.get("id"), id);
+      }
+    };
+    return new BiFunctionSpecification<>(function);
   }
 
   private static <T> Collection<T> collection(Iterable<T> iterable) {
     if (iterable instanceof Collection) {
       return (Collection<T>) iterable;
     } else {
-      return stream(iterable.spliterator(), false).collect(toList());
+      List<T> list = new ArrayList<>();
+      for (T element : iterable) {
+        list.add(element);
+      }
+      return list;
     }
   }
 }

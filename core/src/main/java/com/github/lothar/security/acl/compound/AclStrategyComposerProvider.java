@@ -15,7 +15,6 @@ package com.github.lothar.security.acl.compound;
 
 import com.github.lothar.security.acl.AclFeature;
 
-@FunctionalInterface
 public interface AclStrategyComposerProvider {
 
   <Handler> AclComposer<Handler> composerFor(AclFeature<Handler> feature);

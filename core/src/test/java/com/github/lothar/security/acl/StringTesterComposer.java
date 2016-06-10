@@ -15,20 +15,29 @@
  *******************************************************************************/
 package com.github.lothar.security.acl;
 
-import java.util.function.Function;
-
 import com.github.lothar.security.acl.compound.AclComposer;
+import com.github.lothar.security.acl.jdk8.Function;
 
 public class StringTesterComposer implements AclComposer<Function<String, Boolean>> {
 
-  public Function<String, Boolean> and(Function<String, Boolean> lhs,
-      Function<String, Boolean> rhs) {
-    return (s) -> lhs.apply(s) && rhs.apply(s);
+  public Function<String, Boolean> and(final Function<String, Boolean> lhs,
+      final Function<String, Boolean> rhs) {
+    return new Function<String, Boolean>() {
+      @Override
+      public Boolean apply(String s) {
+        return lhs.apply(s) && rhs.apply(s);
+      }
+    };
   }
 
   @Override
-  public Function<String, Boolean> or(Function<String, Boolean> lhs,
-      Function<String, Boolean> rhs) {
-    return (s) -> lhs.apply(s) || rhs.apply(s);
+  public Function<String, Boolean> or(final Function<String, Boolean> lhs,
+      final Function<String, Boolean> rhs) {
+    return new Function<String, Boolean>() {
+      @Override
+      public Boolean apply(String s) {
+        return lhs.apply(s) || rhs.apply(s);
+      }
+    };
   }
 }

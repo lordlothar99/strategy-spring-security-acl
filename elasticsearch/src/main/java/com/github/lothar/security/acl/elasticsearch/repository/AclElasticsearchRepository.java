@@ -13,13 +13,12 @@
  *******************************************************************************/
 package com.github.lothar.security.acl.elasticsearch.repository;
 
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.StreamSupport.stream;
 import static org.elasticsearch.index.query.QueryBuilders.filteredQuery;
 import static org.elasticsearch.index.query.QueryBuilders.idsQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -159,9 +158,11 @@ public class AclElasticsearchRepository<T, ID extends Serializable>
 
   private List<String> stringIdsRepresentation(Iterable<ID> ids) {
     Assert.notNull(ids, "ids can't be null.");
-    return stream(ids.spliterator(), false) //
-        .map(id -> stringIdRepresentation(id)) //
-        .collect(toList());
+    List<String> idStrings = new ArrayList<>();
+    for (ID id : ids) {
+      idStrings.add(stringIdRepresentation(id));
+    }
+    return idStrings;
   }
 
 }

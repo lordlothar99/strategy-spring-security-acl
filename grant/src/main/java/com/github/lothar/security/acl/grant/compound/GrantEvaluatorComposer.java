@@ -78,5 +78,9 @@ public class GrantEvaluatorComposer implements AclComposer<GrantEvaluator> {
     };
 
     abstract boolean apply(boolean lhs, boolean rhs);
+
+    public String toString(GrantEvaluator lhs, GrantEvaluator rhs) {
+      return "(" + lhs + " " + toString() + " " + rhs + ")";
+    }
   }
 }
