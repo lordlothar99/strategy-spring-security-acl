@@ -204,3 +204,8 @@ Have a look at our samples !!
 [Spring Data ElasticSearch]: http://projects.spring.io/spring-data-elasticsearch/
 [Spring Security]: http://projects.spring.io/spring-security/
 [Spring Security ACL]: https://github.com/spring-projects/spring-security/tree/master/acl
+
+
+### Using JDK 7 ?
+
+Projects using JDK 7 can use artifacts with classifier "jdk7"
