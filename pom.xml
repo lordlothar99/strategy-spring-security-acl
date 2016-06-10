@@ -66,21 +66,25 @@
 				<groupId>com.github.lothar.security.acl</groupId>
 				<artifactId>strategy-spring-security-acl-core</artifactId>
 				<version>${project.version}</version>
+				<classifier>jdk7</classifier>
 			</dependency>
 			<dependency>
 				<groupId>com.github.lothar.security.acl</groupId>
 				<artifactId>strategy-spring-security-acl-elasticsearch</artifactId>
 				<version>${project.version}</version>
+				<classifier>jdk7</classifier>
 			</dependency>
 			<dependency>
 				<groupId>com.github.lothar.security.acl</groupId>
 				<artifactId>strategy-spring-security-acl-grant</artifactId>
 				<version>${project.version}</version>
+				<classifier>jdk7</classifier>
 			</dependency>
 			<dependency>
 				<groupId>com.github.lothar.security.acl</groupId>
 				<artifactId>strategy-spring-security-acl-jpa</artifactId>
 				<version>${project.version}</version>
+				<classifier>jdk7</classifier>
 			</dependency>
 			<dependency>
 				<groupId>org.assertj</groupId>

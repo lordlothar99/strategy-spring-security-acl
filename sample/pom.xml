@@ -14,14 +14,21 @@
 		<dependency>
 			<groupId>com.github.lothar.security.acl</groupId>
 			<artifactId>strategy-spring-security-acl-elasticsearch</artifactId>
+			<classifier>jdk7</classifier>
 		</dependency>
 		<dependency>
 			<groupId>com.github.lothar.security.acl</groupId>
 			<artifactId>strategy-spring-security-acl-grant</artifactId>
+			<classifier>jdk7</classifier>
 		</dependency>
 		<dependency>
 			<groupId>com.github.lothar.security.acl</groupId>
 			<artifactId>strategy-spring-security-acl-jpa</artifactId>
+			<classifier>jdk7</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
@@ -37,10 +44,6 @@
 
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
 			<plugin>
 				<artifactId>maven-deploy-plugin</artifactId>
 				<configuration>

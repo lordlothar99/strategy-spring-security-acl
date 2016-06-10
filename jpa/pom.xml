@@ -14,6 +14,7 @@
 		<dependency>
 			<groupId>com.github.lothar.security.acl</groupId>
 			<artifactId>strategy-spring-security-acl-core</artifactId>
+			<classifier>jdk7</classifier>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
