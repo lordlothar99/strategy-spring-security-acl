@@ -48,10 +48,9 @@ Add Github as a maven repository (yes, you can) :
 	<repositories>
 		<repository>
 			<id>strategy-spring-security-acl-github-repo</id>
-			<url>https://raw.github.com/lordlothar99/strategy-spring-security-acl/mvn-repo/</url>
+			<url>https://raw.github.com/lordlothar99/mvn-repo/master/</url>
 			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
+				<enabled>false</enabled>
 			</snapshots>
 		</repository>
 	</repositories>
