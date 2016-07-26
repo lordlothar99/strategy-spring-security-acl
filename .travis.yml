@@ -3,6 +3,9 @@ language: java
 jdk:
   - oraclejdk8
 
+before_install:
+  - chmod +x mvnw
+
 script: mvn verify
 
 after_success: mvn coveralls:report -Dcoveralls.repoToken=$COVERALLS_REPO_TOKEN
