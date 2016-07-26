@@ -58,7 +58,7 @@ Add Github as a maven repository (yes, you can) :
 ### [Spring Boot][]
 
 Configured beans are automatically loaded by [Spring Boot][]'s magic, as soon jars are in the path.
-Add required dependencies to your pom :
+Add required dependencies to your pom (latest version is highest tag created on Github) :
 
 	<dependency>
 		<groupId>com.github.lothar.security.acl</groupId>
