@@ -67,11 +67,11 @@ public abstract class TypedGrantEvaluator<T, ID extends Serializable, A, P> exte
     return (A) authentication;
   }
 
-  private T mapDomainObject(Object domainObject) {
+  protected T mapDomainObject(Object domainObject) {
     return (T) domainObject;
   }
 
-  private ID mapTargetId(Serializable targetId) {
+  protected ID mapTargetId(Serializable targetId) {
     return (ID) targetId;
   }
 
