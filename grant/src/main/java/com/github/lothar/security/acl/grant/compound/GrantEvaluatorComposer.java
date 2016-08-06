@@ -14,7 +14,6 @@
 package com.github.lothar.security.acl.grant.compound;
 
 import java.io.Serializable;
-import java.util.function.Supplier;
 
 import org.springframework.security.core.Authentication;
 
@@ -22,6 +21,7 @@ import com.github.lothar.security.acl.compound.AbstractCompound;
 import com.github.lothar.security.acl.compound.AclComposer;
 import com.github.lothar.security.acl.compound.Operator;
 import com.github.lothar.security.acl.grant.GrantEvaluator;
+import com.github.lothar.security.acl.jdk8.Supplier;
 
 public class GrantEvaluatorComposer implements AclComposer<GrantEvaluator> {
 
