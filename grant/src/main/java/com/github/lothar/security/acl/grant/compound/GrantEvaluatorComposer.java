@@ -14,6 +14,7 @@
 package com.github.lothar.security.acl.grant.compound;
 
 import java.io.Serializable;
+import java.util.function.Supplier;
 
 import org.springframework.security.core.Authentication;
 
@@ -43,20 +44,40 @@ public class GrantEvaluatorComposer implements AclComposer<GrantEvaluator> {
     }
 
     @Override
-    public boolean isGranted(Object permission, Authentication authentication,
-        Serializable targetId, String targetType) {
+    public boolean isGranted(final Object permission, final Authentication authentication,
+        final Serializable targetId, final String targetType) {
       return operator.apply( //
-          lhs.isGranted(permission, authentication, targetId, targetType), //
-          rhs.isGranted(permission, authentication, targetId, targetType) //
+        new Supplier<Boolean>() {
+          @Override
+          public Boolean get() {
+            return lhs.isGranted(permission, authentication, targetId, targetType);
+          }
+        },
+        new Supplier<Boolean>() {
+          @Override
+          public Boolean get() {
+            return rhs.isGranted(permission, authentication, targetId, targetType);
+          }
+        }
       );
     }
 
     @Override
-    public boolean isGranted(Object permission, Authentication authentication,
-        Object domainObject) {
+    public boolean isGranted(final Object permission, final Authentication authentication,
+        final Object domainObject) {
       return operator.apply( //
-          lhs.isGranted(permission, authentication, domainObject), //
-          rhs.isGranted(permission, authentication, domainObject) //
+        new Supplier<Boolean>() {
+          @Override
+          public Boolean get() {
+            return lhs.isGranted(permission, authentication, domainObject);
+          }
+        },
+        new Supplier<Boolean>() {
+          @Override
+          public Boolean get() {
+            return rhs.isGranted(permission, authentication, domainObject);
+          }
+        }
       );
     }
   }
@@ -65,19 +86,19 @@ public class GrantEvaluatorComposer implements AclComposer<GrantEvaluator> {
 
     AND {
       @Override
-      boolean apply(boolean lhs, boolean rhs) {
-        return lhs && rhs;
+      boolean apply(Supplier<Boolean> lhs, Supplier<Boolean> rhs) {
+        return lhs.get() && rhs.get();
       }
     },
 
     OR {
       @Override
-      boolean apply(boolean lhs, boolean rhs) {
-        return lhs || rhs;
+      boolean apply(Supplier<Boolean> lhs, Supplier<Boolean> rhs) {
+        return lhs.get() || rhs.get();
       }
     };
 
-    abstract boolean apply(boolean lhs, boolean rhs);
+    abstract boolean apply(Supplier<Boolean> lhs, Supplier<Boolean> rhs);
 
     public String toString(GrantEvaluator lhs, GrantEvaluator rhs) {
       return "(" + lhs + " " + toString() + " " + rhs + ")";
