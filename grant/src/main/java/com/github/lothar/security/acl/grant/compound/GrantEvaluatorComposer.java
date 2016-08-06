@@ -14,6 +14,7 @@
 package com.github.lothar.security.acl.grant.compound;
 
 import java.io.Serializable;
+import java.util.function.Supplier;
 
 import org.springframework.security.core.Authentication;
 
@@ -46,8 +47,8 @@ public class GrantEvaluatorComposer implements AclComposer<GrantEvaluator> {
     public boolean isGranted(Object permission, Authentication authentication,
         Serializable targetId, String targetType) {
       return operator.apply( //
-          lhs.isGranted(permission, authentication, targetId, targetType), //
-          rhs.isGranted(permission, authentication, targetId, targetType) //
+          () -> lhs.isGranted(permission, authentication, targetId, targetType), //
+          () -> rhs.isGranted(permission, authentication, targetId, targetType) //
       );
     }
 
@@ -55,8 +56,8 @@ public class GrantEvaluatorComposer implements AclComposer<GrantEvaluator> {
     public boolean isGranted(Object permission, Authentication authentication,
         Object domainObject) {
       return operator.apply( //
-          lhs.isGranted(permission, authentication, domainObject), //
-          rhs.isGranted(permission, authentication, domainObject) //
+          () -> lhs.isGranted(permission, authentication, domainObject), //
+          () -> rhs.isGranted(permission, authentication, domainObject) //
       );
     }
   }
@@ -65,18 +66,18 @@ public class GrantEvaluatorComposer implements AclComposer<GrantEvaluator> {
 
     AND {
       @Override
-      boolean apply(boolean lhs, boolean rhs) {
-        return lhs && rhs;
+      boolean apply(Supplier<Boolean> lhs, Supplier<Boolean> rhs) {
+        return lhs.get() && rhs.get();
       }
     },
 
     OR {
       @Override
-      boolean apply(boolean lhs, boolean rhs) {
-        return lhs || rhs;
+      boolean apply(Supplier<Boolean> lhs, Supplier<Boolean> rhs) {
+        return lhs.get() || rhs.get();
       }
     };
 
-    abstract boolean apply(boolean lhs, boolean rhs);
+    abstract boolean apply(Supplier<Boolean> lhs, Supplier<Boolean> rhs);
   }
 }
