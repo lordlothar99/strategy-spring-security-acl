@@ -19,7 +19,7 @@ import java.util.Objects;
 
 import org.springframework.beans.factory.BeanNameAware;
 
-public class NamedBean implements BeanNameAware {
+public class NamedBean implements BeanNameAware, org.springframework.beans.factory.NamedBean {
 
   private String name;
 
@@ -28,7 +28,8 @@ public class NamedBean implements BeanNameAware {
     this.name = name;
   }
 
-  public String getName() {
+  @Override
+  public String getBeanName() {
     return name;
   }
 
