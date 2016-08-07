@@ -15,6 +15,8 @@
  *******************************************************************************/
 package com.github.lothar.security.acl.jpa.query;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -60,7 +62,9 @@ public class AclJpaQuery implements RepositoryQuery {
     try {
       return query.execute(parameters);
     } finally {
-      uninstallAclSpec(aclPredicateTargetSource);
+      if (aclPredicateTargetSource != null) {
+          uninstallAclSpec(aclPredicateTargetSource);
+      }
     }
   }
 
@@ -92,10 +96,17 @@ public class AclJpaQuery implements RepositoryQuery {
       return aclPredicateTargetSource;
     } catch (Exception e) {
       logger.warn(
-          "Unable to install ACL Jpa Specification for method '" + method + "' and query: " + query,
-          e);
+          "Unable to install ACL Jpa Specification for method '" + method + "' and query: " + query + " : " +
+          getStackTrace(e));
       return null;
     }
+  }
+  
+  private static String getStackTrace(Throwable throwable) {
+      StringWriter sw = new StringWriter();
+      PrintWriter pw = new PrintWriter(sw, true);
+      throwable.printStackTrace(pw);
+      return sw.getBuffer().toString();
   }
 
     private AclPredicateTargetSource aclPredicateTargetSource(CriteriaQuery<?> criteriaQuery) {
