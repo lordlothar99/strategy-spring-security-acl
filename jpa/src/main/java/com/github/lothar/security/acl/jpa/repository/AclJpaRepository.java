@@ -67,7 +67,7 @@ public class AclJpaRepository<T, ID extends Serializable> extends SimpleJpaRepos
 
   @Override
   public T findOne(ID id) {
-    return super.findOne(aclJpaSpec().and(idEqualTo(id)));
+    return super.findOne(idEqualTo(id));
   }
 
   @Override
