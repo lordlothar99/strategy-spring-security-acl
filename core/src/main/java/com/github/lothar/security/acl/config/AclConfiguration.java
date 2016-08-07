@@ -114,7 +114,7 @@ public class AclConfiguration {
   }
 
   @Bean
-  public AclSecurityActivator aclSecurityActivator() {
-    return new AclSecurityActivator();
+  public AclSecurityActivator aclSecurityActivator(AclProperties properties) {
+    return new AclSecurityActivator(!properties.isDisabled());
   }
 }
