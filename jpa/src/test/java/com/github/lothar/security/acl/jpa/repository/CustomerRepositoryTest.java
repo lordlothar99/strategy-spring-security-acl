@@ -86,11 +86,11 @@ public class CustomerRepositoryTest {
   @Test
   public void should_count_all_customers_only_when_strategy_not_applied() {
     doWithoutCustomerSpec(new Runnable() {
-      @Override
-      public void run() {
-        assertThat(repository.count()).isEqualTo(3);
-      }
-    });
+        @Override
+        public void run() {
+          assertThat(repository.count()).isEqualTo(3);
+        }
+      });
   }
 
   @Test
@@ -125,11 +125,11 @@ public class CustomerRepositoryTest {
   @Test
   public void should_find_all_customers_only_when_strategy_not_applied() {
     doWithoutCustomerSpec(new Runnable() {
-      @Override
-      public void run() {
-        assertThat(repository.findAll()).containsOnly(aliceSmith, bobSmith, johnDoe);
-      }
-    });
+        @Override
+        public void run() {
+          assertThat(repository.findAll()).containsOnly(aliceSmith, bobSmith, johnDoe);
+        }
+      });
   }
 
   @Test
@@ -140,11 +140,11 @@ public class CustomerRepositoryTest {
   @Test
   public void should_find_all_customers_using_specific_ids_only_when_strategy_not_applied() {
     doWithoutCustomerSpec(new Runnable() {
-      @Override
-      public void run() {
-        assertThat(repository.findAll(customerIds())).containsOnly(aliceSmith, bobSmith, johnDoe);
-      }
-    });
+        @Override
+        public void run() {
+          assertThat(repository.findAll(customerIds())).containsOnly(aliceSmith, bobSmith, johnDoe);
+        }
+      });
   }
 
   // findByLastName

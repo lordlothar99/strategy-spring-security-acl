@@ -2,7 +2,12 @@ spring:
     jpa:
         hibernate:
             ddl-auto: create
+        properties:
+            hibernate.cache.use_second_level_cache: false
+            hibernate.cache.use_query_cache: false
+            hibernate.format_sql: true
 logging:
     level:
-        org.hibernate.SQL: debug
-        com.github.lothar.security.acl: debug
+#         org.hibernate.SQL: debug
+#         org.hibernate.type: trace
+#         com.github.lothar.security.acl: debug

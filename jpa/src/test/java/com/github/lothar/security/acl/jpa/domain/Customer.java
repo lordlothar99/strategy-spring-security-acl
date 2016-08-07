@@ -15,6 +15,7 @@
 package com.github.lothar.security.acl.jpa.domain;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -77,4 +78,20 @@ public class Customer implements Serializable {
 				this.firstName, this.lastName);
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+	    if (obj == null) {
+	        return false;
+	    }
+	    if (!(obj instanceof Customer)) {
+	        return false;
+	    }
+	    Customer customer = (Customer) obj;
+	    return Objects.equals(this.id, customer.id);
+	}
+
+	@Override
+	public int hashCode() {
+	    return Objects.hash(id);
+	}
 }

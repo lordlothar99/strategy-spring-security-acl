@@ -68,7 +68,7 @@ public class AclJpaRepository<T, ID extends Serializable> extends SimpleJpaRepos
   @SuppressWarnings("unchecked")
   @Override
   public T findOne(ID id) {
-    return super.findOne(aclJpaSpec().and((Specification<T>) idEqualTo(id)));
+    return super.findOne((Specification<T>) idEqualTo(id));
   }
 
   @Override
