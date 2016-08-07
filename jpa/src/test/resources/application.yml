@@ -10,4 +10,4 @@ logging:
     level:
 #         org.hibernate.SQL: debug
 #         org.hibernate.type: trace
-        com.github.lothar.security.acl: debug
+#         com.github.lothar.security.acl: debug
