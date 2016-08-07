@@ -35,7 +35,7 @@ public class AclJpaSpecifications {
     return new BiFunctionSpecification<>((root, cb) -> cb.equal(root.get("id"), id));
   }
 
-  private static <T> Collection<T> collection(Iterable<T> iterable) {
+  public static <T> Collection<T> collection(Iterable<T> iterable) {
     if (iterable instanceof Collection) {
       return (Collection<T>) iterable;
     } else {
