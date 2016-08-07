@@ -82,6 +82,11 @@ public class AclJpaQuery implements RepositoryQuery {
   private AclPredicateTargetSource installAclSpec() {
     try {
       CriteriaQuery<?> criteriaQuery = criteriaQuery();
+      if (criteriaQuery == null) {
+        logger.warn("Unable to install ACL Jpa Specification for method '" + method
+                + "' and query: " + query + " : unable to get cached criteria inside query");
+        return null;
+      }
       AclPredicateTargetSource aclPredicateTargetSource = aclPredicateTargetSource(criteriaQuery);
       
       Specification<Object> jpaSpec = jpaSpecProvider.jpaSpecFor(domainType);
