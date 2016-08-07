@@ -25,6 +25,8 @@ import javax.persistence.criteria.Root;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.framework.Advised;
+import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.query.PartTreeJpaQuery;
 import org.springframework.data.repository.query.QueryMethod;
@@ -53,19 +55,18 @@ public class AclJpaQuery implements RepositoryQuery {
   }
 
   @Override
-  public synchronized Object execute(Object[] parameters) {
-    Predicate predicate = installAclSpec();
+  public Object execute(Object[] parameters) {
+    AclPredicateTargetSource aclPredicateTargetSource = installAclSpec();
     try {
       return query.execute(parameters);
     } finally {
-      uninstallAclSpec(predicate);
+      uninstallAclSpec(aclPredicateTargetSource);
     }
   }
 
-  private void uninstallAclSpec(Predicate predicate) {
+  private void uninstallAclSpec(AclPredicateTargetSource aclPredicateTargetSource) {
     try {
-      CriteriaQuery<?> criteriaQuery = criteriaQuery();
-      criteriaQuery.where(predicate);
+      aclPredicateTargetSource.uninstallAcl();
       logger.debug("ACL Jpa Specification uninstalled from method '{}' and query {}", method,
           query);
     } catch (Exception e) {
@@ -74,17 +75,21 @@ public class AclJpaQuery implements RepositoryQuery {
     }
   }
 
-  private Predicate installAclSpec() {
+  private AclPredicateTargetSource installAclSpec() {
     try {
       CriteriaQuery<?> criteriaQuery = criteriaQuery();
-      Predicate restriction = criteriaQuery.getRestriction();
+      AclPredicateTargetSource aclPredicateTargetSource = aclPredicateTargetSource(criteriaQuery);
+      
       Specification<Object> jpaSpec = jpaSpecProvider.jpaSpecFor(domainType);
       Predicate aclPredicate =
           jpaSpec.toPredicate(root(criteriaQuery), criteriaQuery, em.getCriteriaBuilder());
-      criteriaQuery.where(restriction, aclPredicate);
+
+      // install restriction
+      aclPredicateTargetSource.installAcl(aclPredicate);
+      
       logger.debug("ACL Jpa Specification installed for method '{}' and query {}: {}", method,
           query, jpaSpec);
-      return restriction;
+      return aclPredicateTargetSource;
     } catch (Exception e) {
       logger.warn(
           "Unable to install ACL Jpa Specification for method '" + method + "' and query: " + query,
@@ -92,6 +97,40 @@ public class AclJpaQuery implements RepositoryQuery {
       return null;
     }
   }
+
+    private AclPredicateTargetSource aclPredicateTargetSource(CriteriaQuery<?> criteriaQuery) {
+        Predicate restriction = criteriaQuery.getRestriction();
+
+        if (restriction instanceof Advised) {
+            Advised advised = (Advised) restriction;
+            if (advised.getTargetSource() instanceof AclPredicateTargetSource) {
+                return (AclPredicateTargetSource) advised.getTargetSource();
+            }
+        }
+
+        synchronized (criteriaQuery) {
+            restriction = criteriaQuery.getRestriction();
+            if (restriction instanceof Advised) {
+                Advised advised = (Advised) restriction;
+                if (advised.getTargetSource() instanceof AclPredicateTargetSource) {
+                    return (AclPredicateTargetSource) advised.getTargetSource();
+                }
+            }
+
+            // create a new proxy
+            AclPredicateTargetSource targetSource =
+                    new AclPredicateTargetSource(em.getCriteriaBuilder(), restriction);
+            ProxyFactoryBean factoryBean = new ProxyFactoryBean();
+            factoryBean.setTargetSource(targetSource);
+            factoryBean.setAutodetectInterfaces(true);
+            Predicate enhancedPredicate = (Predicate) factoryBean.getObject();
+            logger.debug("ACL Jpa Specification target source initialized for criteria {}", criteriaQuery);
+
+            // install proxy inside criteria
+            criteriaQuery.where(enhancedPredicate);
+            return targetSource;
+        }
+    }
 
   @Override
   public QueryMethod getQueryMethod() {

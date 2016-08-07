@@ -75,7 +75,7 @@ public class MultithreadCustomerRepositoryTest {
         bobSmith = repository.findByFirstName("Bob");
         johnDoe = repository.findByFirstName("John");
 
-        executor = newFixedThreadPool(6);
+        executor = newFixedThreadPool(8);
         tasks = new ArrayList<>();
     }
 
