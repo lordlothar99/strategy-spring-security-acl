@@ -15,7 +15,6 @@ package com.github.lothar.security.acl.jpa.multithread;
 
 import static java.util.Arrays.asList;
 import static java.util.concurrent.Executors.newFixedThreadPool;
-import static java.util.stream.IntStream.range;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
