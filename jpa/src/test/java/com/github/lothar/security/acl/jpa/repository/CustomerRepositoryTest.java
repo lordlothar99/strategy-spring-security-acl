@@ -29,6 +29,7 @@ import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
@@ -217,6 +218,12 @@ public class CustomerRepositoryTest {
   @Ignore
   public void should_find_members_of_Smith_family_with_sortable_query_method() {
     assertThat(repository.findByFirstNameContains("o", new Sort("id"))).containsOnly(bobSmith);
+  }
+
+  @Test
+  @Ignore
+  public void should_find_members_of_Smith_family_with_pageable_query_method() {
+    assertThat(repository.findByFirstNameContains("o", new PageRequest(0, 10))).containsOnly(bobSmith);
   }
 
   // utils
