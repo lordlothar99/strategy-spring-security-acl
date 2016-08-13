@@ -46,6 +46,8 @@ public class AclJpaQuery implements RepositoryQuery {
   private EntityManager em;
   private JpaSpecProvider<Object> jpaSpecProvider;
   private Method method;
+  private CriteriaQuery<?> cachedCriteriaQuery;
+  private AclPredicateTargetSource aclPredicateTargetSource;
 
   public AclJpaQuery(Method method, RepositoryQuery query, Class<?> domainType, EntityManager em,
       JpaSpecProvider<Object> jpaSpecProvider) {
@@ -54,59 +56,47 @@ public class AclJpaQuery implements RepositoryQuery {
     this.domainType = domainType;
     this.em = em;
     this.jpaSpecProvider = jpaSpecProvider;
+    installAclProxy(query);
   }
 
   @Override
   public Object execute(Object[] parameters) {
-    AclPredicateTargetSource aclPredicateTargetSource = installAclSpec();
+    installAclSpec();
     try {
       return query.execute(parameters);
     } finally {
-      if (aclPredicateTargetSource != null) {
-          uninstallAclSpec(aclPredicateTargetSource);
-      }
+      uninstallAclSpec();
     }
   }
 
-  private void uninstallAclSpec(AclPredicateTargetSource aclPredicateTargetSource) {
-    try {
+  private void uninstallAclSpec() {
+    if (aclPredicateTargetSource != null) {
       aclPredicateTargetSource.uninstallAcl();
       logger.debug("ACL Jpa Specification uninstalled from method '{}' and query {}", method,
           query);
-    } catch (Exception e) {
-      logger.warn("Unable to uninstall ACL Jpa Specification from method '" + method
-          + "' and query: " + query, e);
     }
   }
 
-  private AclPredicateTargetSource installAclSpec() {
-    try {
-      CriteriaQuery<?> criteriaQuery = criteriaQuery();
-      if (criteriaQuery == null) {
-        logger.warn("Unable to install ACL Jpa Specification for method '" + method
-                + "' and query: " + query + " : unable to get cached criteria inside query");
-        return null;
+  private void installAclSpec() {
+      if (cachedCriteriaQuery == null || aclPredicateTargetSource == null) {
+        return ;
       }
-      AclPredicateTargetSource aclPredicateTargetSource = aclPredicateTargetSource(criteriaQuery);
-      
-      Specification<Object> jpaSpec = jpaSpecProvider.jpaSpecFor(domainType);
-      Predicate aclPredicate =
-          jpaSpec.toPredicate(root(criteriaQuery), criteriaQuery, em.getCriteriaBuilder());
 
-      // install restriction
+      // retrieve acl specification
+      Specification<Object> aclJpaSpec = jpaSpecProvider.jpaSpecFor(domainType);
+      Root<Object> root = root(cachedCriteriaQuery);
+
+      // build acl predicate
+      Predicate aclPredicate =
+          aclJpaSpec.toPredicate(root, cachedCriteriaQuery, em.getCriteriaBuilder());
+
+      // install acl predicate
       aclPredicateTargetSource.installAcl(aclPredicate);
-      
+
       logger.debug("ACL Jpa Specification installed for method '{}' and query {}: {}", method,
-          query, jpaSpec);
-      return aclPredicateTargetSource;
-    } catch (Exception e) {
-      logger.warn(
-          "Unable to install ACL Jpa Specification for method '" + method + "' and query: " + query + " : " +
-          getStackTrace(e));
-      return null;
-    }
+          query, aclJpaSpec);
   }
-  
+
   private static String getStackTrace(Throwable throwable) {
       StringWriter sw = new StringWriter();
       PrintWriter pw = new PrintWriter(sw, true);
@@ -114,8 +104,26 @@ public class AclJpaQuery implements RepositoryQuery {
       return sw.getBuffer().toString();
   }
 
-    private AclPredicateTargetSource aclPredicateTargetSource(CriteriaQuery<?> criteriaQuery) {
-        Predicate restriction = criteriaQuery.getRestriction();
+  private void installAclProxy(RepositoryQuery query) {
+    this.cachedCriteriaQuery = criteriaQuery();
+    if (cachedCriteriaQuery == null) {
+      logger.warn("Unable to install ACL Jpa Specification for method '" + method
+              + "' and query: " + query + " : unable to get cached criteria inside query");
+      return;
+    }
+
+    try {
+      this.aclPredicateTargetSource = installAclPredicateTargetSource();
+    } catch (Exception e) {
+      logger.warn(
+          "Unable to install ACL Jpa Specification for method '" + method + "' and query: " + query + " : " +
+          getStackTrace(e));
+    }
+  }
+
+  private AclPredicateTargetSource installAclPredicateTargetSource() {
+      synchronized (cachedCriteriaQuery) {
+        Predicate restriction = cachedCriteriaQuery.getRestriction();
 
         if (restriction instanceof Advised) {
             Advised advised = (Advised) restriction;
@@ -124,29 +132,18 @@ public class AclJpaQuery implements RepositoryQuery {
             }
         }
 
-        synchronized (criteriaQuery) {
-            restriction = criteriaQuery.getRestriction();
-            if (restriction instanceof Advised) {
-                Advised advised = (Advised) restriction;
-                if (advised.getTargetSource() instanceof AclPredicateTargetSource) {
-                    return (AclPredicateTargetSource) advised.getTargetSource();
-                }
-            }
+        AclPredicateTargetSource targetSource = new AclPredicateTargetSource(em.getCriteriaBuilder(), restriction);
+        ProxyFactoryBean factoryBean = new ProxyFactoryBean();
+        factoryBean.setTargetSource(targetSource);
+        factoryBean.setAutodetectInterfaces(true);
+        Predicate enhancedPredicate = (Predicate) factoryBean.getObject();
+        logger.debug("ACL Jpa Specification target source initialized for criteria {}", cachedCriteriaQuery);
 
-            // create a new proxy
-            AclPredicateTargetSource targetSource =
-                    new AclPredicateTargetSource(em.getCriteriaBuilder(), restriction);
-            ProxyFactoryBean factoryBean = new ProxyFactoryBean();
-            factoryBean.setTargetSource(targetSource);
-            factoryBean.setAutodetectInterfaces(true);
-            Predicate enhancedPredicate = (Predicate) factoryBean.getObject();
-            logger.debug("ACL Jpa Specification target source initialized for criteria {}", criteriaQuery);
-
-            // install proxy inside criteria
-            criteriaQuery.where(enhancedPredicate);
-            return targetSource;
-        }
+        // install proxy inside criteria
+        cachedCriteriaQuery.where(enhancedPredicate);
+        return targetSource;
     }
+  }
 
   @Override
   public QueryMethod getQueryMethod() {
