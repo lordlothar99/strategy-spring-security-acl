@@ -16,10 +16,13 @@ package com.github.lothar.security.acl.jpa.query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.TargetSource;
 
 public class AclPredicateTargetSource implements TargetSource {
 
+    private Logger logger = LoggerFactory.getLogger(getClass());
     private Predicate original;
     private ThreadLocal<Predicate> delegate;
     private CriteriaBuilder criteriaBuilder;
@@ -27,21 +30,23 @@ public class AclPredicateTargetSource implements TargetSource {
     public AclPredicateTargetSource(CriteriaBuilder criteriaBuilder, Predicate original) {
         this.criteriaBuilder = criteriaBuilder;
         this.original = original;
-        delegate = ThreadLocal.withInitial(() -> original);
+        delegate = new ThreadLocal<>();
+        logger.debug("Original predicate : {}", original);
     }
 
     public void installAcl(Predicate aclPredicate) {
         Predicate enhancedPredicate = criteriaBuilder.and(original, aclPredicate);
         delegate.set(enhancedPredicate);
+        logger.debug("Enhanced predicate : {}", enhancedPredicate);
     }
 
     public void uninstallAcl() {
-        delegate.set(original);
+        delegate.remove();
     }
 
     @Override
     public Class<?> getTargetClass() {
-        return delegate.get().getClass();
+        return getTarget().getClass();
     }
 
     @Override
@@ -50,8 +55,13 @@ public class AclPredicateTargetSource implements TargetSource {
     }
 
     @Override
-    public Object getTarget() throws Exception {
-        return delegate.get();
+    public Object getTarget() {
+        Predicate predicate = delegate.get();
+        if (predicate == null) {
+            predicate = original;
+        }
+        logger.debug("Using predicate : {}", predicate);
+        return predicate;
     }
 
     @Override
