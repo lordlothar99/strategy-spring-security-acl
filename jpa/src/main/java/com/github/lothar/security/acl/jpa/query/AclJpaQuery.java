@@ -48,7 +48,7 @@ public class AclJpaQuery implements RepositoryQuery {
   private Method method;
   private CriteriaQuery<?> cachedCriteriaQuery;
   private AclPredicateTargetSource aclPredicateTargetSource;
-private Root<Object> root;
+  private Root<Object> root;
 
   public AclJpaQuery(Method method, RepositoryQuery query, Class<?> domainType, EntityManager em,
       JpaSpecProvider<Object> jpaSpecProvider) {
