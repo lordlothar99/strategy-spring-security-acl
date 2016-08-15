@@ -15,7 +15,11 @@
 package com.github.lothar.security.acl.jpa.repository;
 
 import java.util.List;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+
 import com.github.lothar.security.acl.jpa.domain.Customer;
 
 public interface CustomerRepository extends JpaRepository<Customer, String> {
@@ -23,6 +27,10 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
   Customer findByFirstName(String firstName);
 
   List<Customer> findByLastName(String lastName);
+
+  List<Customer> findByFirstNameContains(String firstNameContains, Sort sort);
+
+  List<Customer> findByFirstNameContains(String firstNameContains, Pageable pageable);
 
   int countByLastName(String lastName);
 

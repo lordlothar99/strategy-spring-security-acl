@@ -33,6 +33,7 @@ import com.github.lothar.security.acl.AclStrategy;
 import com.github.lothar.security.acl.AclStrategyProvider;
 import com.github.lothar.security.acl.AclStrategyProviderImpl;
 import com.github.lothar.security.acl.SimpleAclStrategy;
+import com.github.lothar.security.acl.activation.AclActivationUtils;
 import com.github.lothar.security.acl.activation.AclSecurityActivator;
 import com.github.lothar.security.acl.compound.AclComposersRegistry;
 import com.github.lothar.security.acl.compound.AclStrategyComposer;
@@ -117,5 +118,10 @@ public class AclConfiguration {
   @Bean
   public AclSecurityActivator aclSecurityActivator(AclProperties properties) {
     return new AclSecurityActivator(!properties.isDisabled());
+  }
+
+  @Bean
+  public AclActivationUtils aclActivationUtils(AclSecurityActivator aclSecurityActivator) {
+    return new AclActivationUtils(aclSecurityActivator);
   }
 }

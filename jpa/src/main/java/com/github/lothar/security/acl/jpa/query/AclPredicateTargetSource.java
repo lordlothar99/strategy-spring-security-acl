@@ -16,37 +16,37 @@ package com.github.lothar.security.acl.jpa.query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.TargetSource;
 
 public class AclPredicateTargetSource implements TargetSource {
 
+    private Logger logger = LoggerFactory.getLogger(getClass());
     private Predicate original;
-    private ThreadLocal<Predicate> delegate;
+    private Predicate current;
     private CriteriaBuilder criteriaBuilder;
 
-    public AclPredicateTargetSource(CriteriaBuilder criteriaBuilder, final Predicate original) {
+    public AclPredicateTargetSource(CriteriaBuilder criteriaBuilder, Predicate original) {
         this.criteriaBuilder = criteriaBuilder;
         this.original = original;
-        delegate = new ThreadLocal<Predicate>() {
-            @Override
-            protected Predicate initialValue() {
-                return original;
-            }
-        };
+        setCurrent(original);
+        logger.debug("Original predicate : {}", original);
     }
 
     public void installAcl(Predicate aclPredicate) {
         Predicate enhancedPredicate = criteriaBuilder.and(original, aclPredicate);
-        delegate.set(enhancedPredicate);
+        setCurrent(enhancedPredicate);
+        logger.debug("Enhanced predicate : {}", enhancedPredicate);
     }
 
     public void uninstallAcl() {
-        delegate.set(original);
+        setCurrent(original);
     }
 
     @Override
     public Class<?> getTargetClass() {
-        return delegate.get().getClass();
+        return getTarget().getClass();
     }
 
     @Override
@@ -55,11 +55,14 @@ public class AclPredicateTargetSource implements TargetSource {
     }
 
     @Override
-    public Object getTarget() throws Exception {
-        return delegate.get();
+    public Object getTarget() {
+        return current;
     }
 
     @Override
     public void releaseTarget(Object target) throws Exception {}
 
+    private void setCurrent(Predicate predicate) {
+        this.current = predicate;
+    }
 }
