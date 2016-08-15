@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>com.github.lothar.security.acl</groupId>
 		<artifactId>strategy-spring-security-acl-parent</artifactId>
-		<version>1.5.0-jdk7-SNAPSHOT</version>
+		<version>1.4.3-jdk7</version>
 	</parent>
 
 	<dependencies>
