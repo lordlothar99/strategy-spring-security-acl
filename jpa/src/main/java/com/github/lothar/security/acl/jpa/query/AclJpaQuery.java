@@ -66,8 +66,11 @@ public class AclJpaQuery implements RepositoryQuery {
       return query.execute(parameters);
     }
 
+    // retrieve acl specification
+    Specification<Object> aclJpaSpec = jpaSpecProvider.jpaSpecFor(domainType);
+
     synchronized (cachedCriteriaQuery) {
-      installAclSpec();
+      installAclSpec(aclJpaSpec);
       try {
         return query.execute(parameters);
       } finally {
@@ -76,18 +79,7 @@ public class AclJpaQuery implements RepositoryQuery {
     }
   }
 
-  private void uninstallAclSpec() {
-    if (aclPredicateTargetSource != null) {
-      aclPredicateTargetSource.uninstallAcl();
-      logger.debug("ACL Jpa Specification uninstalled from method '{}' and query {}", method,
-          query);
-    }
-  }
-
-  private void installAclSpec() {
-    // retrieve acl specification
-    Specification<Object> aclJpaSpec = jpaSpecProvider.jpaSpecFor(domainType);
-
+  private void installAclSpec(Specification<Object> aclJpaSpec) {
     // force rerender by resetting alias
     root.alias(null);
 
@@ -100,6 +92,14 @@ public class AclJpaQuery implements RepositoryQuery {
 
     logger.debug("ACL Jpa Specification installed for method '{}' and query {}: {}", method,
           query, aclJpaSpec);
+  }
+
+  private void uninstallAclSpec() {
+    if (aclPredicateTargetSource != null) {
+      aclPredicateTargetSource.uninstallAcl();
+      logger.debug("ACL Jpa Specification uninstalled from method '{}' and query {}", method,
+          query);
+    }
   }
 
   private static String getStackTrace(Throwable throwable) {
