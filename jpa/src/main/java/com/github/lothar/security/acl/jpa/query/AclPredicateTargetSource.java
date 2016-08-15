@@ -24,24 +24,24 @@ public class AclPredicateTargetSource implements TargetSource {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
     private Predicate original;
-    private ThreadLocal<Predicate> delegate;
+    private Predicate current;
     private CriteriaBuilder criteriaBuilder;
 
     public AclPredicateTargetSource(CriteriaBuilder criteriaBuilder, Predicate original) {
         this.criteriaBuilder = criteriaBuilder;
         this.original = original;
-        delegate = new ThreadLocal<>();
+        setCurrent(original);
         logger.debug("Original predicate : {}", original);
     }
 
     public void installAcl(Predicate aclPredicate) {
         Predicate enhancedPredicate = criteriaBuilder.and(original, aclPredicate);
-        delegate.set(enhancedPredicate);
+        setCurrent(enhancedPredicate);
         logger.debug("Enhanced predicate : {}", enhancedPredicate);
     }
 
     public void uninstallAcl() {
-        delegate.remove();
+        setCurrent(original);
     }
 
     @Override
@@ -56,16 +56,13 @@ public class AclPredicateTargetSource implements TargetSource {
 
     @Override
     public Object getTarget() {
-        Predicate predicate = delegate.get();
-        if (predicate == null) {
-            predicate = original;
-        }
-        logger.debug("Using predicate : {}", predicate);
-        return predicate;
+        return current;
     }
 
     @Override
-    public void releaseTarget(Object target) throws Exception {
-    }
+    public void releaseTarget(Object target) throws Exception {}
 
+    private void setCurrent(Predicate predicate) {
+        this.current = predicate;
+    }
 }
