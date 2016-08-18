@@ -56,7 +56,7 @@ public class AclJpaRepository<T, ID extends Serializable> extends SimpleJpaRepos
 
   @Override
   public long count() {
-    return super.count(null);
+    return super.count((Specification<T>) null);
   }
 
   @Override

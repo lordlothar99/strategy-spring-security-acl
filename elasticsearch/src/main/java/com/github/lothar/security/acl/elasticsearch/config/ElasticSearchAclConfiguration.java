@@ -13,23 +13,23 @@
  *******************************************************************************/
 package com.github.lothar.security.acl.elasticsearch.config;
 
-import static org.elasticsearch.index.query.FilterBuilders.matchAllFilter;
-import static org.elasticsearch.index.query.FilterBuilders.notFilter;
+import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
+import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 
-import org.elasticsearch.index.query.FilterBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+
 import com.github.lothar.security.acl.AclStrategyProvider;
 import com.github.lothar.security.acl.SimpleAclStrategy;
 import com.github.lothar.security.acl.compound.AclComposersRegistry;
 import com.github.lothar.security.acl.config.AclConfiguration;
 import com.github.lothar.security.acl.elasticsearch.AclFilterProvider;
 import com.github.lothar.security.acl.elasticsearch.ElasticSearchFeature;
-import com.github.lothar.security.acl.elasticsearch.FilterBuilderBean;
 import com.github.lothar.security.acl.elasticsearch.compound.FilterBuilderComposer;
 
 @Configuration
@@ -58,20 +58,20 @@ public class ElasticSearchAclConfiguration {
 
   @Bean
   public AclFilterProvider aclFilterProvider(AclStrategyProvider strategyProvider,
-      FilterBuilder defaultFilter) {
+      QueryBuilder defaultFilter) {
     return new AclFilterProvider(strategyProvider, elasticSearchFeature, defaultFilter);
   }
 
   @Bean(name = {"allowAllFilter", "defaultFilter"})
-  public FilterBuilder allowAllFilter(SimpleAclStrategy allowAllStrategy) {
-    FilterBuilderBean allowAllFilter = new FilterBuilderBean(matchAllFilter());
+  public QueryBuilder allowAllFilter(SimpleAclStrategy allowAllStrategy) {
+    QueryBuilder allowAllFilter = matchAllQuery();
     allowAllStrategy.install(elasticSearchFeature, allowAllFilter);
     return allowAllFilter;
   }
 
   @Bean
-  public FilterBuilder denyAllFilter(SimpleAclStrategy denyAllStrategy) {
-    FilterBuilderBean denyAllFilter = new FilterBuilderBean(notFilter(matchAllFilter()));
+  public QueryBuilder denyAllFilter(SimpleAclStrategy denyAllStrategy) {
+    QueryBuilder denyAllFilter = boolQuery().mustNot(matchAllQuery());
     denyAllStrategy.install(elasticSearchFeature, denyAllFilter);
     return denyAllFilter;
   }

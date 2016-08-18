@@ -13,7 +13,7 @@
  *******************************************************************************/
 package com.github.lothar.security.acl.elasticsearch;
 
-import org.elasticsearch.index.query.FilterBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,25 +25,25 @@ public class AclFilterProvider {
   private Logger logger = LoggerFactory.getLogger(getClass());
   private AclStrategyProvider strategyProvider;
   private ElasticSearchFeature elasticSearchFeature;
-  private FilterBuilder defaultFilterBuilder;
+  private QueryBuilder defaultQueryBuilder;
 
   public AclFilterProvider(AclStrategyProvider strategyProvider,
-      ElasticSearchFeature elasticSearchFeature, FilterBuilder defaultFilterBuilder) {
+      ElasticSearchFeature elasticSearchFeature, QueryBuilder defaultQueryBuilder) {
     super();
     this.strategyProvider = strategyProvider;
     this.elasticSearchFeature = elasticSearchFeature;
-    this.defaultFilterBuilder = defaultFilterBuilder;
+    this.defaultQueryBuilder = defaultQueryBuilder;
   }
 
-  public FilterBuilder filterFor(Class<?> domainType) {
-    FilterBuilder filterBuilder = defaultFilterBuilder;
+  public QueryBuilder filterFor(Class<?> domainType) {
+    QueryBuilder filterBuilder = defaultQueryBuilder;
 
     AclStrategy strategy = strategyProvider.strategyFor(domainType);
     if (strategy == null) {
       logger.debug("No strategy found for '{}' in strategy provider", domainType.getSimpleName());
 
     } else {
-      FilterBuilder filter = strategy.handlerFor(elasticSearchFeature);
+      QueryBuilder filter = strategy.handlerFor(elasticSearchFeature);
       if (filter == null) {
         logger.debug(
             "No ACL ElasticSearch found in strategy {} > fall back on default ACL ElasticSearch specification",

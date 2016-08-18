@@ -22,17 +22,16 @@ import javax.annotation.Resource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import com.github.lothar.security.acl.AclStrategy;
 import com.github.lothar.security.acl.AclTestConfiguration;
 import com.github.lothar.security.acl.SimpleAclStrategy;
 import com.github.lothar.security.acl.StringTesterFeature;
-import com.github.lothar.security.acl.compound.AclStrategyComposer;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(AclTestConfiguration.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = AclTestConfiguration.class)
 public class AclStrategyComposerTest {
 
   @Resource

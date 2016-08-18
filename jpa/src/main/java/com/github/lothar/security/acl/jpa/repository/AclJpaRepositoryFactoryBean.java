@@ -13,11 +13,15 @@
  *******************************************************************************/
 package com.github.lothar.security.acl.jpa.repository;
 
+import static org.springframework.util.ReflectionUtils.findMethod;
+
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.query.PartTreeJpaQuery;
@@ -25,6 +29,7 @@ import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.core.NamedQueries;
 import org.springframework.data.repository.core.RepositoryInformation;
@@ -104,13 +109,40 @@ public class AclJpaRepositoryFactoryBean<T extends Repository<S, ID>, S, ID exte
         this.evaluationContextProvider = evaluationContextProvider;
       }
 
-      @Override
+      /**
+       * Compatibility for projects using Spring Data Jpa < 1.10.0
+       */
+      @SuppressWarnings("unused")
       public RepositoryQuery resolveQuery(Method method, RepositoryMetadata metadata,
           NamedQueries namedQueries) {
         QueryLookupStrategy queryLookupStrategy =
             Factory.super.getQueryLookupStrategy(key, evaluationContextProvider);
-        RepositoryQuery query = queryLookupStrategy.resolveQuery(method, metadata, namedQueries);
 
+        Method resolveQuery = findMethod(QueryLookupStrategy.class, "resolveQuery",
+                Method.class, RepositoryMetadata.class, NamedQueries.class);
+        try {
+            RepositoryQuery query = (RepositoryQuery) resolveQuery.invoke(queryLookupStrategy, method, 
+                    metadata, namedQueries);
+            return wrapQuery(method, metadata, query);
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+      }
+
+      /**
+       * @since Spring data JPA 1.10.0
+       */
+      public RepositoryQuery resolveQuery(Method method, RepositoryMetadata metadata,
+            ProjectionFactory factory, NamedQueries namedQueries) {
+        QueryLookupStrategy queryLookupStrategy =
+            Factory.super.getQueryLookupStrategy(key, evaluationContextProvider);
+
+        RepositoryQuery query = queryLookupStrategy.resolveQuery(method, metadata, factory, namedQueries);
+        return wrapQuery(method, metadata, query);
+      }
+
+      private RepositoryQuery wrapQuery(Method method, RepositoryMetadata metadata,
+            RepositoryQuery query) {
         if (query instanceof PartTreeJpaQuery) {
           query = new AclJpaQuery(method, query, metadata.getDomainType(), em, jpaSpecProvider);
         } else {

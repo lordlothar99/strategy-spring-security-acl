@@ -33,11 +33,11 @@ import org.junit.Before;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
@@ -50,8 +50,8 @@ import com.github.lothar.security.acl.jpa.repository.CustomerRepository;
 /**
  * Test ACL JPA {@link Specification} in multithread environment 
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(MultithreadTestConfiguration.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = MultithreadTestConfiguration.class)
 @Transactional
 @TestExecutionListeners({ TestDataPreparer.class,
         DirtiesContextBeforeModesTestExecutionListener.class,

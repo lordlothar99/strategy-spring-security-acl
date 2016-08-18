@@ -21,11 +21,11 @@ import org.assertj.core.api.AbstractBooleanAssert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import com.github.lothar.security.acl.grant.domain.AllowedToAllObject;
 import com.github.lothar.security.acl.grant.domain.DeniedToAllObject;
@@ -34,8 +34,8 @@ import com.github.lothar.security.acl.grant.domain.NoStrategyObject;
 import com.github.lothar.security.acl.grant.domain.UnknownStrategyObject;
 import com.github.lothar.security.acl.grant.domain.WithoutHandlerObject;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(GrantEvaluatorTestConfiguration.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = GrantEvaluatorTestConfiguration.class)
 public class GrantEvaluatorTest {
 
   @Resource

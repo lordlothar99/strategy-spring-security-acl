@@ -19,8 +19,8 @@ import javax.annotation.Resource;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import com.github.lothar.security.acl.jpa.JpaSpecProvider;
 import com.github.lothar.security.acl.jpa.JpaSpecTestConfiguration;
@@ -33,8 +33,8 @@ import com.github.lothar.security.acl.jpa.domain.WithoutHandlerObject;
 import com.github.lothar.security.acl.jpa.spec.AllowAllSpecification;
 import com.github.lothar.security.acl.jpa.spec.DenyAllSpecification;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(JpaSpecTestConfiguration.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = JpaSpecTestConfiguration.class)
 public class AclJpaRepositoryFactoryBeanTest {
 
   @Resource

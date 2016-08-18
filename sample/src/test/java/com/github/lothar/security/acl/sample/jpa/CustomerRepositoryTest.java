@@ -24,9 +24,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.lothar.security.acl.SimpleAclStrategy;
@@ -34,8 +34,8 @@ import com.github.lothar.security.acl.jpa.JpaSpecFeature;
 import com.github.lothar.security.acl.sample.SampleApplication;
 import com.github.lothar.security.acl.sample.domain.Customer;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = SampleApplication.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = SampleApplication.class)
 @Transactional
 public class CustomerRepositoryTest {
 

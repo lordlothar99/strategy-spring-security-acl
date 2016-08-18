@@ -17,11 +17,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import javax.annotation.Resource;
 
-import org.elasticsearch.index.query.FilterBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import com.github.lothar.security.acl.elasticsearch.AclFilterProvider;
 import com.github.lothar.security.acl.elasticsearch.ElasticSearchTestConfiguration;
@@ -32,16 +32,16 @@ import com.github.lothar.security.acl.elasticsearch.domain.NoStrategyObject;
 import com.github.lothar.security.acl.elasticsearch.domain.UnknownStrategyObject;
 import com.github.lothar.security.acl.elasticsearch.domain.WithoutHandlerObject;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(ElasticSearchTestConfiguration.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = ElasticSearchTestConfiguration.class)
 public class AclElasticsearchRepositoryFactoryBeanTest {
 
   @Resource
   private AclFilterProvider filterProvider;
   @Resource
-  private FilterBuilder allowAllFilter;
+  private QueryBuilder allowAllFilter;
   @Resource
-  private FilterBuilder denyAllFilter;
+  private QueryBuilder denyAllFilter;
 
   @Test
   public void should_provider_return_allowAll_filter() {

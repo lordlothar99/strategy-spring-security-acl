@@ -17,20 +17,21 @@ package com.github.lothar.security.acl.sample.elasticsearch;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
+
 import javax.annotation.Resource;
 
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import com.github.lothar.security.acl.sample.SampleApplication;
 import com.github.lothar.security.acl.sample.domain.Customer;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = SampleApplication.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = SampleApplication.class)
 public class CustomerSearchRepositoryTest {
 
   @Resource
