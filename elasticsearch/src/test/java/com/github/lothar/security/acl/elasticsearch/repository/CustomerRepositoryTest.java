@@ -20,27 +20,27 @@ import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 
 import javax.annotation.Resource;
 
-import org.elasticsearch.index.query.FilterBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import com.github.lothar.security.acl.SimpleAclStrategy;
 import com.github.lothar.security.acl.elasticsearch.ElasticSearchFeature;
 import com.github.lothar.security.acl.elasticsearch.ElasticSearchTestConfiguration;
 import com.github.lothar.security.acl.elasticsearch.domain.Customer;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(ElasticSearchTestConfiguration.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = ElasticSearchTestConfiguration.class)
 public class CustomerRepositoryTest {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
@@ -69,7 +69,7 @@ public class CustomerRepositoryTest {
 
   @Test
   public void should_customer_spec_be_registered_in_customer_strategy() {
-    FilterBuilder customerFilter = customerStrategy.handlerFor(elasticSearchFeature);
+    QueryBuilder customerFilter = customerStrategy.handlerFor(elasticSearchFeature);
     assertThat(customerFilter) //
         .as("Customer filter not registered") //
         .isNotNull();
@@ -304,7 +304,7 @@ public class CustomerRepositoryTest {
   }
 
   private void doWithoutCustomerFilter(Runnable runnable) {
-    FilterBuilder customerFilter = customerStrategy.uninstall(elasticSearchFeature);
+    QueryBuilder customerFilter = customerStrategy.uninstall(elasticSearchFeature);
     try {
       runnable.run();
     } finally {

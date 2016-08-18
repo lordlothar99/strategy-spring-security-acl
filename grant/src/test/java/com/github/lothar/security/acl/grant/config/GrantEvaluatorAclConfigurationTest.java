@@ -16,21 +16,22 @@
 package com.github.lothar.security.acl.grant.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 import javax.annotation.Resource;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.access.PermissionEvaluator;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import com.github.lothar.security.acl.grant.AclPermissionEvaluator;
 import com.github.lothar.security.acl.grant.GrantEvaluator;
 import com.github.lothar.security.acl.grant.GrantEvaluatorFeature;
 import com.github.lothar.security.acl.grant.GrantEvaluatorTestConfiguration;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(GrantEvaluatorTestConfiguration.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = GrantEvaluatorTestConfiguration.class)
 public class GrantEvaluatorAclConfigurationTest {
 
   @Resource

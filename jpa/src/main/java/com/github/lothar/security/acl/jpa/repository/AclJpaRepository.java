@@ -26,7 +26,6 @@ import javax.persistence.TypedQuery;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.domain.Specifications;
@@ -57,7 +56,7 @@ public class AclJpaRepository<T, ID extends Serializable> extends SimpleJpaRepos
 
   @Override
   public long count() {
-    return super.count(null);
+    return super.count((Specification<T>) null);
   }
 
   @Override
@@ -87,11 +86,6 @@ public class AclJpaRepository<T, ID extends Serializable> extends SimpleJpaRepos
 
   protected TypedQuery<T> getQuery(Specification<T> spec, Sort sort) {
     return super.getQuery(aclJpaSpec().and(spec), sort);
-  }
-
-  @Override
-  protected TypedQuery<T> getQuery(Specification<T> spec, Pageable pageable) {
-    return super.getQuery(aclJpaSpec().and(spec), pageable);
   }
 
   private Specifications<T> aclJpaSpec() {

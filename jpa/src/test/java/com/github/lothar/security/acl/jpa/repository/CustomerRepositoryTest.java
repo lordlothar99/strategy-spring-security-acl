@@ -31,12 +31,12 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.lothar.security.acl.SimpleAclStrategy;
@@ -49,8 +49,8 @@ import com.github.lothar.security.acl.jpa.spec.CustomerSpecification;
  * Test {@link CustomerRepository} with {@link CustomerSpecification} installed.
  * Only Smith family should be visible.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(JpaSpecTestConfiguration.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = JpaSpecTestConfiguration.class)
 @Transactional
 public class CustomerRepositoryTest {
 

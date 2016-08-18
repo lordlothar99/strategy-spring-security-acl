@@ -21,16 +21,16 @@ import javax.annotation.Resource;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 import com.github.lothar.security.acl.activation.AclSecurityActivator;
 import com.github.lothar.security.acl.config.AclConfiguration;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(AclConfiguration.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = AclConfiguration.class)
 @TestExecutionListeners({AclTestExecutionListener.class,
     DependencyInjectionTestExecutionListener.class})
 public class AclTestExecutionListenerTest {

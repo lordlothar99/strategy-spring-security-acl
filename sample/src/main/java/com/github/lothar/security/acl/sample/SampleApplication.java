@@ -13,7 +13,6 @@
  *******************************************************************************/
 package com.github.lothar.security.acl.sample;
 
-import static org.elasticsearch.index.query.FilterBuilders.queryFilter;
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -21,7 +20,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.elasticsearch.index.query.QueryFilterBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -61,8 +60,8 @@ public class SampleApplication {
   }
 
   @Bean
-  public QueryFilterBuilder smithFamilyFilter(ElasticSearchFeature elasticSearchFeature) {
-    QueryFilterBuilder smithFamilyFilter = queryFilter(matchQuery("lastName", "Smith"));
+  public QueryBuilder smithFamilyFilter(ElasticSearchFeature elasticSearchFeature) {
+    QueryBuilder smithFamilyFilter = matchQuery("lastName", "Smith");
     customerStrategy.install(elasticSearchFeature, smithFamilyFilter);
     return smithFamilyFilter;
   }
