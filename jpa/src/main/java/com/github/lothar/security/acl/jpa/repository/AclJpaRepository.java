@@ -79,12 +79,17 @@ public class AclJpaRepository<T, ID extends Serializable> extends SimpleJpaRepos
   }
 
   @Override
-  protected TypedQuery<Long> getCountQuery(Specification<T> spec) {
-    return super.getCountQuery(aclJpaSpec().and(spec));
+  @SuppressWarnings("unchecked")
+  protected <S extends T> TypedQuery<Long> getCountQuery(Specification<S> spec,
+      Class<S> domainClass) {
+    return super.getCountQuery(((Specifications<S>)aclJpaSpec()).and(spec), domainClass);
   }
 
-  protected TypedQuery<T> getQuery(Specification<T> spec, Sort sort) {
-    return super.getQuery(aclJpaSpec().and(spec), sort);
+  @Override
+  @SuppressWarnings("unchecked")
+  protected <S extends T> TypedQuery<S> getQuery(Specification<S> spec, Class<S> domainClass,
+        Sort sort) {
+    return super.getQuery(((Specifications<S>) aclJpaSpec()).and(spec), domainClass, sort);
   }
 
   private Specifications<T> aclJpaSpec() {
