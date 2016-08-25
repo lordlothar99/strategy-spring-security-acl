@@ -4,7 +4,7 @@
 
 	<groupId>com.github.lothar.security.acl</groupId>
 	<artifactId>strategy-spring-security-acl-parent</artifactId>
-	<version>1.6.0-jdk7-SNAPSHOT</version>
+	<version>1.5.1-jdk7</version>
 	<packaging>pom</packaging>
 
 	<name>${project.artifactId}</name>
@@ -183,7 +183,7 @@
 	<scm>
 		<url>https://github.com/lordlothar99/strategy-spring-security-acl.git</url>
 		<developerConnection>scm:git:https://github.com/lordlothar99/strategy-spring-security-acl.git</developerConnection>
-		<tag>HEAD</tag>
+		<tag>1.5.1-jdk7</tag>
 	</scm>
 
 	<developers>
