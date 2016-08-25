@@ -144,7 +144,7 @@ public class AclJpaRepositoryFactoryBean<T extends Repository<S, ID>, S, ID exte
 
       private RepositoryQuery wrapQuery(Method method, RepositoryMetadata metadata,
             RepositoryQuery query) {
-        if (method.getDeclaredAnnotation(NoAcl.class) != null) {
+        if (method.getAnnotation(NoAcl.class) != null) {
           // no acl applied here
           return query;
         }
