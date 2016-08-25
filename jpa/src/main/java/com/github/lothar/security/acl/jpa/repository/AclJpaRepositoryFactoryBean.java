@@ -42,6 +42,7 @@ import org.springframework.data.repository.query.RepositoryQuery;
 
 import com.github.lothar.security.acl.Acl;
 import com.github.lothar.security.acl.jpa.JpaSpecProvider;
+import com.github.lothar.security.acl.jpa.annotation.NoAcl;
 import com.github.lothar.security.acl.jpa.query.AclJpaQuery;
 
 public class AclJpaRepositoryFactoryBean<T extends Repository<S, ID>, S, ID extends Serializable>
@@ -143,6 +144,10 @@ public class AclJpaRepositoryFactoryBean<T extends Repository<S, ID>, S, ID exte
 
       private RepositoryQuery wrapQuery(Method method, RepositoryMetadata metadata,
             RepositoryQuery query) {
+        if (method.getDeclaredAnnotation(NoAcl.class) != null) {
+          // no acl applied here
+          return query;
+        }
         if (query instanceof PartTreeJpaQuery) {
           query = new AclJpaQuery(method, query, metadata.getDomainType(), em, jpaSpecProvider);
         } else {

@@ -185,6 +185,10 @@ public class CustomerGrantEvaluator extends AbstractGrantEvaluator<Customer, Str
   }
 ```
 
+### Exclude a Spring Data JPA query-method to be filtered with ACL
+
+You just have to put `@NoAcl` annotation on this method in order to avoid the ACL JPA Specification to be injected.
+
 ### Override strategies
 
 It may be useful (for tests purpose for example) to disable all domain objects strategies, and use only one (which may be `allowAllStrategy`, so no restriction would be applied). Just add following property in your project's yml/properties file:
