@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.github.lothar.security.acl.jpa.annotation.NoAcl;
 import com.github.lothar.security.acl.jpa.domain.Customer;
 
 public interface CustomerRepository extends JpaRepository<Customer, String> {
@@ -34,4 +35,6 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
 
   int countByLastName(String lastName);
 
+  @NoAcl
+  int countByLastNameContains(String firstName);
 }

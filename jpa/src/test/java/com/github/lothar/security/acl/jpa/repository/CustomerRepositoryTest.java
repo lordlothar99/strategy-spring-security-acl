@@ -110,6 +110,14 @@ public class CustomerRepositoryTest {
     assertThat(repository.countByLastName("Smith")).isEqualTo(2);
   }
 
+  // acl disabled on specific query
+
+  @Test
+  public void should_count_all_customers_when_NoAcl_annotation_is_present() {
+    assertThat(repository.countByLastNameContains("Doe")).isEqualTo(1);
+    assertThat(repository.countByLastNameContains("Smith")).isEqualTo(2);
+  }
+
   // exist
 
   @Test
