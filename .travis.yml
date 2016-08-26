@@ -8,3 +8,7 @@ script: mvn verify
 after_success: mvn coveralls:report -Dcoveralls.repoToken=$COVERALLS_REPO_TOKEN
 
 sudo: false
+
+notifications:
+  slack:
+    on_success: never
