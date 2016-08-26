@@ -1,4 +1,4 @@
-# strategy-spring-security-acl [![Build Status](https://travis-ci.org/lordlothar99/strategy-spring-security-acl.svg?branch=master)](https://travis-ci.org/lordlothar99/strategy-spring-security-acl) [![Coverage Status](https://coveralls.io/repos/github/lordlothar99/strategy-spring-security-acl/badge.svg?branch=master)](https://coveralls.io/github/lordlothar99/strategy-spring-security-acl?branch=master)
+# strategy-spring-security-acl [![Build Status](https://travis-ci.org/lordlothar99/strategy-spring-security-acl.svg?branch=master)](https://travis-ci.org/lordlothar99/strategy-spring-security-acl) [![Coverage Status](https://coveralls.io/repos/github/lordlothar99/strategy-spring-security-acl/badge.svg?branch=master)](https://coveralls.io/github/lordlothar99/strategy-spring-security-acl?branch=master) [![GitHub tag](https://img.shields.io/github/tag/lordlothar99/strategy-spring-security-acl.svg?maxAge=3600)](https://github.com/lordlothar99/strategy-spring-security-acl)
 
 Extensible strategy-based Spring Security ACL implementation ; available modules are : PermissionEvaluator, JPA Specification and ElasticSearch Filter
 
