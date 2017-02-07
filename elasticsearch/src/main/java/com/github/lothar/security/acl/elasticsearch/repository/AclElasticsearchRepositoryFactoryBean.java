@@ -37,10 +37,15 @@ import com.github.lothar.security.acl.elasticsearch.AclFilterProvider;
 public class AclElasticsearchRepositoryFactoryBean<T extends Repository<S, ID>, S, ID extends Serializable>
     extends ElasticsearchRepositoryFactoryBean<T, S, ID> {
 
+  public AclElasticsearchRepositoryFactoryBean(Class<? extends T> repositoryInterface) {
+    super(repositoryInterface);
+  }
+
   private ElasticsearchOperations operations;
   @Resource
   private AclFilterProvider filterProvider;
 
+  @Override
   public void setElasticsearchOperations(ElasticsearchOperations operations) {
     super.setElasticsearchOperations(operations);
     this.operations = operations;

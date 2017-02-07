@@ -48,9 +48,14 @@ import com.github.lothar.security.acl.jpa.query.AclJpaQuery;
 public class AclJpaRepositoryFactoryBean<T extends Repository<S, ID>, S, ID extends Serializable>
     extends JpaRepositoryFactoryBean<T, S, ID> {
 
+  public AclJpaRepositoryFactoryBean(Class<? extends T> repositoryInterface) {
+    super(repositoryInterface);
+  }
+
   @Resource
   private JpaSpecProvider<Object> jpaSpecProvider;
 
+  @Override
   protected RepositoryFactorySupport createRepositoryFactory(EntityManager entityManager) {
     return new Factory(entityManager);
   }
@@ -78,6 +83,7 @@ public class AclJpaRepositoryFactoryBean<T extends Repository<S, ID>, S, ID exte
       return new AclQueryLookupStrategy(key, evaluationContextProvider);
     }
 
+    @Override
     protected SimpleJpaRepository<?, ?> getTargetRepository(RepositoryInformation information,
         EntityManager entityManager) {
       Class<?> domainType = information.getDomainType();
@@ -133,6 +139,7 @@ public class AclJpaRepositoryFactoryBean<T extends Repository<S, ID>, S, ID exte
       /**
        * @since Spring data JPA 1.10.0
        */
+      @Override
       public RepositoryQuery resolveQuery(Method method, RepositoryMetadata metadata,
             ProjectionFactory factory, NamedQueries namedQueries) {
         QueryLookupStrategy queryLookupStrategy =
